@@ -8,13 +8,7 @@ category: k8s
 **쿠버네티스 클러스터의 메트릭들을** 
 
 **Prometheus로 수집하고 Grafana web UI를 통해 시각화 시키는 작업**
-
-**개인 GCP 클라우드 서버 쿠버네티스 클러스터에 적용한 URL**
-
-```
-**Prometheus 서버 :** [http://34.64.209.18:31213/](http://34.64.209.18:31213/)
-**Grafana :** [http://34.64.209.18:30837/d/4XuMd2Iiz/kubernetes-cluster-prometheus?orgId=1](http://34.64.209.18:30837/d/4XuMd2Iiz/kubernetes-cluster-prometheus?orgId=1)
-```
+**GRU 호롤리님의 블로그를 보고 GCP 클라우드 환경에서 실습을 진행했습니다**
 
 # 1. Prometheus
 
@@ -381,13 +375,13 @@ prometheus-deployment-7bcb5ff899-h4rb7   1/1     Running   0          65s
 
 - **service 확인**
 
-**Prometheus 브라우저 접속확인 [**34.64.249.210:31213, 34.64.209.18:31213 **]**
+**Prometheus 브라우저 접속확인**
 
 ```bash
 $ kubectl get svc -o wide -n monitoring
 
-NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP                  PORT(S)          AGE     SELECTOR
-prometheus-service   LoadBalancer   10.99.72.195   34.64.249.210,34.64.209.18   8080:31213/TCP   7d      app=prometheus-server
+NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP		PORT(S)          AGE     SELECTOR
+prometheus-service   LoadBalancer   10.99.72.195   xx.xx.xxx.xxx   	8080:31213/TCP   7d      app=prometheus-server
 ```
 
 - **Prometheus 상단 메뉴 확인**
@@ -645,13 +639,13 @@ prometheus-deployment-7bcb5ff899-h4rb7   1/1     Running   0          67m
 
 - **Grafana Service 확인**
 
-Grafana **브라우저 접속확인 [**34.64.249.210:30837, 34.64.209.18:30837 **]**
+Grafana **브라우저 접속확인**
 
 ```bash
 $ kubectl get svc -n monitoring
-NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP                  PORT(S)          AGE
-grafana              LoadBalancer   10.109.82.53   34.64.249.210,34.64.209.18   3000:30837/TCP   6d23h
-prometheus-service   LoadBalancer   10.99.72.195   34.64.249.210,34.64.209.18   8080:31213/TCP   7d
+NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP		PORT(S)          AGE
+grafana              LoadBalancer   10.109.82.53   xx.xx.xxx.xxx   	3000:30837/TCP   6d23h
+prometheus-service   LoadBalancer   10.99.72.195   xx.xx.xxx.xxx   	8080:31213/TCP   7d
 ```
 
 ### 참고
