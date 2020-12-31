@@ -1,10 +1,10 @@
 ---
 layout: post
 title: post-sample2
-date: 2020-01-02 19:20:23 +0900
+date: 2020-12-02 19:20:23 +0900
 category: Jekyll
 ---
-# post-sample
+# post-sample2
 > Hello2!
 
 This is code
