@@ -47,8 +47,8 @@ author:
     - name: vk
       url:
 home:
-  section1: <h1>개발 정리노트</h1>
-  #section2: <h2>개발 정리노트</h2>
+  section1: <h1>시우,시은이 아빠's</h1>
+  section2: <h2>개발 정리노트</h2>
   section3: <div class="social-links"><a class="ico-github btn" href="https://github.com/coolguy239" title="View on GitHub"></a></div>
 blog:
   cc_license: http://creativecommons.org/licenses/by-sa/4.0/ # A link to CC License of your choice.
