@@ -24,7 +24,7 @@ sass:
 url: # the base hostname & protocol for your site, e.g. http://example.com
 baseurl: # the subpath of your site, e.g. /blog
 title: SiSipapa 블로그
-description: "A gem-based responsive simple texture styled Jekyll theme."
+description: "Developer Blog"
 keywords: 'springboot,jpa,docker,k8s'
 author:
   name:
@@ -35,7 +35,7 @@ author:
     - name: facebook
       url:
     - name: github
-      url: https://github.com/coolguy239
+      url: https://github.com/sisipapa
     - name: instagram
       url:
     - name: linkedin
@@ -48,8 +48,8 @@ author:
       url:
 home:
   section1: <h1>SiSipapa</h1>
-  section2: <h2>개발정리 블로그</h2>
-  section3: <div class="social-links"><a class="ico-github btn" href="https://github.com/coolguy239" title="View on GitHub"></a></div>
+  section2: <h2>Developer Blog</h2>
+  section3: <div class="social-links"><a class="ico-github btn" href="https://github.com/sisipapa" title="View on GitHub"></a></div>
 blog:
   cc_license: http://creativecommons.org/licenses/by-sa/4.0/ # A link to CC License of your choice.
   cc_license_image: /assets/images/theme/cc-by-sa.png # An image of your CC License. 

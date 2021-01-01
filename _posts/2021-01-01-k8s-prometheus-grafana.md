@@ -348,8 +348,8 @@ spec:
     - port: 8080
       targetPort: 9090
   externalIPs:
-    - 34.64.249.210
-    - 34.64.209.18
+    - xx.xx.xxx.xx
+    - xx.xx.xxx.xx
 ```
 
 - **배포**
@@ -622,8 +622,8 @@ spec:
     - port: 3000
       targetPort: 3000
   externalIPs:
-    - 34.64.249.210
-    - 34.64.209.18
+    - xx.xx.xxx.xx
+    - xx.xx.xxx.xx
 ```
 
 - **Grafana pod 확인**
