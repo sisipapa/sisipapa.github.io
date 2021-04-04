@@ -16,3 +16,8 @@ yarn.lock
 # Ignore Yard Doc
 /doc
 .yardoc/
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/sisipapa.github.io.iml
+/.idea/vcs.xml
