@@ -23,7 +23,7 @@ redirect_from:
 - JDBC URL을 TCP 모드로 세팅후 연결
   jdbc:h2:tcp://localhost/~/DB명
 
-<img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-h2.PNG" width="300" height="200"> 
+<img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-h2.PNG" > 
 
 
   
