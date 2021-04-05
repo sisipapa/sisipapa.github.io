@@ -32,16 +32,6 @@ redirect_from:
 ## 2. build.gradle 설정  
 - h2,jpa,querydsl,springdoc-openapi 설정추가  
 ```yaml
-dependencies {
-    runtimeOnly  'com.h2database:h2'                                        // H2 DB설정
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // spring data JPA
-    implementation 'com.querydsl:querydsl-jpa'                              // querydsl 설정
-    implementation 'org.springdoc:springdoc-openapi-ui:1.2.30'              // openapi
-}
-```
-
-- querydsl generate 설정추가  
-```yaml
 plugins {
   id 'org.springframework.boot' version '2.4.4'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -49,25 +39,34 @@ plugins {
   id 'java'
 }
 
+dependencies {
+    runtimeOnly  'com.h2database:h2'                                        // H2 DB설정
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // spring data JPA
+    implementation 'com.querydsl:querydsl-jpa'                              // querydsl 설정
+    implementation 'org.springdoc:springdoc-openapi-ui:1.2.30'              // openapi
+}
+
+...생략
+
 def querydslDir = '$buildDir/generated/querydsl'
 
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
+  querydsl {
+  jpa = true
+  querydslSourcesDir = querydslDir
 }
 
 sourceSets {
-    main.java.srcDir querydslDir
+  main.java.srcDir querydslDir
 }
 
 configurations {
-    querydsl.extendsFrom compileClasspath
+  querydsl.extendsFrom compileClasspath
 }
 
 compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
+  options.annotationProcessorPath = configurations.querydsl
 }
-```
+```  
 
 ## 3. application.properties   
 ```properties
