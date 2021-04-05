@@ -29,8 +29,8 @@ redirect_from:
 
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-h2.PNG" >   
 
-## 2. build.gradle 설정
-- h2,jpa,querydsl,springdoc-openapi 설정추가 
+## 2. build.gradle 설정  
+- h2,jpa,querydsl,springdoc-openapi 설정추가  
 ```yaml
 dependencies {
     ... 생략
@@ -42,7 +42,7 @@ dependencies {
 }
 ```
 
-- querydsl generate 설정추가
+- querydsl generate 설정추가  
 ```yaml
 plugins {
   id 'org.springframework.boot' version '2.4.4'
@@ -51,8 +51,6 @@ plugins {
   id 'java'
 }
 
-... 생략
-  
 //querydsl 추가 시작
 def querydslDir = '$buildDir/generated/querydsl'
 
@@ -75,7 +73,7 @@ compileQuerydsl {
 //querydsl 추가 끝
 ```
 
-## 3. application.properties
+## 3. application.properties   
 ```properties
 # H2 설정
 spring.h2.console.enabled=true
@@ -208,7 +206,9 @@ public class PostsController {
 ## 5. Swagger Doc 확인(http://localhost:8080/swagger-ui.html)  
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-main.PNG" >
 
-## 6. Github - https://github.com/sisipapa/Springboot-JPA-QueryDSL-H2.git  
+## 6. Github  
+<https://github.com/sisipapa/Springboot-JPA-QueryDSL-H2.git>
+
 
 다음에는 Springboot + Spring Security + Oauth2 + JWT를 활용한 OAuth2 Server 환경을 구성해 봐야겠다.
 
