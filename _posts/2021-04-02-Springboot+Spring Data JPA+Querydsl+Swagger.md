@@ -9,7 +9,7 @@ redirect_from:
 
 # Springboot+Spring Data JPA+Querydsl+Swagger Rest API  
 
-앞으로 내가 개발을 하면서 경험했던 다양한 환경과 설정들을 간단하게 정리를 해보려고 한다.  
+앞으로 개발을 하면서 경험했던 다양한 환경과 설정들을 간단하게 정리를 해보려고 한다.  
 오늘은 Springboot,JPA,QueryDSL,Gradle 환경에서 Rest API를 만들 예정이다.  
 
 개발 진행순서는 아래와 같다.
@@ -51,7 +51,6 @@ plugins {
   id 'java'
 }
 
-//querydsl 추가 시작
 def querydslDir = '$buildDir/generated/querydsl'
 
 querydsl {
@@ -70,7 +69,6 @@ configurations {
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
-//querydsl 추가 끝
 ```
 
 ## 3. application.properties   
