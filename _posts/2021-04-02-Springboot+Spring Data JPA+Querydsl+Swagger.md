@@ -46,8 +46,6 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.2.30'              // openapi
 }
 
-...생략
-
 def querydslDir = '$buildDir/generated/querydsl'
 
 querydsl {
@@ -68,7 +66,7 @@ compileQuerydsl {
 }
 ```  
 
-## 3. application.properties   
+## 3. application.properties 설정 
 ```properties
 # H2 설정
 spring.h2.console.enabled=true
