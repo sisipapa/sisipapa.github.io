@@ -50,7 +50,7 @@ dependencies {
 
 def querydslDir = '$buildDir/generated/querydsl'
 
-  querydsl {
+querydsl {
   jpa = true
   querydslSourcesDir = querydslDir
 }
