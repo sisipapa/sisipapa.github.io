@@ -32,6 +32,7 @@ redirect_from:
 ## 2. build.gradle 설정  
 - h2,jpa,querydsl,springdoc-openapi 설정추가  
 ```yaml
+
 plugins {
   id 'org.springframework.boot' version '2.4.4'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -68,6 +69,7 @@ compileQuerydsl {
 
 ## 3. application.properties 설정 
 ```properties
+
 # H2 설정
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2
