@@ -33,12 +33,10 @@ redirect_from:
 - h2,jpa,querydsl,springdoc-openapi 설정추가  
 ```yaml
 dependencies {
-    ... 생략
     runtimeOnly  'com.h2database:h2'                                        // H2 DB설정
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // spring data JPA
     implementation 'com.querydsl:querydsl-jpa'                              // querydsl 설정
     implementation 'org.springdoc:springdoc-openapi-ui:1.2.30'              // openapi
-    ... 생략
 }
 ```
 
