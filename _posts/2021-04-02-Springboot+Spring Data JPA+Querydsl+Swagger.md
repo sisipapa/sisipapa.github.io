@@ -9,7 +9,6 @@ redirect_from:
 
 # Springboot+Spring Data JPA+Querydsl+Swagger Rest API  
 
-앞으로 개발을 하면서 경험했던 다양한 환경과 설정들을 간단하게 정리를 해보려고 한다.  
 오늘은 Springboot,JPA,QueryDSL,Gradle 환경에서 Rest API를 만들 예정이다.  
 
 개발 진행순서는 아래와 같다.
@@ -191,5 +190,4 @@ public class PostsController {
 <https://github.com/sisipapa/Springboot-JPA-QueryDSL-H2.git>
 
 
-다음에는 Springboot + Spring Security + Oauth2 + JWT를 활용한 OAuth2 Server 환경을 구성해 봐야겠다.
 
