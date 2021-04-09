@@ -48,7 +48,7 @@ author:
       url:
 home:
   section1: <h1>평범한 자바 개발자의 정리노트</h1>
-  section2:
+  section2: <h2>감사합니다</h2>
   section3: <div class="social-links"><a class="ico-github btn" href="https://github.com/sisipapa" title="View on GitHub"></a></div>
 blog:
   cc_license: http://creativecommons.org/licenses/by-sa/4.0/ # A link to CC License of your choice.
