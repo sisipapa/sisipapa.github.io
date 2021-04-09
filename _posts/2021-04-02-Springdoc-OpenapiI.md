@@ -1,6 +1,6 @@
 ---
 layout: post title: Springboot+Spring Data JPA+Querydsl+Swagger category: [Springboot]
-tags: [JPA,QueryDSL,Swagger,RestAPI]
+tags: [Swagger]
 redirect_from:
 
 - /2021/04/02/
