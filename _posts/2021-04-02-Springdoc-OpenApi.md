@@ -1,6 +1,6 @@
 ---
 layout: post 
-title: Springdoc-OpenApi 
+title: Springdoc-OpenAPI(Swagger) 
 category: [DOcument]
 tags: [Swagger]
 redirect_from:

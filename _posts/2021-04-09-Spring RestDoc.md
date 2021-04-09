@@ -11,7 +11,7 @@ redirect_from:
 
 # Springboot+Spring Data JPA+Querydsl+Spring Rest Doc
 
-오늘은 저번이랑 동일한 환경에 Document 라이브러리만 Spring Rest Doc을 사용해서 개발을 진행할 예정이다.
+오늘은 이전 블로그와 동일한 환경에 Document 라이브러리만 Spring Rest Doc을 사용해서 샘플 프로젝트를 진행할 예정이다.
 
 
 
