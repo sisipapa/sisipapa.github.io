@@ -1,5 +1,23 @@
-_site
+*.gem
+.bundle
 .sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
+_site
+Gemfile.lock
+
+Thumbs.db
+.DS_Store
+
+.rbenv-version
+.rvmrc
+/node_modules
+/yarn-error.log
+yarn.lock
+
+# Ignore Yard Doc
+/doc
+.yardoc/
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/sisipapa.github.io.iml
+/.idea/vcs.xml
