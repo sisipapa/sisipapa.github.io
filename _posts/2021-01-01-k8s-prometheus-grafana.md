@@ -1,10 +1,10 @@
 ---
-layout: post
-title: k8s+Prometheus+Grafana
-category: [k8s]
+layout: post title: k8s+Prometheus+Grafana category: [k8s]
 tags: [k8s, prometheus, grafana]
 redirect_from:
-  - /2021/01/01/
+
+- /2021/01/01/
+
 ---
 
 **쿠버네티스 클러스터의 메트릭들을 Prometheus로 수집하고 Grafana web UI를 통해 시각화 시키는 작업**   

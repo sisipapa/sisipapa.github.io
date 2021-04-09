@@ -6,9 +6,9 @@ description: "This page shows a list of tags used in this blog."
 group: navigation
 ---
 {% capture tags %}
-    {% for tag in site.tags %}
-        {{ tag[0] | replace:' ','&#32;' }}
-    {% endfor %}
+{% for tag in site.tags %}
+{{ tag[0] | replace:' ','&#32;' }}
+{% endfor %}
 {% endcapture %}
 
 {% assign sorted_tags = tags | split:' ' | sort %}
@@ -19,10 +19,10 @@ group: navigation
 </ul>
 
 {% for tag in sorted_tags %}
-    {% assign actual_tag_name = tag | replace:'&#32;',' ' %}
-    <h3 id="{{ actual_tag_name | replace:' ','-' | replace:'#','sharp' }}">{{ actual_tag_name }}</h3>
-    <ul class="post-list">
-        {% assign pages_list = site.tags[actual_tag_name] %}
-        {% include helpers/pages_list %}
-    </ul>
+{% assign actual_tag_name = tag | replace:'&#32;',' ' %}
+<h3 id="{{ actual_tag_name | replace:' ','-' | replace:'#','sharp' }}">{{ actual_tag_name }}</h3>
+<ul class="post-list">
+    {% assign pages_list = site.tags[actual_tag_name] %}
+    {% include helpers/pages_list %}
+</ul>
 {% endfor %}

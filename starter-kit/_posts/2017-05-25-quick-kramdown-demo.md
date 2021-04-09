@@ -1,24 +1,24 @@
 ---
-layout: post
-title: "Quick kramdown demo"
+layout: post title: "Quick kramdown demo"
 description: "A quick demo post to some kramdown features."
 categories: [demo]
 tags: [demo, jekyll]
 redirect_from:
-  - /2017/05/25/
+
+- /2017/05/25/
+
 ---
 
 > This is [kramdown][kramdown] formatting test page for [Simple Texture][Simple Texture] theme.
 
-* Kramdown table of contents
-{:toc .toc}
+* Kramdown table of contents {:toc .toc}
 
 # General Usage
 
 This is a normal paragraph.
 
-This is [a link](https://yizeng.me) to my homepage.
-A [link](https://yizeng.me/blog "Yi Zeng's Blog") can also have a title.
+This is [a link](https://yizeng.me) to my homepage. A [link](https://yizeng.me/blog "Yi Zeng's Blog") can also have a
+title.
 
 This is a ***text with light and strong emphasis***.
 
@@ -70,38 +70,31 @@ This tag will let you <strike>strikeout text</strike>.
 ## Lists
 
 * list 1 item 1
-  * nested list item 1
-  * nested list item 2
-  * nested list item 3 with blockquote
+    * nested list item 1
+    * nested list item 2
+    * nested list item 3 with blockquote
+
 > ruby -v
 >
 > tsc -v
+
 * list 1 item 2
 * list 1 item 3
 
 ## Tables
 
-
 * Table 1
 
-    |-----------------+------------+-----------------+----------------|
-    | Default aligned |Left aligned| Center aligned  | Right aligned  |
-    |-----------------|:-----------|:---------------:|---------------:|
-    | First body part |Second cell | Third cell      | fourth cell    |
-    | Second line     |foo         | **strong**      | baz            |
-    | Third line      |quux        | baz             | bar            |
-    | Footer row      |            |                 |                |
-    |-----------------+------------+-----------------+----------------|
+  |-----------------+------------+-----------------+----------------| | Default aligned |Left aligned| Center aligned |
+  Right aligned | |-----------------|:-----------|:---------------:|---------------:| | First body part |Second cell |
+  Third cell | fourth cell | | Second line |foo | **strong**      | baz | | Third line |quux | baz | bar | | Footer row
+  | | | | |-----------------+------------+-----------------+----------------|
 
 * Table 2
 
-    |---
-    | Default aligned | Left aligned | Center aligned | Right aligned
-    |-|:-|:-:|-:
-    | First body part | Second cell | Third cell | fourth cell
-    | Second line |foo | **strong** | baz
-    | Third line |quux | baz | bar
-    | Footer row
+  |--- | Default aligned | Left aligned | Center aligned | Right aligned |-|:-|:-:|-:
+  | First body part | Second cell | Third cell | fourth cell | Second line |foo | **strong** | baz | Third line |quux |
+  baz | bar | Footer row
 
 ## Horizontal Rules
 
@@ -124,4 +117,5 @@ Here comes an image!
 [^1]: This is a footnote.
 
 [kramdown]: https://kramdown.gettalong.org/
+
 [Simple Texture]: https://github.com/yizeng/jekyll-theme-simple-texture

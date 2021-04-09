@@ -1,34 +1,36 @@
 ---
-layout: post
-title: Springboot+Spring Data JPA+Querydsl+Swagger
-category: [Springboot]
+layout: post title: Springboot+Spring Data JPA+Querydsl+Swagger category: [Springboot]
 tags: [JPA,QueryDSL,Swagger,RestAPI]
 redirect_from:
-  - /2021/04/02/
+
+- /2021/04/02/
+
 ---
 
-# Springboot+Spring Data JPA+Querydsl+Swagger Rest API  
+# Springboot+Spring Data JPA+Querydsl+Swagger Rest API
 
-오늘은 Springboot,JPA,QueryDSL,Gradle 환경에서 Rest API를 만들 예정이다.  
+오늘은 Springboot,JPA,QueryDSL,Gradle 환경에서 Rest API를 만들 예정이다.
 
 개발 진행순서는 아래와 같다.
+
 1. H2 DB설치
 2. build.gradle 설정
 3. application.properties 설정
 4. Rest API 개발(POST,GET,PATCH,DELETE)
 5. Swagger Doc 확인
 
-## 1. H2 DB설치  
+## 1. H2 DB설치
+
 - H2 database 다운로드 후 설치  
   http://www.h2database.com/html/main.html 페이지에서 OS맞는 설치파일을 다운로드 후 설치한다.
 - 접속 확인
-  http://localhost:8082/login.jsp?jsessionid=3ca85e5c51fb926f441f097c1a6d0434  
-- JDBC URL을 TCP 모드로 세팅후 연결
-  jdbc:h2:tcp://localhost/~/DB명
+  http://localhost:8082/login.jsp?jsessionid=3ca85e5c51fb926f441f097c1a6d0434
+- JDBC URL을 TCP 모드로 세팅후 연결 jdbc:h2:tcp://localhost/~/DB명
 
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-h2.PNG" >   
 
 ## 2. build.gradle 설정
+
 ```yaml
 plugins {
   id 'org.springframework.boot' version '2.4.4'
@@ -64,7 +66,8 @@ compileQuerydsl {
 }
 ```  
 
-## 3. application.properties 설정 
+## 3. application.properties 설정
+
 ```properties
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2
@@ -84,6 +87,7 @@ springdoc.swagger-ui.groups-order=DESC
 ```
 
 ## 4. Rest API 개발(POST,GET,PATCH,DELETE)
+
 ```java
 @AllArgsConstructor
 @RequestMapping("/v1")
@@ -183,10 +187,13 @@ public class PostsController {
 
 }
 ```
-## 5. Swagger Doc 확인(http://localhost:8080/swagger-ui.html)  
+
+## 5. Swagger Doc 확인(http://localhost:8080/swagger-ui.html)
+
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-main.PNG" >
 
-## 6. Github  
+## 6. Github
+
 <https://github.com/sisipapa/Springboot-JPA-QueryDSL-H2.git>
 
 
