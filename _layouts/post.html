@@ -1,57 +1,80 @@
-{% include head.html %}
-
-<section class="article">
-
-{% if page.image.feature %}
-  <div class="overlay"></div>
-  {% if page.image.feature contains 'https://' | escape or page.image.feature contains 'http://' | escape %}
-  <div class="featured-image" style="background-image: url({{ page.image.feature }})"></div>
-  {% else %}
-  <div class="featured-image" style="background-image: url({{ site.url }}/images/{{ page.image.feature }})"></div>
-  {% endif %}
-{% else %}
-  <div class="overlay"></div>
-  <div class="featured-image" style="background-image: url({{ site.url }}/images/typewriter.jpg)"></div>
-{% endif %}
-
-
-      <article class="wrap post">
-        <header class="post-header">
-          <hgroup>
-            <h1>{{page.title}}</h1>
-            <p class="date">{{page.date | date: "%b %d, %Y" }}</p>
-            <p class="intro">{% if page.description %}{{ page.description }}{% else %}{{ page.tagline }}{% endif %}</p>
-          </hgroup>
-        </header>
-
-        {{ content }}
-
-      <a class="share" href="https://twitter.com/intent/tweet?text=&quot;{{ page.title }}&quot;%20{{ site.canonical }}{{ page.url }}%20via%20&#64;{{ site.owner.twitter }}" data-dnt="true">Share</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
-      {% if page.comments %}
-      <aside class="disqus">
-        <div id="disqus_thread"></div>
-        <script type="text/javascript">
-            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-            var disqus_shortname = '{{ site.owner.disqus }}'; // required: replace example with your forum shortname
-
-            /* * * DON'T EDIT BELOW THIS LINE * * */
-            (function() {
-                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </aside>
-      {% endif %}
-
-
-      </article>
-
-    </section>
-</div>
-
-{% include footer.html %}
+---
+layout: blog
+---
+<article class="unit-article layout-post">
+    <div class="unit-inner unit-article-inner">
+        <div itemscope itemtype="http://schema.org/Article" class="content">
+            <header>
+                <div class="unit-head">
+                    <div class="unit-inner unit-head-inner">
+                        <h1 class="entry-title" itemprop="name">{{ page.title }}</h1>
+                    </div>
+                </div>
+            </header>
+            <div class="bd article-content">
+                <div class="entry-content">
+                    <div class="meta">
+                        <p class="date-publish">
+                            {{ site.data.i18n[site.lang].published }}:
+                            <time itemprop="datePublished" class="date-pub {% if page.last_updated == null %}updated{% endif %}"
+                                title="{{ page.date | date_to_xmlschema }}" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B' }} {{ page.date | date: '%d' }}, {{ page.date | date: '%Y' }} </time>
+                            by
+                            <a class="author" href="/" rel="author" title="{{ site.data.i18n[site.lang].show_author }}">
+                                <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+                                    <span itemprop="name">{% if page.author == null %}{{ site.author.name }}{% else %}{{ page.author }}{% endif %}</span>
+                                </span>
+                            </a>
+                            {% if site.blog.cc_license and site.blog.cc_license_image %}
+                                <a class="license-icon" rel="license" href="{{ site.blog.cc_license }}" target="_blank" title="{{ site.data.i18n[site.lang].show_license }}">
+                                    <img alt="Creative Commons Licence" style="border-width:0" src="{{ site.blog.cc_license_image | relative_url }}"  height="16" width="80"/>
+                                </a>
+                            {% endif %}
+                            {% if page.last_updated %}
+                                ({{ site.data.i18n[site.lang].last_updated}}:
+                                <time class="date-updated updated" title="{{ page.last_updated | date_to_xmlschema }}" datetime="{{ page.last_updated | date_to_xmlschema }}">{{ page.last_updated }}</time>)
+                            {% endif %}
+                        </p>
+                        <ul class="list-category list-linear">
+                            <li class="list-head">{{ site.data.i18n[site.lang].categories }}: </li>
+                            {% assign categories_list = page.categories | sort %} {% include helpers/categories_list %}
+                        </ul>
+                        <ul class="list-tag list-linear">
+                            <li class="list-head">{{ site.data.i18n[site.lang].tags }}: </li>
+                            {% assign tags_list = page.tags | sort %} {% include helpers/tags_list %}
+                        </ul>
+                    </div>
+                    <div itemprop="articleBody">
+                        {{ content }}
+                    </div>
+                </div>
+            </div>
+            <footer class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <div class="post-buttons">
+                        <a class="internal gotop" href="#page" title="{{ site.data.i18n[site.lang].back_to_top }}">{{ site.data.i18n[site.lang].back_to_top }}</a>
+                        {% if site.addthis_public_id %}
+                            {% include common/addthis.html %}
+                        {% endif %}
+                    </div>
+                    <nav class="pagination">
+                        {% if page.previous %}
+                            <a class="internal" rel="prev" href="{{ page.previous.url | relative_url }}" title="{{ site.data.i18n[site.lang].previous_post }} '{{ page.previous.title }}'"> ← {{ page.previous.title }}</a>
+                        {% endif %}
+                        {% if page.next %}
+                            <a class="internal" rel="next" href="{{ page.next.url | relative_url }}" title="{{ site.data.i18n[site.lang].next_post }} '{{ page.next.title }}'">{{ page.next.title }} → </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </footer>
+            <div class="misc-content">
+                {% if site.disqus.shortname and page.comments != false %}
+                    {% include common/disqus.html %}
+                    <div class="comments">
+                        <button class="center-block show-hidden" title="{{ site.data.i18n[site.lang].show_comments }}" data-disqus-url="{{ page.url | absolute_url }}">{{ site.data.i18n[site.lang].show_comments }}</button>
+                        <div id="disqus_thread"></div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>

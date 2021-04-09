@@ -1,138 +1,152 @@
-# Balzac
+# Simple Texture Jekyll Theme
 
-This is forked from [minimal mistakes](http://mademistakes.com). I needed some type of framework to build off as I have no experience with Jekyll. Michael set up an awesome dev environment for this which really helped speed up my progress. He also already wrote up an incredibly comprehensive readme.md so I basically copied all of it and replaced what was necessary. The design itself is my own and I cannot let you sell this or tweak the design for resale, unless I you [contact me](mailto:cole@coletownsend.com).
+![Gem Version](https://img.shields.io/gem/v/jekyll-theme-simple-texture.svg)
 
+Simple Texture is a gem-based responsive simple texture styled Jekyll theme for [Jekyll][Jekyll] 3.3 or above,
+which can also be forked as a boilerplate for older versions of Jekyll.
 
-If you'd like give me credit somewhere on your blog or tweet a shout out to
-[@twnsndco](https://twitter.com/twnsndco), that would be pretty sweet. 
+## Demo
 
-If you feel like donating — [Give it a thought.](http://gtat.me/balzac/donate)
+- Starter-kit demo:
+<https://yizeng.github.io/jekyll-theme-simple-texture/>
+- My own personal blog: <https://yizeng.me/blog>
 
----
+![Screenshot - Home](assets/images/screenshots/homepage.png)
 
+![Screenshot - Blog](assets/images/screenshots/post.png)
 
-![Balzac for Jekyll](http://cl.ly/Qdzo/Screen%20Shot%202013-08-05%20at%205.35.11%20PM.jpg)
-![Balzac for Jekyll](http://cl.ly/Qdyh/Screen%20Shot%202013-08-05%20at%205.30.01%20PM.jpg)
+## Installation
 
-## Features:
-- flexible, uses max-width for responsive goodness
-- responsive drop down menu
-- retina images using @2x
-- post loop in the footer showing 3 latest posts
-- custom portfolio page for case studies
+### As a Jekyll theme gem (Jekyll >= 3.3)
 
-## Basic Setup
+If you are creating a new website or blog,
+please follow the commands below first:
 
-1. [Install Jekyll](http://jekyllrb.com) if you haven't already.
-2. Download this bad boy.
-3.  Fork the [Balzac repo](http://github.com/coletownsend/balzac-for-jekyll/)
-4. Twerk it out so it's just for you.
-5.  ???
-6.  Profit
+1. Install Jekyll and [Bundler][Bundler]
 
-## [Preview the Theme](http://jekyll.gtat.me)
-=======
- [Preview the Theme](http://jekyll.gtat.me)
- 
-``` bash
-balzac-for-jekyll/
-├── _includes
-|    ├── footer.html  //site footer
-|    ├── head.html  //site head
-|    ├── head-dark.html  //dark site head for light pages
-├── _layouts
-|    ├── home.html  //homepage layout
-|    ├── page.html  //page layout
-|    ├── post-index.html  //post listing layout
-|    └── post.html  //post layout
-|    ├── post-no-feature.html  //feature image-less post layout
-├── _posts
-├── assets
-|    ├── css  //preprocessed less styles. good idea to minify
-|    ├── img  //images and graphics used in css and js
-|    ├── js
-|    |   ├── main.js  //jQuery plugins and settings
-|    |   └── vendor  //all 3rd party scripts
-|    └── sass 
-├── images  //images for posts and pages
-├── about.md  //about page
-├── articles.md  //lists all posts from latest to oldest
-└── index.md  //homepage. lists 5 most recent posts
-```
+       gem install jekyll bundler
 
-# Customization
+2. Create a new Jekyll app
 
-## _config.yml
+       jekyll new jekyllapp
 
-Most of the variables found here are used in the .html files found in `_includes` if you need to add or remove anything. A good place to start would be to change the title, tagline, description, and url of your site. When working locally comment out `url` or else you will get a bunch of broken links because they are absolute and prefixed with `{{ site.url }}` in the various `_includes` and `_layouts`. Just remember to uncomment `url` when building for deployment or pushing to **gh-pages**...
+3. Enter the new directory
 
-### Owner/Author Information
+       cd jekyllapp
 
-Change your name, bio, Twitter url, email, Dribbble URL, etc.
+4. Then follow the instructions below like existing Jekyll app.
 
+Then for existing Jekyll apps,
 
-### Top Navigation Links
+1. Install Bundler if haven't done so.
 
-Edit page/post titles and URLs to include in the site's navigation. For external links add `external: true`.
+       gem install bundler
 
-``` yaml
-# sample top navigation links
-links:
-  - title: About Page
-    url: /about
-  - title: Other Page
-    url: /other-page
-  - title: External Page
-    url: http://coletownsend.com
-    external: true
-```
+1. Remove Jekyll auto-generated default pages `404.html`, `about.markdown` and `index.markdown` or any your custom layouts or existing theme files.
 
-## Other Stuff
+1. Remove the existing `Gemfile.lock`.
 
-The rest is just your average Jekyll config settings. Nothing too crazy here...
+1. Download the respository [here](https://github.com/yizeng/jekyll-theme-simple-texture/archive/master.zip)
+and locate `starter-kit` folder,
+or download `starter-kit` folder directly [here](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/yizeng/jekyll-theme-simple-texture/tree/master/starter-kit).
 
-### _includes
+1. Put everything in the `starter-kit` in the root directory,
+i.e. `jekyllapp` in this example.
 
-For the most part you can leave these as is since the author/owner details are pulled from `_config.yml`. That said you'll probably want to customize the copyright stuff in `footer.html` to your liking.
+1. Run `bundle install` to install dependencies.
 
-### Adding Posts and Pages
+1. Run Jekyll with `bundle exec jekyll serve`
 
-There are two main content layouts: `post.html` (for posts) and `page.html` (for pages). Both have large **feature images** that span the full-width of the screen, and both are meant for text heavy blog posts (or articles). 
+1. Hack away at <http://localhost:4000>!
 
-### Feature Images
+### As a fork
 
-A good rule of thumb is to keep feature images nice and wide so you don't push the body text too far down. An image cropped around around 1024 x 256 pixels will keep file size down with an acceptable resolution for most devices. 
+1. Fork the repo [here](https://github.com/yizeng/jekyll-theme-simple-texture#fork-destination-box)
 
-``` yaml
-image:
-# local image 
-  feature: feature-image-filename.jpg
-# link image
-  feature: "http(s)://image.domain.com/feature-image-filename.jpg"
-```
+2. Clone the repo just forked.
 
-This makes the assumption that the feature image is in the *images* folder unless it has a link address. To add a feature image to a post or page just include the filename in the front matter like so.
-You can "serve" images responsively with retina.js. All you need to do is have a file with @2x before the file type. That should be placed in the *images* folder. You literally don't have to do anything other than that. 2 copies. One is linked. That's it.
-Ex:
-`cool-photo@2x.jpg` 
+       git clone git@github.com:[YOUR_USERNAME]/jekyll-theme-simple-texture.git
 
-**There is a default feature image that will show up for and posts. It isn't retina or anything. It's just there in case you want one but forget <3*
+3. Delete `starter-kit` folder and `jekyll-theme-simple-texture.gemspec` file (they're for people installing via gem)
 
-#### If you don't want a feature image
-…just say so in the front-matter. Go to your-post-name.md and make sure it has this guy up top.
-```
-layout: post-no-feature
-```
+4. Install Bundler if haven't done so.
 
-### Categories
+       gem install bundler
 
-In the sample `_posts` folder you may have noticed `category: articles` in the front matter. I like keeping all posts grouped in the same folder. If you decide to rename or add categories you will need to modify the permalink in `articles.md` along with the filename (if renaming).
+5. Update the `Gemfile` to look like the following:
 
-For example. Say you want to group all your posts under `blog/` instead of `articles/`. In your post add `category: blog` to the front matter, rename or duplicate `articles.md` to `blog.md` and change the permalink in that file to `permalink: /blog/index.html`.
+   ```ruby
+   source "https://rubygems.org"
 
-If done correctly `/blog` should be a page listing all the site's posts.
+   gem "github-pages", group: :jekyll_plugins
+   ```
 
+6. Run `bundle install` to install dependencies.
+
+7. Run Jekyll with `bundle exec jekyll serve`
+
+8. Hack away at <http://localhost:4000>!
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at <https://github.com/yizeng/jekyll-theme-simple-texture>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+## Credits
+
+- [Jekyll][Jekyll]
+  + [jekyll-feed](https://github.com/jekyll/jekyll-feed)
+  + [jekyll-redirect-from](https://github.com/jekyll/jekyll-redirect-from)
+  + [jekyll-seo-tag](https://github.com/jekyll/jekyll-seo-tag)
+  + [jekyll-sitemap](https://github.com/jekyll/jekyll-sitemap)
+  + [Simple-Jekyll-Search](https://github.com/christian-fei/Simple-Jekyll-Search)
+  + [Jekyll-Bootstrap](http://jekyllbootstrap.com/)
+  + [theme-the-program](https://github.com/jekyllbootstrap/theme-the-program)
+
+- [Sass](http://sass-lang.com/)
+  + [Normalize.css](https://necolas.github.io/normalize.css/)
+  + [Animate.css](https://daneden.github.io/animate.css/)
+  + [Simple Icons](https://simpleicons.org/)
+  + [Noise Texture Generator](http://www.noisetexturegenerator.com/)
+- JavaScript
+  + [cdnjs](https://cdnjs.com/)
+  + [jQuery](https://jquery.com/)
+  + [fullPage.js](https://alvarotrigo.com/fullPage/)
+  + [pace.js](http://github.hubspot.com/pace/docs/welcome/)
+  + [Modernizr](https://modernizr.com/)
+  + [FancyBox](http://fancybox.net/)
+  + [unveil.js](http://luis-almeida.github.io/unveil/)
+- Fonts
+  + [Font Squirrel](https://www.fontsquirrel.com/)
+  + [Bitter](https://fonts.google.com/specimen/Bitter)
+  + [Junge](https://fonts.google.com/specimen/Junge)
+  + [Ubuntu Condensed](https://fonts.google.com/specimen/Ubuntu+Condensed)
 
 ## License
 
-This is free to use, fork, do whatever you want. Please *do not* sell this design though. You don't need to link me to it, but please contact me if you intend to market this theme. I am releasing premium versions of this design for select CMS's. 
+The theme is available as open source under the terms of the
+[MIT License](https://github.com/yizeng/jekyll-theme-simple-texture/blob/master/LICENSE).
+
+    MIT License
+
+    Copyright (c) 2017 Yi Zeng
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+[Jekyll]: http://jekyllrb.com/
+[Bundler]: https://bundler.io/
