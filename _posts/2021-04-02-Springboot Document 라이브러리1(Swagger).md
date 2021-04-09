@@ -1,7 +1,7 @@
 ---
 layout: post 
-title: Springdoc-OpenAPI(Swagger) 
-category: [DOcument]
+title: Springboot Document 라이브러리1(Swagger) 
+category: [Document]
 tags: [Swagger]
 redirect_from:
 
