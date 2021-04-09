@@ -1,61 +1,66 @@
-<!DOCTYPE html>
+---
+layout: default
+---
 
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="{{ site.lang }}">
-<!--<![endif]-->
-
-<head>
-    {% include common/meta.html %}
-    <link href='{{ site.baseurl }}/assets/stylesheets/home.css' rel="stylesheet" type="text/css">
-    {% include common/libraries.html %}
-    {% if site.google_tag_manager %}
-        {% include common/gtm-head.html %}
+<!-- Page Header -->
+{% if page.background %}
+<header class="masthead" style="background-image: url('{{ page.background | prepend: site.baseurl | replace: '//', '/' }}')">
+  {% else %}
+  <header class="masthead">
     {% endif %}
-</head>
-
-<body>
-    {% if site.google_tag_manager %}
-        {% include common/gtm-body.html %}
-    {% endif %}
-
-    <ul id="menu">
-        <li data-menuanchor="bio"><a href="#bio">Biography</a></li>
-        <li data-menuanchor="social"><a href="#social">Social Links</a></li>
-    </ul>
-
-    <div id="section0" class="section" data-name="bio">
-
-        {% include common/notices.html %}
-
-        <div class="headings animated fadeInLeft">
-            {% if site.home.section1 %}{{ site.home.section1 }}{% endif %}
-            {% if site.home.section2 %}{{ site.home.section2 }}{% endif %}
-            {% if site.home.section3 %}{{ site.home.section3 }}{% endif %}
-        </div>
-        <a class="btn-continue animated bounce" title="{{ site.data.i18n[site.lang].more }}" href="#social"></a>
-    </div>
-
-    <div id="section1" class="section" data-name="social">
-        <h1 class="animated hidden">
-            <a class="btn-enter btn-light" title="{{ site.data.i18n[site.lang].enter_blog }}" href="{{ site.paths.blog | relative_url }}">{{ site.data.i18n[site.lang].enter_blog }}</a>
-        </h1>
-        <div class="social-links animated hidden">
-            <a class="btn-light ico-rss" href="{{ site.baseurl }}/feed.xml" rel="me" target="_blank" title="feed"></a>
-            {% if site.author.email %}
-                <a class="btn-light ico-gmail" href="mailto:{{ site.author.email }}" rel="me" target="_blank" title="email"></a>
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>{{ site.title }}</h1>
+            {% if site.description %}
+            <span class="subheading">{{ site.description }}</span>
             {% endif %}
-            {% for link in site.author.social_links %}
-                {% if link.url %}
-                    <a class="btn-light ico-{{ link.name }}" href="{{ link.url }}" rel="me" target="_blank" title="{{ link.name }}"></a>
-                {% endif %}
-            {% endfor %}
+          </div>
         </div>
+      </div>
     </div>
+  </header>
 
-    {% include home/scripts.html %}
-</body>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
 
-</html>
+        {{ content }}
+
+        <!-- Home Post List -->
+        {% for post in site.posts limit : 5 %}
+
+        <article class="post-preview">
+          <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
+            <h2 class="post-title">{{ post.title }}</h2>
+            {% if post.subtitle %}
+            <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+            {% else %}
+            <h3 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h3>
+            {% endif %}
+          </a>
+          <p class="post-meta">Posted by
+            {% if post.author %}
+            {{ post.author }}
+            {% else %}
+            {{ site.author }}
+            {% endif %}
+            on
+            {{ post.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=post.content %}            
+          </p>
+        </article>
+
+        <hr>
+
+        {% endfor %}
+
+        <!-- Pager -->
+        <div class="clearfix">
+          <a class="btn btn-primary float-right" href="{{"/posts" | relative_url }}">View All Posts &rarr;</a>
+        </div>
+
+      </div>
+    </div>
+  </div>

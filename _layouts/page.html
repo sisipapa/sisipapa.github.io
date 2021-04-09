@@ -1,30 +1,34 @@
 ---
-layout: blog
+layout: default
 ---
-<article class="unit-article layout-page">
-    <div class="unit-inner unit-article-inner">
-        <div class="content">
-            <header>
-                <div class="unit-head">
-                    <div class="unit-inner unit-head-inner">
-                        <h1 class="entry-title">{{ page.header }}</h1>
-                    </div>
-                </div>
-            </header>
 
-            <div class="bd article-content">
-                <div class="entry-content">
-                    {{ content }}
-                </div>
-            </div>
-
-            <footer class="unit-foot">
-                <div class="unit-inner unit-foot-inner">
-                    <p>
-                        <a class="internal gotop" href="#page">{{ site.data.i18n[site.lang].back_to_top }}</a>
-                    </p>
-                </div>
-            </footer>
+<!-- Page Header -->
+{% if page.background %}
+<header class="masthead" style="background-image: url('{{ page.background | prepend: site.baseurl | replace: '//', '/' }}')">
+  {% else %}
+  <header class="masthead">
+    {% endif %}
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>{{ page.title }}</h1>
+            {% if page.description %}
+            <span class="subheading">{{ page.description }}</span>
+            {% endif %}
+          </div>
         </div>
+      </div>
     </div>
-</article>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        {{ content }}
+
+      </div>
+    </div>
+  </div>

@@ -1,152 +1,152 @@
-# Simple Texture Jekyll Theme
+# [Start Bootstrap - Clean Blog Jekyll](https://startbootstrap.com/themes/clean-blog-jekyll/) - Official Jekyll Version
 
-![Gem Version](https://img.shields.io/gem/v/jekyll-theme-simple-texture.svg)
+[Clean Blog Jekyll](https://startbootstrap.com/themes/clean-blog-jekyll/) is a stylish, responsive blog theme for [Bootstrap](https://getbootstrap.com/) created by [Start Bootstrap](https://startbootstrap.com/). This theme features a blog homepage, about page, contact page, and an example post page along with a working contact form powered by [Formspree](https://formspree.io/).
 
-Simple Texture is a gem-based responsive simple texture styled Jekyll theme for [Jekyll][Jekyll] 3.3 or above,
-which can also be forked as a boilerplate for older versions of Jekyll.
+This repository holds the official Jekyll version of the Clean Blog theme on Start Bootstrap!
 
-## Demo
+## Preview
 
-- Starter-kit demo:
-<https://yizeng.github.io/jekyll-theme-simple-texture/>
-- My own personal blog: <https://yizeng.me/blog>
+[![Clean Blog (Jekyll) Preview](https://startbootstrap.com/assets/img/screenshots/themes/clean-blog-jekyll.png)](http://StartBootstrap.github.io/startbootstrap-clean-blog-jekyll/)
 
-![Screenshot - Home](assets/images/screenshots/homepage.png)
+**[View Live Preview](http://StartBootstrap.github.io/startbootstrap-clean-blog-jekyll/)**
 
-![Screenshot - Blog](assets/images/screenshots/post.png)
+## Installation & Setup
 
-## Installation
+### Using RubyGems
 
-### As a Jekyll theme gem (Jekyll >= 3.3)
+When installing the theme using RubyGems, demo images, posts, and pages are not included. Follow the instructions below for complete setup.
 
-If you are creating a new website or blog,
-please follow the commands below first:
+1. (Optional) Create a new Jekyll site: `jekyll new my-site`
+2. Replace the current theme in your `Gemfile` with `gem "jekyll-theme-clean-blog"`.
+3. Install the theme (run the command inside your site directory): `bundle install`
+4. Replace the current theme in your `_config.yml` file with `theme: jekyll-theme-clean-blog`.
+5. Build your site: `bundle exec jekyll serve`
 
-1. Install Jekyll and [Bundler][Bundler]
+Assuming there are no errors and the site is building properly, follow these steps next:
 
-       gem install jekyll bundler
+1. Create the following pages if they do not exist already (or change the extension of existing markdown files from `.md` to `.html`):
 
-2. Create a new Jekyll app
+   * `index.html` - set to `layout: home`
+   * `about.html` - set to `layout: page`
+   * `contact.html` - set to `layout: page`
+   * `posts/index.html` - set to `layout: page` (you will also need to create a `posts` directory)
 
-       jekyll new jekyllapp
+2. Configure the `index.html` front matter. Example:
 
-3. Enter the new directory
+    ```markdown
+    ---
+    layout: home
+    background: '/PATH_TO_IMAGE'
+    ---
+    ```
 
-       cd jekyllapp
+3. Configure the `about.html`, `contact.html`, and `posts/index.html` front matter. Example:
 
-4. Then follow the instructions below like existing Jekyll app.
+    ```markdown
+    ---
+    layout: page
+    title: Page Title
+    description: This is the page description.
+    background: '/PATH_TO_IMAGE'
+    ---
+    ```
 
-Then for existing Jekyll apps,
+4. For each post in the `_posts` directory, update the front matter. Example:
 
-1. Install Bundler if haven't done so.
+    ```markdown
+    ---
+    layout: post
+    title: "Post Title"
+    subtitle: "This is the post subtitle."
+    date: YYYY-MM-DD HH:MM:SS
+    background: '/PATH_TO_IMAGE'
+    ---
+    ```
 
-       gem install bundler
+    For reference, look at the [demo repository](https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll) to see how the files are set up.
 
-1. Remove Jekyll auto-generated default pages `404.html`, `about.markdown` and `index.markdown` or any your custom layouts or existing theme files.
+5. Add the form to the `contact.html` page. Add the following code to your `contact.html` page:
 
-1. Remove the existing `Gemfile.lock`.
+    ```html
+    <form name="sentMessage" id="contactForm" novalidate>
+      <div class="control-group">
+        <div class="form-group floating-label-form-group controls">
+          <label>Name</label>
+          <input type="text" class="form-control" placeholder="Name" id="name" required data-validation-required-message="Please enter your name.">
+          <p class="help-block text-danger"></p>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="form-group floating-label-form-group controls">
+          <label>Email Address</label>
+          <input type="email" class="form-control" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
+          <p class="help-block text-danger"></p>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="form-group col-xs-12 floating-label-form-group controls">
+          <label>Phone Number</label>
+          <input type="tel" class="form-control" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number.">
+          <p class="help-block text-danger"></p>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="form-group floating-label-form-group controls">
+          <label>Message</label>
+          <textarea rows="5" class="form-control" placeholder="Message" id="message" required data-validation-required-message="Please enter a message."></textarea>
+          <p class="help-block text-danger"></p>
+        </div>
+      </div>
+      <br>
+      <div id="success"></div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+      </div>
+    </form>
+    ```
 
-1. Download the respository [here](https://github.com/yizeng/jekyll-theme-simple-texture/archive/master.zip)
-and locate `starter-kit` folder,
-or download `starter-kit` folder directly [here](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/yizeng/jekyll-theme-simple-texture/tree/master/starter-kit).
+    Make sure you have the `email` setting in your `_config.yml` file set to a working email address! Once this is set, fill out the form and then check your email, verify the email address using the link sent to you by Formspree, and then the form will be working!
 
-1. Put everything in the `starter-kit` in the root directory,
-i.e. `jekyllapp` in this example.
+6. Build your site: `bundle exec jekyll serve`
 
-1. Run `bundle install` to install dependencies.
+### Using Core Files
 
-1. Run Jekyll with `bundle exec jekyll serve`
+When using the core files, the demo images, posts, and pages are all included with the download. After following the instructions below, you can then go and change the content of the pages and posts.
 
-1. Hack away at <http://localhost:4000>!
+1. [Download](https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll/archive/master.zip) or Clone the repository.
+2. Update the following configuration settings in your `_config.yml` file:
+   - `baseurl`
+   - `url`
+   - `title`
+   - `email` (after setting this setting to a working email address, fill out the form on the contact page and send it - then check your email and verify the address and the form will send you messages when used)
+   - `description`
+   - `author`
+   - `twitter_username` (Optional)
+   - `facebook_username` (Optional)
+   - `github_username` (Optional)
+   - `linkedin_username` (Optional)
+   - `instagram_username` (Optional)
+3. Build your site: `bundle exec jekyll serve`
 
-### As a fork
+## Bugs and Issues
 
-1. Fork the repo [here](https://github.com/yizeng/jekyll-theme-simple-texture#fork-destination-box)
+Have a bug or an issue with this template? [Open a new issue](https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll/issues) here on GitHub!
 
-2. Clone the repo just forked.
+## About
 
-       git clone git@github.com:[YOUR_USERNAME]/jekyll-theme-simple-texture.git
+Start Bootstrap is an open source library of free Bootstrap templates and themes. All of the free templates and themes on Start Bootstrap are released under the MIT license, which means you can use them for any purpose, even for commercial projects.
 
-3. Delete `starter-kit` folder and `jekyll-theme-simple-texture.gemspec` file (they're for people installing via gem)
+* <https://startbootstrap.com>
+* <https://twitter.com/SBootstrap>
 
-4. Install Bundler if haven't done so.
+Start Bootstrap was created by and is maintained by **[David Miller](http://davidmiller.io/)**.
 
-       gem install bundler
+* <http://davidmiller.io>
+* <https://twitter.com/davidmillerskt>
+* <https://github.com/davidtmiller>
 
-5. Update the `Gemfile` to look like the following:
+Start Bootstrap is based on the [Bootstrap](https://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
 
-   ```ruby
-   source "https://rubygems.org"
+## Copyright and License
 
-   gem "github-pages", group: :jekyll_plugins
-   ```
-
-6. Run `bundle install` to install dependencies.
-
-7. Run Jekyll with `bundle exec jekyll serve`
-
-8. Hack away at <http://localhost:4000>!
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at <https://github.com/yizeng/jekyll-theme-simple-texture>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## Credits
-
-- [Jekyll][Jekyll]
-  + [jekyll-feed](https://github.com/jekyll/jekyll-feed)
-  + [jekyll-redirect-from](https://github.com/jekyll/jekyll-redirect-from)
-  + [jekyll-seo-tag](https://github.com/jekyll/jekyll-seo-tag)
-  + [jekyll-sitemap](https://github.com/jekyll/jekyll-sitemap)
-  + [Simple-Jekyll-Search](https://github.com/christian-fei/Simple-Jekyll-Search)
-  + [Jekyll-Bootstrap](http://jekyllbootstrap.com/)
-  + [theme-the-program](https://github.com/jekyllbootstrap/theme-the-program)
-
-- [Sass](http://sass-lang.com/)
-  + [Normalize.css](https://necolas.github.io/normalize.css/)
-  + [Animate.css](https://daneden.github.io/animate.css/)
-  + [Simple Icons](https://simpleicons.org/)
-  + [Noise Texture Generator](http://www.noisetexturegenerator.com/)
-- JavaScript
-  + [cdnjs](https://cdnjs.com/)
-  + [jQuery](https://jquery.com/)
-  + [fullPage.js](https://alvarotrigo.com/fullPage/)
-  + [pace.js](http://github.hubspot.com/pace/docs/welcome/)
-  + [Modernizr](https://modernizr.com/)
-  + [FancyBox](http://fancybox.net/)
-  + [unveil.js](http://luis-almeida.github.io/unveil/)
-- Fonts
-  + [Font Squirrel](https://www.fontsquirrel.com/)
-  + [Bitter](https://fonts.google.com/specimen/Bitter)
-  + [Junge](https://fonts.google.com/specimen/Junge)
-  + [Ubuntu Condensed](https://fonts.google.com/specimen/Ubuntu+Condensed)
-
-## License
-
-The theme is available as open source under the terms of the
-[MIT License](https://github.com/yizeng/jekyll-theme-simple-texture/blob/master/LICENSE).
-
-    MIT License
-
-    Copyright (c) 2017 Yi Zeng
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-
-[Jekyll]: http://jekyllrb.com/
-[Bundler]: https://bundler.io/
+Copyright 2013-2020 Start Bootstrap LLC. Code released under the [MIT](https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll/blob/gh-pages/LICENSE) license.

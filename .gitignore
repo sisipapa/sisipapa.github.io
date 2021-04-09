@@ -1,18 +1,5 @@
-*.gem
-.bundle
-.sass-cache
 _site
+.sass-cache
+node_modules
 Gemfile.lock
-
-Thumbs.db
-.DS_Store
-
-.rbenv-version
-.rvmrc
-/node_modules
-/yarn-error.log
-yarn.lock
-
-# Ignore Yard Doc
-/doc
-.yardoc/
+*.gem
