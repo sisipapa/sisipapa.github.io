@@ -1,11 +1,11 @@
 ---
 layout: post 
-title: Springboot Document 라이브러리2(Spring Restdoc)
+title: 2021-04-12-Spring Data JPA+QueryDSL 정리
 category: [JPA]
 tags: [JPA, QueryDSL]
 redirect_from:
 
-- /2021/04/09/
+- /2021/04/12/
 
 ---
 
