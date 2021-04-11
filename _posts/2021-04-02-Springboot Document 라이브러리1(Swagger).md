@@ -18,8 +18,9 @@ redirect_from:
 1. H2 DB설치
 2. build.gradle 설정
 3. application.properties 설정
-4. Rest API 개발(POST,GET,PATCH,DELETE)
-5. Swagger Doc 확인
+4. Configration 설정
+5. Rest API 개발(POST,GET,PATCH,DELETE)
+6. Swagger Doc 확인
 
 ## 1. H2 DB설치
 
@@ -88,7 +89,37 @@ springdoc.swagger-ui.displayRequestDuration=true
 springdoc.swagger-ui.groups-order=DESC
 ```
 
-## 4. Rest API 개발(POST,GET,PATCH,DELETE)
+## 4. Configuration 설정
+```java
+@OpenAPIDefinition(
+    info = @Info(
+    title = "Posts API 명세서",
+    description = "Spring Boot를 이용한 Demo 웹 애플리케이션 API입니다.",
+    version = "v1",
+    contact = @Contact(
+    name = "sisipapa",
+    email = "sisipapa239@gmail.com"
+),
+    license = @License(
+    name = "Apache 2.0",
+    url = "http://www.apache.org/licenses/LICENSE-2.0.html"
+)
+)
+)
+@Configuration
+public class OpenApiConfig {
+    public OpenApiConfig() {
+    }
+
+    @Bean
+    public GroupedOpenApi postsOpenApi() {
+        String[] paths = new String[]{"/v1/post/**"};
+        return GroupedOpenApi.builder().setGroup("Posts관련 API").pathsToMatch(paths).build();
+    }
+}
+```
+
+## 5. Rest API 개발(POST,GET,PATCH,DELETE)
 
 ```java
 @AllArgsConstructor
@@ -190,7 +221,7 @@ public class PostsController {
 }
 ```
 
-## 5. Swagger Doc 확인(http://localhost:8080/swagger-ui.html)
+## 6. Swagger Doc 확인(http://localhost:8080/swagger-ui.html)
 
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-main.PNG" >
 
