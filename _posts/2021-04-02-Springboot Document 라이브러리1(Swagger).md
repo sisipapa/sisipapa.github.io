@@ -194,9 +194,8 @@ public class PostsController {
 
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-02-main.PNG" >
 
-## 6. Github
-
-<https://github.com/sisipapa/Springboot-JPA-QueryDSL-H2.git>
+## 참고 Github
+<<https://github.com/sisipapa/study1.git>>
 
 
 
