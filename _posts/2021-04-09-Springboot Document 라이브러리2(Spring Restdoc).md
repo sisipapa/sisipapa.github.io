@@ -435,5 +435,5 @@ bootWar {
 아래는 생성된 posts-docs.html 파일이다.
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-09-restdoc-result.PNG" >  
 
-## 참고 Github
+## Github
 <https://github.com/sisipapa/study2.git>

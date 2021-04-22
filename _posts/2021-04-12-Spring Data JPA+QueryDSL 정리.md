@@ -13,5 +13,5 @@ redirect_from:
 
   
 
-## 참고 Github
+## Github
 <https://github.com/sisipapa/study3.git>
