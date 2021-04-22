@@ -14,8 +14,8 @@ redirect_from:
 ## Stream  
 자바의 컬렉션 클래스에는 같은 기능의 메서드들이 중복해서 정의되어 있다. List를 정렬할 때는 Collection.sort()를 사용하고, 배열을 정렬할 때는 Arrays.sort()를 사용한다.    
 이렇게 Collection 마다 다른 방식으로 다루어야하는 문제점을 해결해주는 것이 Stream 이다.  
-  
-1. Stream 만들기
+
+## 1. Stream 만들기  
 ```java
 public static void streamTest1(){
         // Arrays.asList(String[] => List<String>)
@@ -30,7 +30,7 @@ public static void streamTest1(){
     }
 ```
 
-2. 특정 범위의 정수 Stream
+## 2. 특정 범위의 정수 Stream  
 요소의 타입이 T인 스트림은 오토박싱/언박싱의 비효율을 줄이기 위해 데이터 소스의 요소를 기본형으로 다루는 InsStream, LongStream, DoubleStream이 제공된다.
 ```java
 public static void streamTest2(){
@@ -42,7 +42,7 @@ public static void streamTest2(){
 }
 ```
 
-3. iterate(), generate()
+## 3. iterate(), generate()  
 Stream 클래스의 iterate()와 generate()는 람다식을 매개변수로 받아서, 이 람다식에 의해 계산되는 값들을 요소로 하는 무한 스트림을 생성한다. 아래 예제는 무한스트림이 되지 않도록 limit를 지정했다.  
 ```java
 public static void streamTest3(){
@@ -56,7 +56,7 @@ public static void streamTest4(){
 }
 ```
 
-4. Stream 연결 및 중복제거
+## 4. Stream 연결 및 중복제거
 Stream의 static 메소드인 concat()을 사용해서 두 스트림을 하나로 연결하고 distinct()를 사용해서 중복을 제거한다.
 ```java
 public static void streamTest5(){
