@@ -12,7 +12,8 @@ redirect_from:
 # Modern Java Stream 정리2
 
 ## 1. Stream 요소 걸러내기(filter)  
-같은 조건을 filter 하나로 사용, 두개로 사용했을 때의 예제이다.  
+filter는 말 그대로 특정조건으로 스트림의 컨텐츠를 필터링하는 것입니다.  
+같은 조건을 filter 하나로 사용, 두개로 사용했을 때의 예제입니다.  
 ```java
 public static void basic1(){
     // 하나의 filter를 사용
@@ -23,9 +24,33 @@ public static void basic1(){
     IntStream intStream2 = IntStream.rangeClosed(1, 10);
     intStream2.filter(i -> i%2!=0).filter(i -> i%3!=0).forEach(System.out::println);
 }
+```  
+
+## 2. Stream item 변경(map)  
+Map은 각각의 item을 변경하여 새로운 컨텐츠를 생성하는 기능입니다.  
+```java
+public static void basic3(){
+    List<String> list = List.of("a1", "a2", "b1", "b2", "c2", "c1", "c3");
+    Stream<String> stream = list.stream();
+    stream.map(String::toUpperCase).forEach(System.out::println);
+}
+
+```  
+
+## 3. Stream flatMap
+FlatMap은 여러개의 스트림을 한개의 스트림으로 합쳐줍니다. 복잡한 스트림을 간단한 스트림으로 변경되는데 사용할 수 있습니다.  
+```java  
+public static void basic4(){
+    String[][] arrays = new String[][]{ {"aa1", "aa2"}, {"bb1", "bb2"}, {"cc1", "cc2", "cc3"} };
+    Stream<String[]> stream1 = Arrays.stream(arrays);
+    Stream<String> stream2 = stream1.flatMap(s -> Arrays.stream(s));
+    stream2.forEach(System.out::println);
+}
+
 ```
 
-## 2. Stream 정렬(sort)  
+
+## 4. Stream 정렬(sort)  
 
 ```java  
   
@@ -52,7 +77,7 @@ public static void basic2(){
 }
 ```
 
-## 2. Stream filter,map의 활용
+## 5. Stream filter,map의 활용
 반복문과 제어문으로 된 프로그램을 Stream,filter,map 을 활용해서 변경한 예제입니다.  
 ```java
 
