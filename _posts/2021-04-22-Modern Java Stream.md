@@ -45,6 +45,7 @@ public static void streamTest2(){
 ## 3. iterate(), generate()  
 Stream 클래스의 iterate()와 generate()는 람다식을 매개변수로 받아서, 이 람다식에 의해 계산되는 값들을 요소로 하는 무한 스트림을 생성한다. 아래 예제는 무한스트림이 되지 않도록 limit를 지정했다.  
 ```java
+
 public static void streamTest3(){
     Stream<Integer> evenStream = Stream.iterate(0, n->n+2);
     evenStream.limit(5).forEach(System.out::println);
@@ -56,9 +57,10 @@ public static void streamTest4(){
 }
 ```
 
-## 4. Stream 연결 및 중복제거
-Stream의 static 메소드인 concat()을 사용해서 두 스트림을 하나로 연결하고 distinct()를 사용해서 중복을 제거한다.
+## 4. Stream 연결 및 중복제거  
+Stream의 static 메소드인 concat()을 사용해서 두 스트림을 하나로 연결하고 distinct()를 사용해서 중복을 제거한다.  
 ```java
+
 public static void streamTest5(){
     String[] str1 = {"1", "2", "3", "1", "3"};
     String[] str2 = {"A", "B", "C", "B", "Z", "D"};
@@ -72,7 +74,6 @@ public static void streamTest5(){
 
 }
 ```
-
 
 ## Github
 <https://github.com/sisipapa/ModernJava.git>
