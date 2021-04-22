@@ -14,7 +14,7 @@ redirect_from:
 ## 1. Stream 요소 걸러내기(filter)  
 filter는 말 그대로 특정조건으로 스트림의 컨텐츠를 필터링하는 것입니다.  
 같은 조건을 filter 하나로 사용, 두개로 사용했을 때의 예제입니다.  
-```java
+```java  
 public static void basic1(){
     // 하나의 filter를 사용
     IntStream intStream1 = IntStream.rangeClosed(1, 10);
@@ -28,13 +28,12 @@ public static void basic1(){
 
 ## 2. Stream item 변경(map)  
 Map은 각각의 item을 변경하여 새로운 컨텐츠를 생성하는 기능입니다.  
-```java
+```java  
 public static void basic3(){
     List<String> list = List.of("a1", "a2", "b1", "b2", "c2", "c1", "c3");
     Stream<String> stream = list.stream();
     stream.map(String::toUpperCase).forEach(System.out::println);
 }
-
 ```  
 
 ## 3. Stream flatMap
@@ -46,14 +45,12 @@ public static void basic4(){
     Stream<String> stream2 = stream1.flatMap(s -> Arrays.stream(s));
     stream2.forEach(System.out::println);
 }
-
 ```
 
 
 ## 4. Stream 정렬(sort)  
 
-```java  
-  
+```java   
 public static void basic2(){
     System.out.println("===기본정렬");
     Stream<String> strStream1 = Stream.of("FFFFFFF", "ccc", "A", "BB", "eeeee", "dddd");
@@ -80,7 +77,6 @@ public static void basic2(){
 ## 5. Stream filter,map의 활용
 반복문과 제어문으로 된 프로그램을 Stream,filter,map 을 활용해서 변경한 예제입니다.  
 ```java
-
 /**
  * 반복문/제어문을 활용
  */
