@@ -121,8 +121,8 @@ public static void basic7(){
 ```
 
 ## Github
-<https://github.com/sisipapa/ModernJava.git>
+<https://github.com/sisipapa/ModernJava.git>  
 
-## 참고블로그
+## 참고  
 [Java8의 Optional 사용 방법 및 예제](https://codechacha.com/ko/java8-stream-optional/)  
 [자바의 정석 - 스트림(Stream)](https://ryan-han.com/post/java/java-stream/)  
