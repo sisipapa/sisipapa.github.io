@@ -26,10 +26,8 @@ public static void basic1(){
 ```  
   
 ## null을 포함하는 Optional 객체 생성  
-Optional.of()는 null이 아닌 객체만 사용하다. null값을 포함하는 객체를 Optional 객체를 래퍼클래스로 생성하기 위해서는 아래 두가지 방법이 있다.   
-1. Optional.ofNullable()  
-2. Optional.empty()  
-결과 - java.util.NoSuchElementException: No value present    
+Optional.of()는 null이 아닌 객체만 사용하다.  
+null값을 포함하는 객체를 Optional 객체를 래퍼클래스로 생성하기 위해서는 아래 두가지 방법이 있다.     
 ```java  
 public static void basic2(){
     // 방법1 - Optional.ofNullable
@@ -54,7 +52,7 @@ public static void basic3(){
 }
 ```    
   
-## isPresent(),ifPresent 내부 객체 존재 여부확인  
+## isPresent(),ifPresent() 내부 객체 존재 여부확인  
 ```java  
 public static void basic4(){
     Optional<String> optionalStr = Optional.of("This is not null String");
@@ -126,5 +124,5 @@ public static void basic7(){
 <https://github.com/sisipapa/ModernJava.git>
 
 ## 참고블로그
-https://codechacha.com/ko/java8-stream-optional/  
-https://ryan-han.com/post/java/java-stream/  
+[Java8의 Optional 사용 방법 및 예제](https://codechacha.com/ko/java8-stream-optional/)  
+[자바의 정석 - 스트림(Stream)](https://ryan-han.com/post/java/java-stream/)  
