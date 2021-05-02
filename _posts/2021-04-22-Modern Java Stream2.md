@@ -9,9 +9,7 @@ redirect_from:
 
 ---
 
-# Modern Java Stream 정리2
-
-## 1. Stream 요소 걸러내기(filter)  
+## Stream 요소 걸러내기(filter)  
 filter는 말 그대로 특정조건으로 스트림의 컨텐츠를 필터링하는 것입니다.  
 같은 조건을 filter 하나로 사용, 두개로 사용했을 때의 예제입니다.  
 ```java  
@@ -26,7 +24,7 @@ public static void basic1(){
 }
 ```  
 
-## 2. Stream item 변경(map)  
+## Stream item 변경(map)  
 Map은 각각의 item을 변경하여 새로운 컨텐츠를 생성하는 기능입니다.  
 ```java  
 public static void basic3(){
@@ -36,7 +34,7 @@ public static void basic3(){
 }
 ```  
 
-## 3. Stream flatMap
+## Stream flatMap
 FlatMap은 여러개의 스트림을 한개의 스트림으로 합쳐줍니다. 복잡한 스트림을 간단한 스트림으로 변경되는데 사용할 수 있습니다.  
 ```java  
 public static void basic4(){
@@ -48,7 +46,7 @@ public static void basic4(){
 ```
 
 
-## 4. Stream 정렬(sort)  
+## Stream 정렬(sort)  
 
 ```java   
 public static void basic2(){
@@ -74,7 +72,7 @@ public static void basic2(){
 }
 ```
 
-## 5. Stream filter,map의 활용
+## Stream filter,map의 활용
 반복문과 제어문으로 된 프로그램을 Stream,filter,map 을 활용해서 변경한 예제입니다.  
 ```java
 /**

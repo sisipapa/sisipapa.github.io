@@ -9,12 +9,10 @@ redirect_from:
 
 ---
 
-# Modern Java Stream 정리3
-  
 ## Optional 생성 및 내부객체 접근
 Optional은 제네릭 클래스로 객체를 감싸는 래퍼 클래스이다.  
 Optional 타입의 객체에는 모든 타입의 참조변수를 담을 수있다.   
-Optional 클래스는 null 값을 처리할 떄 많이 활용된다.  
+Optional 클래스는 null 값을 처리할 때 많이 활용된다.  
 
 Optional.of를 사용해서 String의 래퍼클래스로 생성하고 Optional.get을 사용해서 Optional객체 내부의 String객체에 접근한다.  
 ```java  
