@@ -234,6 +234,8 @@ update member02 set team02_id=? where member01_id=?
 update member02 set team02_id=? where member01_id=?
 ```   
 
+@JoinColumn을 사용하면 member를 DB에 저장할 때, team를 모르기 때문에 먼저 저장한 후에 update문을 통해서 team_id를 업데이트한다.  
+
 ## Github
 <https://github.com/sisipapa/study3.git>  
   
