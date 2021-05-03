@@ -344,7 +344,7 @@ insert into member03(name, team03_id) values(?, ?)
 insert into member03(name, team03_id) values(?, ?) 
 ```  
 
-mappedBy 속성으로 관계의 주인이 누구인지 알 수 있다. FK를 갖고 있는 엔티티가 관계의 주인이 되는데, Member가 엔티티가 주인이다. 즉, mappedBy를 갖고 있지 않은 엔티티가 주인이다.  
+mappedBy 속성으로 관계의 주인이 누구인지 알 수 있다. FK를 갖고 있는 엔티티가 관계의 주인이 되는데, Member 엔티티가 주인이다. 즉, mappedBy를 갖고 있지 않은 엔티티가 주인이다.  
 
 ## Github
 <https://github.com/sisipapa/study3.git>  
