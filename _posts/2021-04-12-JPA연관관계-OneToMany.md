@@ -122,9 +122,117 @@ insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 ```   
 
-OneToMany에서 JoinTable을 사용하면 Team01과 Member01을 저장한 후 매핑테이블에 한 번 더 저장된다. 의도하지 않은 team01_members 관계 테이블이 생성이 된다.  
+OneToMany에서 JoinTable을 사용하면 Team01과 Member01을 저장한 후 매핑테이블에 한 번 더 저장된다. 의도하지 않은 team01_members 관계 테이블이 생성이 된다.
 
+## @JoinColumn을 사용한 @OneToMany 단방향 연관관계(Team02과 Member02은 1:N관계)
+- Team02.java
 
+```java  
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Team02 {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "team02_id")
+    private Long id;
+    private String name;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name="team02_id")
+    private List<Member02> members = new ArrayList<>();
+
+    public void addMember(final Member02 member){
+        members.add(member);
+    }
+
+    public Team02(String name){
+        this.name = name;
+    }
+
+}
+```  
+
+- Member02.java
+
+```java  
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Member02 {
+
+    public Member02(String name){
+        this.name = name;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member01_id")
+    private Long id;
+    private String name;
+
+}
+```  
+
+- OneToManyRepository.java
+
+```java  
+@Repository
+@AllArgsConstructor
+public class OneToManyRepository {
+
+    private EntityManager em;
+
+    @Transactional
+    public void joinColumn() {
+        Team02 team = new Team02("team01");
+
+        team.addMember(new Member02("member01"));
+        team.addMember(new Member02("member02"));
+        team.addMember(new Member02("member03"));
+        team.addMember(new Member02("member04"));
+
+        em.persist(team);
+    }
+}
+
+```  
+
+- OneToManyRepositoryTest.java
+
+```java  
+@SpringBootTest
+class OneToManyRepositoryTest {
+
+    @Autowired
+    OneToManyRepository repository;
+
+    @Test
+    public void joinColumn(){
+        repository.joinColumn();
+    }
+}
+```  
+
+- 결과
+
+```sql    
+insert into team01(name) values(?)  
+  
+insert into member01(name) values(?)  
+insert into member01(name) values(?)  
+insert into member01(name) values(?)  
+insert into member01(name) values(?)  
+
+update member02 set team02_id=? where member01_id=?
+update member02 set team02_id=? where member01_id=?
+update member02 set team02_id=? where member01_id=?
+update member02 set team02_id=? where member01_id=?
+```   
 
 ## Github
 <https://github.com/sisipapa/study3.git>  
