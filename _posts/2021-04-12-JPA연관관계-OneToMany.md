@@ -17,7 +17,6 @@ redirect_from:
 - Team01.java  
 
 ```java  
-  
 @Entity
 @Getter
 @Setter
@@ -70,7 +69,6 @@ public class Member01 {
 - OneToManyRepository.java  
 
 ```java  
-  
 @Repository
 @AllArgsConstructor
 public class OneToManyRepository {
@@ -95,7 +93,6 @@ public class OneToManyRepository {
 - OneToManyRepositoryTest.java  
 
 ```java  
-
 @SpringBootTest
 class OneToManyRepositoryTest {
 
@@ -125,15 +122,15 @@ insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 ```   
 
-OneToMany에서 JoinTable을 사용하면 Team01과 Member01을 저장한 후 매핑테이블에 한 번 더 저장된다. 의도하지 않은 team01_members 관계 테이블이 생성이 된다.
+OneToMany에서 JoinTable을 사용하면 Team01과 Member01을 저장한 후 매핑테이블에 한 번 더 저장된다. 의도하지 않은 team01_members 관계 테이블이 생성이 된다.  
 
 
-
-  
 
 ## Github
 <https://github.com/sisipapa/study3.git>  
   
 ## 참고  
-[JPA - One To Many 단방향의 문제점](https://dublin-java.tistory.com/51)
+[JPA - One To Many 단방향의 문제점](https://dublin-java.tistory.com/51)  
 [@OneToMany, 일대다 관계](https://ict-nroo.tistory.com/125)  
+
+   
