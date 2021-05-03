@@ -10,8 +10,8 @@ redirect_from:
 ---
 
 ## OneToMany 관계  
-- 1대N 관계에서는 1이 연관관계의 주인이다.  
-- 1 쪽에서 외래키를 관리하겠다는 의미가 된다.  
+- OneToMany 관계에서는 One이 연관관계의 주인이다.  
+- One쪽에서 외래키를 관리하겠다는 의미가 된다.  
 
 ## @JoinTable을 사용한 @OneToMany 단방향 연관관계(Team01과 Member01은 1:N관계)
 - Team01.java  
