@@ -15,16 +15,9 @@ redirect_from:
 
 ## @JoinTable을 사용한 @OneToMany 단방향 연관관계(Team01과 Member01은 1:N관계)
 - Team01.java  
+
 ```java  
-package com.sisipapa.study3.domain.otm;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-
+  
 @Entity
 @Getter
 @Setter
@@ -53,15 +46,8 @@ public class Team01 {
 ```  
 
 - Member01.java  
+
 ```java  
-package com.sisipapa.study3.domain.otm;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.persistence.*;
-
 @Entity
 @Getter
 @Setter
@@ -80,18 +66,11 @@ public class Member01 {
 
 }
 ```  
+
 - OneToManyRepository.java  
+
 ```java  
-package com.sisipapa.study3.repository;
-
-import com.sisipapa.study3.domain.otm.Member01;
-import com.sisipapa.study3.domain.otm.Team01;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-
+  
 @Repository
 @AllArgsConstructor
 public class OneToManyRepository {
@@ -112,13 +91,10 @@ public class OneToManyRepository {
 }
 
 ```  
-- OneToManyRepositoryTest.java
-```java  
-package com.sisipapa.study3.repository;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+- OneToManyRepositoryTest.java  
+
+```java  
 
 @SpringBootTest
 class OneToManyRepositoryTest {
@@ -132,8 +108,10 @@ class OneToManyRepositoryTest {
     }
 }
 ```  
-- 결과
-```sql  
+
+- 결과  
+
+```sql    
 insert into team01(name) values(?)  
   
 insert into member01(name) values(?)  
@@ -145,7 +123,8 @@ insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
 insert into team01_members(team01_team01_id, members_member01_id) values (?, ?)
-```  
+```   
+
 OneToMany에서 JoinTable을 사용하면 Team01과 Member01을 저장한 후 매핑테이블에 한 번 더 저장된다. 의도하지 않은 team01_members 관계 테이블이 생성이 된다.
 
 
