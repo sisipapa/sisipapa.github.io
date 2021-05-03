@@ -236,6 +236,116 @@ update member02 set team02_id=? where member01_id=?
 
 @JoinColumn을 사용하면 member를 DB에 저장할 때, team를 모르기 때문에 먼저 저장한 후에 update문을 통해서 team_id를 업데이트한다.  
 
+## @OneToMany 양방향 연관관계(Team02과 Member02은 1:N관계)
+- Team03.java
+
+```java  
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Team03 {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "team03_id")
+    private Long id;
+    private String name;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "team03", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Member03> members = new ArrayList<>();
+
+    public void addMember(final Member03 member){
+        members.add(member);
+    }
+
+    public Team03(String name){
+        this.name = name;
+    }
+
+}
+```  
+
+- Member03.java
+
+```java  
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Member03 {
+
+    public Member03(String name){
+        this.name = name;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member03_id")
+    private Long id;
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team03_id")
+    private Team03 team03;
+
+}
+```  
+
+- OneToManyRepository.java
+
+```java  
+@Repository
+@AllArgsConstructor
+public class OneToManyRepository {
+
+    private EntityManager em;
+
+    @Transactional
+    public void twoWay() {
+        Team03 team = new Team03("team01");
+
+        team.addMember(new Member03("member01"));
+        team.addMember(new Member03("member02"));
+        team.addMember(new Member03("member03"));
+        team.addMember(new Member03("member04"));
+
+        em.persist(team);
+    }
+}
+
+```  
+
+- OneToManyRepositoryTest.java
+
+```java  
+@SpringBootTest
+class OneToManyRepositoryTest {
+
+    @Autowired
+    OneToManyRepository repository;
+
+    @Test
+    public void twoWay(){
+        repository.twoWay();
+    }
+}
+```  
+
+- 결과
+
+```sql    
+insert into team01(name) values(?)  
+  
+insert into member03(name, team03_id) values(?, ?)
+insert into member03(name, team03_id) values(?, ?)
+insert into member03(name, team03_id) values(?, ?)
+insert into member03(name, team03_id) values(?, ?) 
+```  
+
+mappedBy 속성으로 관계의 주인이 누구인지 알 수 있다. FK를 갖고 있는 엔티티가 관계의 주인이 되는데, Member가 엔티티가 주인이다. 즉, mappedBy를 갖고 있지 않은 엔티티가 주인이다.  
+
 ## Github
 <https://github.com/sisipapa/study3.git>  
   
