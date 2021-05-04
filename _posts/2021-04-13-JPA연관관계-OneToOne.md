@@ -177,7 +177,7 @@ public class Address02 {
 ```  
 
 ## Github
-<https://github.com/sisipapa/study3.git>  
+<https://github.com/sisipapa/jpa-querydsl.git>  
   
 ## 참고  
 [OneToOne 양방향 매핑과 LazyLoading](https://velog.io/@moonyoung/JPA-OneToOne-%EC%96%91%EB%B0%A9%ED%96%A5-%EB%A7%A4%ED%95%91%EA%B3%BC-LazyLoading)  

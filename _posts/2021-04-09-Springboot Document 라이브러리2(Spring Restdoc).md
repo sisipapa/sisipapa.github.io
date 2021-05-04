@@ -436,4 +436,4 @@ bootWar {
 <img src="https://sisipapa.github.io/assets/images/posts/2021-04-09-restdoc-result.PNG" >  
 
 ## Github
-<https://github.com/sisipapa/study2.git>
+<https://github.com/sisipapa/Spring-RestDoc.git>
