@@ -5,7 +5,7 @@ category: [JPA]
 tags: [JPA, OneToOne]
 redirect_from:
 
-- /2021/04/12/
+- /2021/04/13/
 
 ---
 
