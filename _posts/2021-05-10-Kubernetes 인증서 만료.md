@@ -91,7 +91,7 @@ $ kubeadm alpha phase kubeconfig kubelet
 $ kubeadm alpha phase kubeconfig controller-manager
 $ kubeadm alpha phase kubeconfig scheduler
 ```  
-인증서 업데이트를 하기 전 준비단계이다. 인증서 업데이트를 진행하고 결과를 반영할 예정이다.  
+개발노트를 정리하는 지금은 인증서 업데이트를 하기 전 준비단계이다. 2021-06-11 인증서 만료일 전에 업데이트를 진행하고 개발노트에 결과를 반영할 예정이다.  
 
 ## 참고  
 [kubernetes 인증서 만료](https://kangwoo.github.io/devops/kubernetes/apiserver-kubelet-client-certs-expired/)  
