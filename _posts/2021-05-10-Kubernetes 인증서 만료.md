@@ -69,7 +69,7 @@ X509v3 Subject Alternative Name:
 ...생략
 ```
 #### kubeadm을 이용한 인증서 생성
---apiserver-cert-extra-sans 파라미터의 값으로 X509v3 Subject Alternative Name에서 조회한 값으로 생성. 결과는 해보고 업데이트 할 예정이다.
+--apiserver-cert-extra-sans 파라미터의 값으로 X509v3 Subject Alternative Name에서 조회한 값을 넣고 실행할 예정. 결과는 해보고 업데이트 할 예정이다.
 ```shell  
 $ kubeadm alpha phase certs apiserver --apiserver-cert-extra-sans 'X509v3 Subject Alternative Name에서 조회한 값'
 $ kubeadm alpha phase certs apiserver-kubelet-client
@@ -94,6 +94,6 @@ $ kubeadm alpha phase kubeconfig scheduler
 인증서 업데이트를 하기 전 준비단계이다. 인증서 업데이트를 진행하고 결과를 반영할 예정이다.  
 
 ## 참고  
-[kubernetes 인증서 만료](https://kangwoo.github.io/devops/kubernetes/apiserver-kubelet-client-certs-expired/)
-[K8S apiserver에 SAN(Subject Alternative Name) 추가](https://blusky10.tistory.com/498)
+[kubernetes 인증서 만료](https://kangwoo.github.io/devops/kubernetes/apiserver-kubelet-client-certs-expired/)  
+[K8S apiserver에 SAN(Subject Alternative Name) 추가](https://blusky10.tistory.com/498)  
 
