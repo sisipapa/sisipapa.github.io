@@ -23,7 +23,7 @@ sass:
 # Site Data
 url: # the base hostname & protocol for your site, e.g. http://example.com
 baseurl: # the subpath of your site, e.g. /blog
-title: SiSipapa 정리노트
+title: SiSipapa 개발노트
 description: "Developer Blog"
 keywords: 'springboot,jpa,docker,k8s'
 author:
@@ -48,7 +48,7 @@ author:
       url:
 home:
   section1: <h1>sisipapa</h1>
-  section2: <h2>정리노트</h2>
+  section2: <h2>개발노트</h2>
   section3: <div class="social-links"><a class="ico-github btn" href="https://github.com/sisipapa" title="View on GitHub"></a></div>
 blog:
   cc_license: http://creativecommons.org/licenses/by-sa/4.0/ # A link to CC License of your choice.
