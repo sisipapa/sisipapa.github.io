@@ -247,7 +247,41 @@ public class MemberQuery implements GraphQLQueryResolver {
         return MemberDto.from(member);
     }
 }
-```
+```  
+
+### Graphqls 생성
+```graphql
+type Member {
+    id: Int!
+    login_id: String!
+    password: String!
+    name: String
+    roles: [Role]
+}
+
+type Role {
+    id: Int!
+    member_id: Int!
+    role: String
+}
+
+input MemberParam {
+    loginId: String!
+    password: String!
+    name: String
+}
+
+# 루트 쿼리 (Root Query)
+type Query {
+    getMember(id: Int!) : Member!
+}
+
+# 루트 뮤테이션 (Root Mutation)
+type Mutation {
+    createMember(memberParam: MemberParam) : Member!
+    deleteMember(id: Int!) : Boolean!
+}
+```  
 
 ### DB 초기데이터 저장  
 H2 Console에 접속해서 아래 Insert 쿼리 수행  
