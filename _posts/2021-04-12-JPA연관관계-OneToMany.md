@@ -344,7 +344,9 @@ insert into member03(name, team03_id) values(?, ?)
 insert into member03(name, team03_id) values(?, ?) 
 ```  
 
-mappedBy 속성으로 관계의 주인이 누구인지 알 수 있다. FK를 갖고 있는 엔티티가 관계의 주인이 되는데, Member 엔티티가 주인이다. 즉, mappedBy를 갖고 있지 않은 엔티티가 주인이다.  
+연관관계의 주인은 테이블에 외래키가 있는 곳으로 정해야 한다. 여기서는 회원테이블이 외래 키를 가지고 있으므로 Member03.team03이 주인이 된다.  
+주인이 아닌 Team03.members에는 mappedBy 속성을 사용해서 주인이 아님을 설정한다. 여기서 mappedBy의 값으로 team03은 연관관걔의 주인인 Member03 엔티티의 team03 필드를 의미한다.  
+연관관계의 주인만 외래 키를 관리할 수 있다. 주인이 아닌 반대편은 읽기만 가능하고 외래 키를 변경하기 못한다.
 
 ## Github
 <https://github.com/sisipapa/study3.git>  

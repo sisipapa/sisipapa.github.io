@@ -29,7 +29,7 @@ public static void streamTest1(){
 ```
 
 ## 특정 범위의 정수 Stream  
-요소의 타입이 T인 스트림은 오토박싱/언박싱의 비효율을 줄이기 위해 데이터 소스의 요소를 기본형으로 다루는 InsStream, LongStream, DoubleStream이 제공된다.
+요소의 타입이 T인 스트림은 오토박싱/언박싱의 비효율을 줄이기 위해 데이터 소스의 요소를 기본형으로 다루는 IntStream, LongStream, DoubleStream이 제공된다.
 ```java  
 public static void streamTest2(){
     System.out.println("###range");
