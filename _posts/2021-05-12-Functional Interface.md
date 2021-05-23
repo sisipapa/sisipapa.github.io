@@ -45,8 +45,11 @@ public static void lambda(){
 public static void main(String[] args) {
     lambda();
 }
-```
+```  
 
+
+## Github
+<https://github.com/sisipapa/ModernJava.git>
 
 ## 참고  
 [Java8 - 함수형 인터페이스(Functional Interface) 이해하기](https://codechacha.com/ko/java8-functional-interface/)  
