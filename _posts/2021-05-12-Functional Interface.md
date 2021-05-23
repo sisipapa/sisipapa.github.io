@@ -54,7 +54,7 @@ public static void main(String[] args) {
 - Function<T,R>  
 - Predicate  
 
-#### Runnable  
+### Runnable  
 Runnable은 파라미터도 없고 리턴결과도 없는 인터페이스이다.
 ```java
 public interface Runnable {
@@ -67,7 +67,7 @@ Runnable runnable = () -> System.out.println("This is run method");
 runnable.run();
 ```  
 
-#### Supplier  
+### Supplier  
 Supplier<T>는 인자를 받지 않고 T 타입 객체를 리턴한다.
 ```java
 public interface Supplier<T> {
@@ -81,7 +81,7 @@ Integer firstIndex = getFirstIndex.get();
 System.out.println(firstIndex);
 ```  
 
-#### Consumer
+### Consumer
 Consumer<T>는 T타입 객체를 파라미터로 받고 리턴결과는 없다.  
 ```java
 public interface Consumer<T> {
@@ -105,8 +105,27 @@ Consumer<String> str2 = msg -> System.out.println(msg + " 두번째 실행");
 str1.andThen(str2).accept("sisipapa");
 ```  
 
-#### Function  
+### Function  
+Function<T, R>은 T타입의 파라미터를 받고, R타입의 객체 결과를 리턴한다.  
+```java
+public interface Function<T, R> {
+    R apply(T t);
 
+    default <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+        Objects.requireNonNull(before);
+        return (V v) -> apply(before.apply(v));
+    }
+
+    default <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> after.apply(apply(t));
+    }
+
+    static <T> Function<T, T> identity() {
+        return t -> t;
+    }
+}
+```
 
 
 
