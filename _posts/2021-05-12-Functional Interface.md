@@ -125,17 +125,57 @@ public interface Function<T, R> {
         return t -> t;
     }
 }
+```  
+
+Function<T, R> 사용예시  
+```java
+Function<Integer, Integer> plusOne = (value) -> value + 1;
+Integer result = plusOne.apply(5);
+System.out.println(result);
+```  
+
+Function<T, R> compose()는 두개의 Function을 조합하여 새로운 Function 객체를 만들어주는 메소드이다. compose()에 인자로 전달되는 Function이 먼저 수행되고 호출하는 객체의 Function이 나중에 호출된다.
+```java
+Function<Integer, Integer> minusOne = (value) -> value - 1;
+Function<Integer, Integer> plusOne = (value) -> value + 1;
+
+Function<Integer, Integer> composeMethod = minusOne.compose(plusOne);
+Integer result = composeMethod.apply(5);
+System.out.println(result);
+```  
+
+### Predicate  
+Predicate<T>는 T타입 인자를 받고 결과로 boolean을 리턴한다.
+```java
+public interface Predicate<T> {
+    boolean test(T t);
+
+    default Predicate<T> and(Predicate<? super T> other) {
+        Objects.requireNonNull(other);
+        return (t) -> test(t) && other.test(t);
+    }
+
+    default Predicate<T> negate() {
+        return (t) -> !test(t);
+    }
+
+    default Predicate<T> or(Predicate<? super T> other) {
+        Objects.requireNonNull(other);
+        return (t) -> test(t) || other.test(t);
+    }
+
+    static <T> Predicate<T> isEqual(Object targetRef) {
+        return (null == targetRef)
+                ? Objects::isNull
+                : object -> targetRef.equals(object);
+    }
+}
+```    
+Predicate<T> test() 사용예시
+```java
+Predicate<Integer> isOddNumber = value -> value % 2 != 0;
+System.out.println("Is the entered number odd? -> " + isOddNumber.test(3));
 ```
-
-
-
-
-
-
-
-
-
-
 
 
 ## Github
