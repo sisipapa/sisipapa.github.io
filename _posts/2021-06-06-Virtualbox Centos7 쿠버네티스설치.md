@@ -216,7 +216,7 @@ IPV6_PRIVACY="no"
 
 ## Master 노드
 1. 도커 및 쿠버네티스 실행  
-```shell
+```shell  
 systemctl daemon-reload  
 
 systemctl enable --now docker
@@ -224,15 +224,13 @@ systemctl enable --now docker
 systemctl enable --now kubelet
 ```  
 2. 쿠버네티스 초기화 명령실행  
-```shell
+```shell  
 kubeadm init --pod-network-cidr=20.96.0.0/12 --apiserver-advertise-address=30.0.2.30
 ```  
 3. 2번의 실행 후 결과를 복사
-```shell
-...
+```shell  
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
-... 
 ```  
 4. 환경변수 설정  
 ```shell
@@ -249,8 +247,7 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 ## Work 노드  
 
-1. 도커 및 쿠버네티스 실행   
-
+1. 도커 및 쿠버네티스 실행
 ```shell  
 systemctl daemon-reload  
 
@@ -260,15 +257,14 @@ systemctl enable --now kubelet
 ```   
 
 
-2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행  
-
+2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행
 ```shell  
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
 ```  
 
 3. 연결확인  
-```shell
+```shell  
 kubectl get nodes
 ```
 
