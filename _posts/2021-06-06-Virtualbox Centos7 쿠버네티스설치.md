@@ -77,7 +77,6 @@ redirect_from:
 1. SELinux 설정   
 
 ```shell  
-
 setenforce 0  
 
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config  
@@ -86,17 +85,21 @@ sestatus
 ```   
 
 
-2. 방화벽 해제
-```shell
+2. 방화벽 해제  
+
+```shell  
 systemctl stop firewalld && systemctl disable firewalld  
 
 systemctl stop NetworkManager && systemctl disable NetworkManager
-```  
+```   
 
-3. Swap 비활성화  
+
+3. Swap 비활성화   
+
 ```shell
 swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab  
-```  
+```   
+
 
 4. Iptables 커널 옵션 활성화  
 ```shell
@@ -183,31 +186,33 @@ shutdown now
 ```shell
 hostnamectl set-hostname k8s-node1
 ```  
-5. 복제 후 k8s-node1(k8s-node2) IPADDR 변경  
-```shell
-vi /etc/sysconfig/network-scripts/ifcfg-enp0s3   
+5. 복제 후 k8s-node1(k8s-node2) IPADDR 변경   
 
-TYPE="Ethernet"
-PROXY_METHOD="none"
-BROWSER_ONLY="no"
-BOOTPROTO="none"
-DEFROUTE="yes"
-IPV4_FAILURE_FATAL="no"
-IPV6INIT="yes"
-IPV6_AUTOCONF="yes"
-IPV6_DEFROUTE="yes"
-IPV6_FAILURE_FATAL="no"
-IPV6_ADDR_GEN_MODE="stable-privacy"
-NAME="enp0s3"
-UUID="b573f630-a22c-483d-bec9-f93b6d2bde49"
-DEVICE="enp0s3"
-ONBOOT="yes"
-IPADDR="30.0.2.31"
-PREFIX="24"
-GATEWAY="30.0.2.1"
-DNS1="8.8.8.8"
-IPV6_PRIVACY="no"
-```  
+```shell  
+vi /etc/sysconfig/network-scripts/ifcfg-enp0s3   
+  
+TYPE="Ethernet"  
+PROXY_METHOD="none"  
+BROWSER_ONLY="no"  
+BOOTPROTO="none"  
+DEFROUTE="yes"  
+IPV4_FAILURE_FATAL="no"  
+IPV6INIT="yes"  
+IPV6_AUTOCONF="yes"  
+IPV6_DEFROUTE="yes"  
+IPV6_FAILURE_FATAL="no"  
+IPV6_ADDR_GEN_MODE="stable-privacy"  
+NAME="enp0s3"  
+UUID="b573f630-a22c-483d-bec9-f93b6d2bde49"  
+DEVICE="enp0s3"  
+ONBOOT="yes"  
+IPADDR="30.0.2.31"  
+PREFIX="24"  
+GATEWAY="30.0.2.1"  
+DNS1="8.8.8.8"  
+IPV6_PRIVACY="no"  
+```    
+
 
 ## Master 노드
 1. 도커 및 쿠버네티스 실행  
