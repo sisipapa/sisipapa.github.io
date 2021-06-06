@@ -30,6 +30,28 @@ redirect_from:
 <img src="https://sisipapa.github.io/assets/images/posts/버추얼박스1.PNG" >     
 <img src="https://sisipapa.github.io/assets/images/posts/버추얼박스2.PNG" >     
 
+2. VM 설정  
+2-1. 머신 > 새로 만들기 클릭
+2-2. 이름 : k8s-master, 종류: Linux, 버전: Other Linux(64-bit)  
+   <img src="https://sisipapa.github.io/assets/images/posts/vm1.PNG" >        
+2-3. 메모리 : 4096 MB  
+   <img src="https://sisipapa.github.io/assets/images/posts/vm2.PNG" >  
+2-4. 하드디스크 : 지금 새 가상 하드 디스크 만들기 (VDI:VirtualBox 디크스 이미지, 동적할당, 150GB)
+   <img src="https://sisipapa.github.io/assets/images/posts/vm3.PNG" >  
+   <img src="https://sisipapa.github.io/assets/images/posts/vm4.PNG" >  
+   <img src="https://sisipapa.github.io/assets/images/posts/vm5.PNG" >  
+   <img src="https://sisipapa.github.io/assets/images/posts/vm6.PNG" >  
+2-5. 설정 클릭  
+- [시스템] 프로세서 개수 : CPU 2개
+  <img src="https://sisipapa.github.io/assets/images/posts/vm-set1.PNG" >  
+  
+- [저장소] 컨트롤러:IDE 하위에 있는 광학드라이브 클릭 > CentOS 이미지 선택 후 확인  
+  <img src="https://sisipapa.github.io/assets/images/posts/vm-set2.PNG" >  
+  
+- [네트워크] 네트워크 > 어댑터 1 탭 > 다음에 연결됨 [NAT 네트워크] 선택  
+  <img src="https://sisipapa.github.io/assets/images/posts/vm-set3.PNG" >  
+  
+  
 ## Virtualbox 설정
 
 
