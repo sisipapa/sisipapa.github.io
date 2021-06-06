@@ -74,14 +74,17 @@ redirect_from:
 ## 도커 / 쿠버네티스 설치 전 설정사항
 설정항목들의 설명은 아래 참고 블로그의 내용을 참고하면 좋을 것 같다.  
 
-1. SELinux 설정  
-```shell
+1. SELinux 설정   
+
+```shell  
+
 setenforce 0  
 
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config  
 
 sestatus  
-```  
+```   
+
 
 2. 방화벽 해제
 ```shell
@@ -132,9 +135,12 @@ cat << EOF >> /etc/hosts
 EOF
 ```  
 
-## 도커, 쿠버네티스 설치  
+## 도커, 쿠버네티스 설치   
+
 1. 도커설치  
-```shell
+
+```shell  
+
 yum install -y yum-utils device-mapper-persistent-data lvm2  
 
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo  
@@ -158,7 +164,8 @@ cat > /etc/docker/daemon.json <<EOF
 EOF
 
 mkdir -p /etc/systemd/system/docker.service.d
-```  
+```   
+
 
 2. 쿠버네티스 설치  
 ```shell
@@ -235,18 +242,24 @@ source <(kubectl completion bash)
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 ```  
 
-## Work 노드 
-1. 도커 및 쿠버네티스 실행  
-```shell
+## Work 노드  
+
+1. 도커 및 쿠버네티스 실행   
+
+```shell  
+
 systemctl daemon-reload  
 
 systemctl enable --now docker
 
 systemctl enable --now kubelet  
-```  
+```   
 
-2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행
-```shell
+
+2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행  
+
+```shell  
+
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
 ```  
