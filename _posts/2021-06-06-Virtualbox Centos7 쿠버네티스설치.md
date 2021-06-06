@@ -74,7 +74,7 @@ redirect_from:
 ## 도커 / 쿠버네티스 설치 전 설정사항
 설정항목들의 설명은 아래 참고 블로그의 내용을 참고하면 좋을 것 같다.  
 
-1. SELinux 설정   
+- SELinux 설정   
 
 ```shell  
 setenforce 0  
@@ -85,7 +85,7 @@ sestatus
 ```   
 
 
-2. 방화벽 해제  
+- 방화벽 해제  
 
 ```shell  
 systemctl stop firewalld && systemctl disable firewalld  
@@ -94,14 +94,14 @@ systemctl stop NetworkManager && systemctl disable NetworkManager
 ```   
 
 
-3. Swap 비활성화   
+- Swap 비활성화   
 
 ```shell
 swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab  
 ```   
 
 
-4. Iptables 커널 옵션 활성화  
+- Iptables 커널 옵션 활성화  
 ```shell
 cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -110,7 +110,7 @@ EOF
 sysctl --system
 ```  
 
-5. 쿠버네티스 YUM Repository 설정  
+- 쿠버네티스 YUM Repository 설정  
 ```shell
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -124,12 +124,12 @@ exclude=kubelet kubeadm kubectl
 EOF
 ```  
 
-6. Centos Update  
+- Centos Update  
 ```shell
 yum -y update
 ```  
 
-7. Hosts 등록  
+- Hosts 등록  
 ```shell
 cat << EOF >> /etc/hosts
 30.0.2.30 k8s-master
@@ -139,9 +139,9 @@ EOF
 ```  
 
 ## 도커, 쿠버네티스 설치  
-1. 도커설치  
-```shell  
+- 도커설치   
 
+```shell   
 yum install -y yum-utils device-mapper-persistent-data lvm2  
 
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo  
@@ -167,23 +167,23 @@ EOF
 mkdir -p /etc/systemd/system/docker.service.d
 ```  
 
-2. 쿠버네티스 설치  
+- 쿠버네티스 설치  
 ```shell
 yum install -y --disableexcludes=kubernetes kubeadm-1.19.4-0.x86_64 kubectl-1.19.4-0.x86_64 kubelet-1.19.4-0.x86_64
 ```  
 
 ## 버추얼박스 VM 복제  
-1. 복제를 위해 master 노드를 shutdown 시킨다.
+- 복제를 위해 master 노드를 shutdown 시킨다.
 ```shell
 shutdown now
 ```  
-2. 이름 : k8s-node1(k8s-node2), MAC 주소정책 : 모든 네트워크 어댑터의 새 MAC 주소 생성  
-3. 복제방식 : 완전한 복제  
-4. 복제 후 k8s-node1(k8s-node2) VM에 접속해서 hostname 변경  
-```shell
+- 이름 : k8s-node1(k8s-node2), MAC 주소정책 : 모든 네트워크 어댑터의 새 MAC 주소 생성  
+- 복제방식 : 완전한 복제  
+- 복제 후 k8s-node1(k8s-node2) VM에 접속해서 hostname 변경  
+```shell  
 hostnamectl set-hostname k8s-node1
 ```  
-5. 복제 후 k8s-node1(k8s-node2) IPADDR 변경   
+- 복제 후 k8s-node1(k8s-node2) IPADDR 변경   
 
 ```shell  
 vi /etc/sysconfig/network-scripts/ifcfg-enp0s3   
@@ -212,8 +212,9 @@ IPV6_PRIVACY="no"
 
 
 ## Master 노드  
-1. 도커 및 쿠버네티스 실행   
+- 도커 및 쿠버네티스 실행   
 ```shell   
+
 systemctl daemon-reload  
 
 systemctl enable --now docker
@@ -221,22 +222,22 @@ systemctl enable --now docker
 systemctl enable --now kubelet
 ```   
 
-2. 쿠버네티스 초기화 명령실행  
+- 쿠버네티스 초기화 명령실행  
 ```shell  
 kubeadm init --pod-network-cidr=20.96.0.0/12 --apiserver-advertise-address=30.0.2.30
 ```  
-3. 2번의 실행 후 결과를 복사
+- 2번의 실행 후 결과를 복사
 ```shell  
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
 ```  
-4. 환경변수 설정  
+- 환경변수 설정  
 ```shell
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```  
-5. Kubectl 자동완성 기능 설치  
+- Kubectl 자동완성 기능 설치  
 ```shell
 yum install bash-completion -y
 source <(kubectl completion bash)
@@ -244,8 +245,9 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 ```  
 
 ## Work 노드
-1. 도커 및 쿠버네티스 실행  
+- 도커 및 쿠버네티스 실행  
 ```shell  
+
 systemctl daemon-reload  
 
 systemctl enable --now docker
@@ -253,13 +255,13 @@ systemctl enable --now docker
 systemctl enable --now kubelet  
 ```   
 
-2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행
+- Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행
 ```shell  
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
 ```   
 
-3. 연결확인  
+- 연결확인  
 ```shell  
 kubectl get nodes
 ```  
