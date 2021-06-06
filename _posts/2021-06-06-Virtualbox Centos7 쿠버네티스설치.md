@@ -215,8 +215,9 @@ IPV6_PRIVACY="no"
 
 
 ## Master 노드
-1. 도커 및 쿠버네티스 실행  
-```shell  
+1. 도커 및 쿠버네티스 실행   
+```shell   
+
 systemctl daemon-reload  
 
 systemctl enable --now docker
@@ -247,7 +248,7 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 ## Work 노드  
 
-1. 도커 및 쿠버네티스 실행
+1. 도커 및 쿠버네티스 실행  
 ```shell  
 systemctl daemon-reload  
 
