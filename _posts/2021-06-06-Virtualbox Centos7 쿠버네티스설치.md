@@ -216,7 +216,7 @@ IPV6_PRIVACY="no"
 
 ## Master 노드
 1. 도커 및 쿠버네티스 실행   
-```shell   
+```shell  
 
 systemctl daemon-reload  
 
@@ -224,6 +224,7 @@ systemctl enable --now docker
 
 systemctl enable --now kubelet
 ```  
+
 2. 쿠버네티스 초기화 명령실행  
 ```shell  
 kubeadm init --pod-network-cidr=20.96.0.0/12 --apiserver-advertise-address=30.0.2.30
@@ -249,14 +250,14 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 ## Work 노드  
 
 1. 도커 및 쿠버네티스 실행  
-```shell  
+```shell
+
 systemctl daemon-reload  
 
 systemctl enable --now docker
 
 systemctl enable --now kubelet  
-```   
-
+```  
 
 2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행
 ```shell  
