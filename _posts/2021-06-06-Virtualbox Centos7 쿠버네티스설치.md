@@ -252,7 +252,6 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 1. 도커 및 쿠버네티스 실행   
 
 ```shell  
-
 systemctl daemon-reload  
 
 systemctl enable --now docker
@@ -264,7 +263,6 @@ systemctl enable --now kubelet
 2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행  
 
 ```shell  
-
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
 ```  
