@@ -15,7 +15,7 @@ redirect_from:
   
 
 쿠버네티스 스터디를 진행하면서 Google 계정을 만들어서 GCP를 이용했었는데 최대 3개월 / 300달러 비용을 다 사용하고 나면 매번 새로운 Google 계정을 만들어서 GCP의 쿠버네티스 환경을 새로 구성해야했다. 그래서 로컬PC에 Virtualbox를 설치하고 쿠버네티스 환경을 구성해 보려고 한다.
-예전에 학습하다가 중단한 인프런 강의를 공부할 겸 강의와 동일한 환경을 구축할 예정이다. (Window + Virtualbox(Network:NatNetwork))  
+예전에 학습하다가 마무리하지 못한 인프런 강의를 공부를 위해 강의와 동일한 환경을 구축할 예정이다. (Window + Virtualbox(Network:NatNetwork))  
   
 ## Virtualbox 설정  
 1. NatNetwork 생성   
@@ -52,7 +52,29 @@ redirect_from:
   <img src="https://sisipapa.github.io/assets/images/posts/vm-set3.PNG" >  
   
   
-## Virtualbox 설정
+## CentOS 설치   
+1. Language : 한국어  
+   <img src="https://sisipapa.github.io/assets/images/posts/centos1.PNG" >  
+2. Disk 설정 시스템 > 설치대상 클릭한다.  
+2-1. 기타 저장소 옵션 > 파티션 설정 파티션을 설정합니다. 선택하고 완료 버튼을 클릭한다.  
+   <img src="https://sisipapa.github.io/assets/images/posts/centos2.PNG" >    
+2-2. 새로운 CentOS 설치 > 여기를 클릭하여 자동으로 생성합니다. 링크를 클릭한다.  
+   <img src="https://sisipapa.github.io/assets/images/posts/centos3.PNG" >  
+2-3. /home 용량 5.12 GiB로 변경한다.  
+2-4. /  140 GiB 변경한다.   
+   <img src="https://sisipapa.github.io/assets/images/posts/centos4.PNG" >  
+3. 네트워크 설정  
+3-1. 호스트 이름 변경 후 적용 버튼 클릭 후 설정 버튼 클릭  
+   <img src="https://sisipapa.github.io/assets/images/posts/centos5.PNG" >  
+3-2. IPv4설정 탭 > 방식: 수동으로 선택  
+3-3. Add클릭 > 주소: 30.0.2.30, 넷마스크 : 255.255.255.0, 게이트웨이: 30.0.2.1, DNS 서버 : 8.8.8.8  
+   <img src="https://sisipapa.github.io/assets/images/posts/centos6.PNG" >  
+4. 설정 > 사용자 설정 ROOT 암호 설정  
+
+
+
+   
+   
 
 
 
