@@ -138,10 +138,8 @@ cat << EOF >> /etc/hosts
 EOF
 ```  
 
-## 도커, 쿠버네티스 설치   
-
+## 도커, 쿠버네티스 설치  
 1. 도커설치  
-
 ```shell  
 
 yum install -y yum-utils device-mapper-persistent-data lvm2  
@@ -167,8 +165,7 @@ cat > /etc/docker/daemon.json <<EOF
 EOF
 
 mkdir -p /etc/systemd/system/docker.service.d
-```   
-
+```  
 
 2. 쿠버네티스 설치  
 ```shell
@@ -214,16 +211,15 @@ IPV6_PRIVACY="no"
 ```    
 
 
-## Master 노드
+## Master 노드  
 1. 도커 및 쿠버네티스 실행   
-```shell  
-
+```shell   
 systemctl daemon-reload  
 
 systemctl enable --now docker
 
 systemctl enable --now kubelet
-```  
+```   
 
 2. 쿠버네티스 초기화 명령실행  
 ```shell  
@@ -247,28 +243,26 @@ source <(kubectl completion bash)
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 ```  
 
-## Work 노드  
-
+## Work 노드
 1. 도커 및 쿠버네티스 실행  
-```shell
-
+```shell  
 systemctl daemon-reload  
 
 systemctl enable --now docker
 
 systemctl enable --now kubelet  
-```  
+```   
 
 2. Master 노드의 연결 - Master 노드에서 실행 결과로 복사해 둔 내용 실행
 ```shell  
 kubeadm join 30.0.2.30:6443 --token 0kdc8w.hszdvr3hvz2ldd5j \
     --discovery-token-ca-cert-hash sha256:05eb3e67e477627580bfe4d5460e4760753b1cc5c163b392df9be026991bd300
-```  
+```   
 
 3. 연결확인  
 ```shell  
 kubectl get nodes
-```
+```  
 
 ## 참고
 [KubeTM Blog](https://kubetm.github.io/practice/appendix/installation_case5/)  
