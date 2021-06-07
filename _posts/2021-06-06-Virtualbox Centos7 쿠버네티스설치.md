@@ -42,7 +42,7 @@ redirect_from:
    <img src="https://sisipapa.github.io/assets/images/posts/vm5.PNG" >  
    <img src="https://sisipapa.github.io/assets/images/posts/vm6.PNG" >  
 2-5. 설정 클릭  
-- [시스템] 프로세서 개수 : CPU 2개
+- [시스템] 프로세서 개수 : CPU 2개  
   <img src="https://sisipapa.github.io/assets/images/posts/vm-set1.PNG" >  
   
 - [저장소] 컨트롤러:IDE 하위에 있는 광학드라이브 클릭 > CentOS 이미지 선택 후 확인  
