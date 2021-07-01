@@ -27,7 +27,9 @@ kubelet_http_requests_total{beta_kubernetes_io_os="linux",method="GET"}
 ```  
 
 #### 필드 like 조회  
-
+```shell
+kubelet_http_requests_total{instance="*.cluster.*"}
+```
 
 
 
