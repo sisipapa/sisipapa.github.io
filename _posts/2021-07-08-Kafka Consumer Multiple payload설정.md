@@ -24,9 +24,7 @@ Kafka 설정은 기존에 되어있었는데 Topic당 유입되는 Message의 �
   @Bean(name = "jsonKafkaListenerContainerFactory")
   public ConcurrentKafkaListenerContainerFactory<String, String> jsonKafkaListenerContainerFactory() {
     ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//    factory.setErrorHandler(errorHandler());
-//    factory.setBatchErrorHandler(new BatchLoggingErrorHandler()); //batchErrorHandler()
-    factory.setBatchErrorHandler(batchErrorHandler()); //batchErrorHandler()
+    factory.setBatchErrorHandler(batchErrorHandler()); 
     factory.setConsumerFactory(jsonConsumerFactory());
     factory.setConcurrency(5);
     return factory;
@@ -51,8 +49,8 @@ spring.kafka.consumer.fetch-min-size=0
 - 카프카 컨슈머 설정 중 Consumer의 양과 주기는 시스템에 맞게 아래 설정을 조절해 주면 된다.  
 1. fetch.min.bytes : 한번에 가져올 수 있는 최소 사이즈로, 만약 가져오는 데이터가 지정한 사이즈보다 작으면 요청에 응답하지 않고, 데이터가 누적될 때 까지 기다린다.  
 2. fetch.max.wait.ms(df: 500sec = 0.5sec) : fetch.min.bytes에 설정된 데이터보다 데이터 양이 적은 경우 요청에 응답을 기다리는 최대시간을 설정  
-3. max.poll.records(df: 500) : 폴링루프에서 이뤄지는 한건의 KafkaConsumer.poll() 메소드에 대한 최대 레코드수를 조정한다.
-
+3. max.poll.records(df: 500) : 폴링루프에서 이뤄지는 한건의 KafkaConsumer.poll() 메소드에 대한 최대 레코드수를 조정한다.  
+  
 - Consumer Configuration
 ```java  
   ... 생략
@@ -60,9 +58,7 @@ spring.kafka.consumer.fetch-min-size=0
   @Bean(name = "jsonKafkaListenerContainerFactory")
   public ConcurrentKafkaListenerContainerFactory<String, String> jsonKafkaListenerContainerFactory() {
     ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//    factory.setErrorHandler(errorHandler());
-//    factory.setBatchErrorHandler(new BatchLoggingErrorHandler()); //batchErrorHandler()
-    factory.setBatchErrorHandler(batchErrorHandler()); //batchErrorHandler()
+    factory.setBatchErrorHandler(batchErrorHandler()); 
     factory.setConsumerFactory(jsonConsumerFactory());
     factory.setConcurrency(5);
     factory.setBatchListener(true);
