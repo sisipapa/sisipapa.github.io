@@ -84,9 +84,6 @@ spring.kafka.consumer.max-poll-records=1000
 spring.kafka.consumer.fetch-min-size=10000000
 spring.kafka.consumer.fetch-max-wait=0
 ```  
-```java
-
-```
 
 ##  성능향상을 Thread 로직 개선  
 컨슈머에서 각 토픽별로 Thread를 생성해서 사용했던 부분을 parallelStream을 통한 병렬처리로 변경했더니 CPU사용량이 크게 감소했다. parallelStream을 그냥 사용하게 되면 CPU갯수만큼 Thread가 생성되어 처리를 하게 되는데 운영중인 서비스의 pod당 CPU가 4~5G 였기때문에 Topic을 처리하는 Thread가 부족하다고 판단되어 forkJoinPool을 토픽별로 설정해서 Thread수를 조정했다.
@@ -105,7 +102,7 @@ forkJoinPool.submit(() -> {
     });
 });
 ```  
-앞으로 기존 사용하던 로직의 Resource가 많이 소모되던 부분이 어디였는지 parallelStream을 사용해서 왜 성능이나 리소스 사용량이 개선되었는지에 대한 확인이 필요해 보인다....  
+앞으로 기존 사용하던 로직의 Resource가 많이 소모되던 부분이 어디였는지 parallelStream을 사용해서 왜 성능,리소스 사용량이 개선되었는지에 대한 확인이 필요해 보인다....  
 
 ## 참고  
 [YABOONG](https://yaboong.github.io/spring/2020/06/07/kafka-batch-consumer-unintended-listener-invoking/)  
