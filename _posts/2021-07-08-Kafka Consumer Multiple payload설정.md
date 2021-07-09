@@ -16,7 +16,7 @@ Thread Dump를 확인해서 CPU가 많이 발생할 수 있는 부분은 아래 
 2. MongoDB 저장,조회시 ReadTimeException, SocketTimeException - MongoDB Exception의 경우는 Timeout 설정을 통해 해결을 했고 여기서는 자세히 다루지는 않겠다.  
 
 ## AS-IS KafkaConsumer 설정  
-Kafka 설정은 기존에 되어있었는데 Topic당 유입되는 Message의 수량을 파악해야 Tharea의 적정 수량을 설정할 수 있겠다 판단되어 List로 넘어오는 payload의 사이즈를 확인했는데 항상 1이 넘어오고 있었다.  
+Kafka 설정은 기존에 되어있었는데 Topic당 유입되는 Message의 수량을 파악해야 Tharea의 적정 수량을 설정할 수 있겠다 판단되어 List로 넘어오는 payload의 사이즈가 항상 1인 것을 확인하고 Consumer설정을 확인해 보았다. Consumer의 다중 메세지를 받기 위한 설정이 안되어 있음을 확인했다.
 - Consumer Configuration  
 ```java  
   ... 생략
