@@ -223,5 +223,5 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.boot.context.pr
 ```  
 
 ## 참고    
-[아빠프로그래머](https://daddyprogrammer.org/post/1239/spring-oauth-authorizationserver/)
+[아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer](https://daddyprogrammer.org/post/1239/spring-oauth-authorizationserver/)
 
