@@ -1,5 +1,5 @@
 ---
-layout: post 
+layout: post
 title: Springboot Oauth2 - AuthorizationServer2(JWT, DB인증)
 category: [oauth2]
 tags: [springboot, oauth2]
@@ -10,18 +10,18 @@ redirect_from:
 ---
 
 이전에는 inMemory 방식으로 서버에서 하드코딩된 인증정보를 통해 인증을 진행 했던 부분을 DB를 사용해 처리할 수 있도록 수정할 예정이다.  
-[아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer : DB처리,JWT토큰 방식 적용](https://daddyprogrammer.org/post/1287/spring-oauth2-authorizationserver-database/) 블로그를 참고해서 진행할 예정이다.  
+[아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer : DB처리,JWT토큰 방식 적용](https://daddyprogrammer.org/post/1287/spring-oauth2-authorizationserver-database/) 블로그를 참고해서 진행할 예정이다.
 
 ## 변경사항
 - 클라이언트 DB 인증
-- 로그인 사용자 DB 인증  
-- 인증 및 토큰정보 DB 인증  
+- 로그인 사용자 DB 인증
+- 인증 및 토큰정보 DB 인증
 
-## 클라이언트 DB인증  
+## 클라이언트 DB인증
 resources > db 디렉토리 하위에 schema.sql 중 아래 쿼리를 H2 DB에서 실행한다.    
 oauth_client_details 테이블은 인증 전 인가된 client인지를 확인하기 위한 테이블이다.
 
-클라이언트 인가를 위한 테이블 생성 및 클라이언트 데이터 Insert  
+클라이언트 인가를 위한 테이블 생성 및 클라이언트 데이터 Insert
 ```sql  
 create table IF NOT EXISTS oauth_client_details (
   client_id VARCHAR(256) PRIMARY KEY,
@@ -40,8 +40,8 @@ create table IF NOT EXISTS oauth_client_details (
 insert into oauth_client_details(client_id, resource_ids,client_secret,scope,authorized_grant_types,web_server_redirect_uri,authorities,access_token_validity,refresh_token_validity,additional_information,autoapprove)
 values('testClientId',null,'{bcrypt}$2a$10$MtkK9P2c4GC4isH1GujIF.D98iO1j1BfyJxVwtHnhf8LYHswwghjO','read,write','authorization_code,refresh_token','http://localhost:8081/oauth2/callback','ROLE_USER',36000,50000,null,null);
 ```  
-  
-Oauth2AuthorizationConfig 수정  
+
+Oauth2AuthorizationConfig 수정
 ```java
 @RequiredArgsConstructor
 @Configuration
@@ -61,7 +61,7 @@ public class Oauth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 }
 ```  
 
-## 로그인 사용자 DB인증  
+## 로그인 사용자 DB인증
 ### User Entity 생성
 ```java  
 @Builder // builder를 사용할수 있게 합니다.
@@ -247,8 +247,8 @@ class UserJpaRepositoryTest {
 }
 ```  
 
-## 인증 및 토큰정보 DB 인증  
-### 토큰정보 DB 관리를 위한 테이블 생성 sql 실행  
+## 인증 및 토큰정보 DB 인증
+### 토큰정보 DB 관리를 위한 테이블 생성 sql 실행
 ```sql
 create table IF NOT EXISTS oauth_client_token (
     token_id VARCHAR(256),
@@ -300,9 +300,9 @@ create table IF NOT EXISTS oauth_approvals (
     }
 ```  
 
-### Token정보 DB 관리가 아닌 JWT으로 변경 
+### Token정보 DB 관리가 아닌 JWT으로 변경
 JdbcTokenStore가 아닌 jwtAccessTokenConverter를 사용하도록 설정한다. JWT를 사용하게 되면 토큰 자체로 인증정보가 관리가 되어 DB테이블을 사용하지 않게 된다.  
-[JWT Token 발급 테스트 URI 클릭](http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read)  
+[JWT Token 발급 테스트 URI 클릭](http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read)
 
 ```java
     /**
@@ -337,7 +337,7 @@ JdbcTokenStore가 아닌 jwtAccessTokenConverter를 사용하도록 설정한다
     }
 ```  
 
-### refresh_token을 이용한 access_token 재발급  
+### refresh_token을 이용한 access_token 재발급
 refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 봐야 하기때문에 Oauth2AuthorizationConfig에 userDetailsService를 설정해준다.
 ```java
     /**
@@ -354,8 +354,8 @@ refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 �
     }
 ```
 
-### jwt signkey 세팅(application.yaml 파일에 추가)  
-이전 테스트까지는 signKey를 설정하지 않아서 임의의 키로 암호화가 되었지만 refresh_token 재발급을 위해서는 복호화가 되어야 하는데 이때 signKey가 필요하기 때문에 설정이 필요하다.  
+### jwt signkey 세팅(application.yaml 파일에 추가)
+이전 테스트까지는 signKey를 설정하지 않아서 임의의 키로 암호화가 되었지만 refresh_token 재발급을 위해서는 복호화가 되어야 하는데 이때 signKey가 필요하기 때문에 설정이 필요하다.
 ```yaml
   security:
     oauth2:
@@ -383,7 +383,7 @@ refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 �
     }
 ```  
 
-### refresh 토큰을 위한 Controller API 추가  
+### refresh 토큰을 위한 Controller API 추가
 로그인 할 때 발급받은 refresh_token을 아래 API의 파라미터로 넣고 호출하면 새로운 refresh_token이 발급된다.  
 [refresh 토큰 테스트 클릭](http://localhost:8081/oauth2/token/refresh?refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJzaXNpcGFwYTIzOUBnbWFpbC5jb20iLCJzY29wZSI6WyJyZWFkIl0sImF0aSI6IjUyOGVkMDliLTIwN2ItNDM2NS1hNTgxLWQyNzEzYmU2OWViNiIsImV4cCI6MTYyNjM2OTYzOCwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjY5OTU0ODJkLTAwMjUtNDg4My1iYTQ2LWFiZWI2ZGE0YmVmNiIsImNsaWVudF9pZCI6InRlc3RDbGllbnRJZCJ9.c0Zv4wu85cSgwfLBbfZeeXS3e87LFLrYz3FIde7sBo0)
 ```java
@@ -410,9 +410,9 @@ refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 �
     }
 ```  
 
-## 참고    
-[아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer : DB처리,JWT토큰 방식 적용](https://daddyprogrammer.org/post/1287/spring-oauth2-authorizationserver-database/)  
+## 참고
+[아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer : DB처리,JWT토큰 방식 적용](https://daddyprogrammer.org/post/1287/spring-oauth2-authorizationserver-database/)
 
-## Github  
+## Github
 <https://github.com/sisipapa/oauth2-AuthorizationServer.git> 
 
