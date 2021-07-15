@@ -13,8 +13,8 @@ redirect_from:
 [아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer : DB처리,JWT토큰 방식 적용](https://daddyprogrammer.org/post/1287/spring-oauth2-authorizationserver-database/) 블로그를 참고해서 진행할 예정이다.  
 
 ## 변경사항
-- 클라이언트 DB인증
-- 로그인 사용자 DB인증  
+- 클라이언트 DB 인증
+- 로그인 사용자 DB 인증  
 - 인증 및 토큰정보 DB 인증  
 
 ## 클라이언트 DB인증  
@@ -246,6 +246,179 @@ class UserJpaRepositoryTest {
     }
 }
 ```  
+
+## 인증 및 토큰정보 DB 인증  
+### 토큰정보 DB 관리를 위한 테이블 생성 sql 실행  
+```sql
+create table IF NOT EXISTS oauth_client_token (
+    token_id VARCHAR(256),
+    token LONGVARBINARY,
+    authentication_id VARCHAR(256) PRIMARY KEY,
+    user_name VARCHAR(256),
+    client_id VARCHAR(256)
+    );
+
+create table IF NOT EXISTS oauth_access_token (
+    token_id VARCHAR(256),
+    token LONGVARBINARY,
+    authentication_id VARCHAR(256) PRIMARY KEY,
+    user_name VARCHAR(256),
+    client_id VARCHAR(256),
+    authentication LONGVARBINARY,
+    refresh_token VARCHAR(256)
+    );
+
+create table IF NOT EXISTS oauth_refresh_token (
+    token_id VARCHAR(256),
+    token LONGVARBINARY,
+    authentication LONGVARBINARY
+    );
+
+create table IF NOT EXISTS oauth_code (
+    code VARCHAR(256), authentication LONGVARBINARY
+    );
+
+create table IF NOT EXISTS oauth_approvals (
+    userId VARCHAR(256),
+    clientId VARCHAR(256),
+    scope VARCHAR(256),
+    status VARCHAR(10),
+    expiresAt TIMESTAMP,
+    lastModifiedAt TIMESTAMP
+    );
+```  
+
+### Token정보 DB 관리를 위한 설정추가(Oauth2AuthorizationConfig Config 추가)
+```java
+    /**
+     * 토큰 정보를 DB 관리
+     * @return
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.tokenStore(new JdbcTokenStore(dataSource));
+    }
+```  
+
+### Token정보 DB 관리가 아닌 JWT으로 변경 
+JdbcTokenStore가 아닌 jwtAccessTokenConverter를 사용하도록 설정한다. JWT를 사용하게 되면 토큰 자체로 인증정보가 관리가 되어 DB테이블을 사용하지 않게 된다.  
+[JWT Token 발급 테스트 URI 클릭](http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read)  
+
+```java
+    /**
+     * 토큰 정보를 DB 관리
+     * @return
+     */
+//    @Override
+//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+//        endpoints.tokenStore(new JdbcTokenStore(dataSource));
+//    }
+
+    /**
+     * 토큰 발급 방식을 JWT 토큰 방식으로 변경한다. 이렇게 하면 토큰 저장하는 DB Table은 필요가 없다.
+     *
+     * @param endpoints
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        super.configure(endpoints);
+        endpoints.accessTokenConverter(jwtAccessTokenConverter());
+    }
+
+    /**
+     * jwt converter를 등록
+     *
+     * @return
+     */
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        return new JwtAccessTokenConverter();
+    }
+```  
+
+### refresh_token을 이용한 access_token 재발급  
+refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 봐야 하기때문에 Oauth2AuthorizationConfig에 userDetailsService를 설정해준다.
+```java
+    /**
+     * 토큰 발급 방식을 JWT 토큰 방식으로 변경한다. 이렇게 하면 토큰 저장하는 DB Table은 필요가 없다.
+     *
+     * @param endpoints
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        super.configure(endpoints);
+//        endpoints.accessTokenConverter(jwtAccessTokenConverter());
+        endpoints.accessTokenConverter(jwtAccessTokenConverter()).userDetailsService(userDetailService);
+    }
+```
+
+### jwt signkey 세팅(application.yaml 파일에 추가)  
+이전 테스트까지는 signKey를 설정하지 않아서 임의의 키로 암호화가 되었지만 refresh_token 재발급을 위해서는 복호화가 되어야 하는데 이때 signKey가 필요하기 때문에 설정이 필요하다.  
+```yaml
+  security:
+    oauth2:
+      jwt:
+        signkey: 123@#$
+```  
+
+### Oauth2AuthorizationConfig의 JwtAccessTokenConverter에 signKey를 추가
+```java
+
+    @Value("${security.oauth2.jwt.signkey}")
+    private String signKey;
+
+    /**
+     * jwt converter를 등록
+     *
+     * @return
+     */
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+//        return new JwtAccessTokenConverter();
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey(signKey);
+        return converter;
+    }
+```  
+
+### refresh 토큰을 위한 Controller API 추가  
+[refresh 토큰 테스트 클릭](http://localhost:8081/oauth2/token/refresh?refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJzaXNpcGFwYTIzOUBnbWFpbC5jb20iLCJzY29wZSI6WyJyZWFkIl0sImF0aSI6IjUyOGVkMDliLTIwN2ItNDM2NS1hNTgxLWQyNzEzYmU2OWViNiIsImV4cCI6MTYyNjM2OTYzOCwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjY5OTU0ODJkLTAwMjUtNDg4My1iYTQ2LWFiZWI2ZGE0YmVmNiIsImNsaWVudF9pZCI6InRlc3RDbGllbnRJZCJ9.c0Zv4wu85cSgwfLBbfZeeXS3e87LFLrYz3FIde7sBo0)
+```java
+    @GetMapping(value = "/token/refresh")
+    public OAuthToken refreshToken(@RequestParam String refreshToken) {
+
+        String credentials = "testClientId:testSecret";
+        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "Basic " + encodedCredentials);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("refresh_token", refreshToken);
+        params.add("grant_type", "refresh_token");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8081/oauth/token", request, String.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return gson.fromJson(response.getBody(), OAuthToken.class);
+        }
+        return null;
+    }
+```  
+
+
+
+
+
+
+
+
+
+
+
 
 
 
