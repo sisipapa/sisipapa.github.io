@@ -384,6 +384,7 @@ refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 �
 ```  
 
 ### refresh 토큰을 위한 Controller API 추가  
+로그인 할 때 발급받은 refresh_token을 아래 API의 파라미터로 넣고 호출하면 새로운 refresh_token이 발급된다.  
 [refresh 토큰 테스트 클릭](http://localhost:8081/oauth2/token/refresh?refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJzaXNpcGFwYTIzOUBnbWFpbC5jb20iLCJzY29wZSI6WyJyZWFkIl0sImF0aSI6IjUyOGVkMDliLTIwN2ItNDM2NS1hNTgxLWQyNzEzYmU2OWViNiIsImV4cCI6MTYyNjM2OTYzOCwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjY5OTU0ODJkLTAwMjUtNDg4My1iYTQ2LWFiZWI2ZGE0YmVmNiIsImNsaWVudF9pZCI6InRlc3RDbGllbnRJZCJ9.c0Zv4wu85cSgwfLBbfZeeXS3e87LFLrYz3FIde7sBo0)
 ```java
     @GetMapping(value = "/token/refresh")
@@ -408,25 +409,6 @@ refresh_token이 정상인지 확인을 위해서는 회원정보를 조회해 �
         return null;
     }
 ```  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## 참고    
 [아빠프로그래머 Spring Boot Oauth2 - AuthorizationServer : DB처리,JWT토큰 방식 적용](https://daddyprogrammer.org/post/1287/spring-oauth2-authorizationserver-database/)  
