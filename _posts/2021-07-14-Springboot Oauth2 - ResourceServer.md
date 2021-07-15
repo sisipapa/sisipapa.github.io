@@ -439,7 +439,7 @@ public JwtAccessTokenConverter accessTokenConverter() {
 
 ### 테스트  
 #### access token 취득  
-http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read  
+<http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read>  
 ```json
 {
     "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYzNzIxMjEsInVzZXJfbmFtZSI6InNpc2lwYXBhMjM5QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiJjODBjZGU5Ni1kYTQ0LTRiODEtYTAwOC1lYWZiM2IxZjY3ZWYiLCJjbGllbnRfaWQiOiJ0ZXN0Q2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.P-ahfq18W-e3OkHWTzt8MdKk3IVLjr1tzpGKQZafG-DYET9OeskPdDy4n9SS-7WdmebWCB-1LWNbKCU8nliB9UtxzRTKimVAYuxXCSV_4oWR3o7wOo7fqtJ2eBFwTC5yn_e9LZbGzVdJ-p1a2VwyW4V7tFzmuCpbxX0qrsXQIdqyIrTIv5tjPCy-3or7Eu4zfgUOWQPWlUl1sGM0PVfLDjqZD-3zDULpAvru4cIvICp0Wx4MRm69TynLwyN2QlaE7ClF5KfiOF0rkqZQLTTvQ9oXoc4qRJw7MQfye6blUaEqATASoATdmpiD_jzLht1Hx_28sqqMYQ7V-3roMRvowA",
