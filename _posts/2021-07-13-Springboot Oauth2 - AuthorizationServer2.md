@@ -213,7 +213,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic();
     }
 }
-```
+```  
+
+### 로그인 사용자 DB인증을 위한 테스트 데이터 등록
+[TEST URI 클릭](http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read)  
+
+```java
+import com.sisipapa.oauth2.model.User;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collections;
+
+@SpringBootTest
+class UserJpaRepositoryTest {
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Test
+    public void insertNewUser() {
+        userJpaRepository.save(User.builder()
+                .uid("sisipapa239@gmail.com")
+                .password(passwordEncoder.encode("1234"))
+                .name("sisipapa")
+                .roles(Collections.singletonList("ROLE_USER"))
+                .build());
+    }
+}
+```  
+
 
 
 
