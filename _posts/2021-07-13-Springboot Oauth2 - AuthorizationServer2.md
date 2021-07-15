@@ -216,8 +216,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ```  
 
 ### 로그인 사용자 DB인증을 위한 테스트 데이터 등록
-[TEST URI 클릭](http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read)  
-
+지금까지 작업한 Server를 실행하고 아래 클릭해서 user 테이블에 등록한 테스트 데이터로 로그인을 하면 정상 로그인을 확인할 수 있다.  
+[TEST URI 클릭](http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read)
 ```java
 import com.sisipapa.oauth2.model.User;
 import org.junit.jupiter.api.Test;
