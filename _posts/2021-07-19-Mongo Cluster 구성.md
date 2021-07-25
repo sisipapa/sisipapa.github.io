@@ -20,6 +20,8 @@ GCP 클라우드에서 mongo P-S-A 구성을 위한 노드 5대, config,mongos�
 ### Mongo 설치
 YUM 레포지토리에 mongodb 4.2 repo를 추가  
 ```shell
+$ vi /etc/yum.repos.d/mongodb-org-4.2.repo
+
 [mongodb-org-4.2]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
