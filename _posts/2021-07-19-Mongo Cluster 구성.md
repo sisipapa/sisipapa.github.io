@@ -14,7 +14,7 @@ redirect_from:
 
 ## Pre Setting  
 ### GCP 노드생성  
-GCP 클라우드에서 mongo P-S-A 구성을 위한 노드 5대, config,mongos를 위한 노드 2대 서버를 생성한다.   
+GCP 클라우드에서 mongo P-S-A 구성을 위해서 Primary 노드 1대, Secondaray 노드 1대, Arbiter 노드 1대로 구성  
 <img src="https://sisipapa.github.io/assets/images/posts/gcp-mongo.PNG" >  
 
 ### Mongo 설치
@@ -62,34 +62,29 @@ updates                                                                         
 
 ## Replicaset 노드 설정
 - hostname  
-Primary hostname: mongodbp01, mongodbp02  
-Secondary hostname: mongodbs01, mongodbs02  
+Primary hostname: mongodbp  
+Secondary hostname: mongodbs  
 Arbiter hostname: monogarb  
   
 - Replicaset 구성  
-rs0 – mongodbp01:27018, mongodbs01:27018, mongoarb:27021  
-rs1 – mongodbp02:27018, mongodbs02:27018, mongoarb:27022  
+rs0 – mongodbp:27018, mongodbs:27018, mongoarb:27021    
+rs1 – mongodbp:27028, mongodbs:27028, mongoarb:27022   
+rs1 – mongodbp:27038, mongodbs:27038, mongoarb:27023  
   
-- port 구성  
-27017 : MongoDB의 기본 포트 번호이자 샤드를 구성할 때 Mongos가 이용하는 포트 번호  
-27018 : 샤드를 구성할 때 샤드 서버들이 사용하는 포트번호  
-27019 : Config 서버들이 사용하는 포트 번호  
-
 ### Replicaset mongod.conf
-home 디렉토리 하위에 conf 디렉토리를 생성하고 mongod.conf 파일을 생성.  
+Primary - mongodbp0.conf, mongodbp1.conf, mongodbp2.conf
+Secondary - mongodbs0.conf, mongodbs1.conf, mongodbs2.conf
 ```shell
-$ vi /etc/mongod.conf  
+$ vi /home/mongo/mongodbp0.conf  
 
 # for documentation of all options, see:
-#   http://docs.mongodb.org/manual/reference/configuration-options/
-# where to write logging data.
 systemLog:
   destination: file
   logAppend: true
-  path: /var/log/mongodb/mongod.log
+  path: /var/log/mongodb/mongod_p0.log
 # Where and how to store data.
 storage:
-  dbPath: /var/lib/mongo
+  dbPath: /var/lib/mongo/p0
   journal:
     enabled: true
     commitIntervalMs: 200
@@ -106,7 +101,7 @@ storage:
 # how the process runs
 processManagement:
   fork: true  # fork and run in background
-  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile
+  pidFilePath: /var/run/mongodb/mongod_p0.pid  # location of pidfile
   timeZoneInfo: /usr/share/zoneinfo
 # network interfaces
 net:
@@ -126,14 +121,28 @@ sharding:
 ```  
 노드별로 수정해야 할 부분(replication.replSetName)  
 ```shell
+systemLog:
+...
+  path: /var/log/mongodb/mongod_p0.log
+...
+storage:
+  dbPath: /var/lib/mongo/p0
+...
+processManagement:
+  ...
+  pidFilePath: /var/run/mongodb/mongod_p0.pid  # location of pidfile
+...
+net:
+  port: 27018
+...
 ...
 replication:
   replSetName: "rs0"
-...  
+...
 ```  
 
-### Arbiter mongod.conf(rs0,rs1)
-mongod0.conf, mongod1.conf 두개의 Arbiter 설정파일을 생성.  
+### Arbiter mongod.conf
+mongodba0.conf, mongodbp1.conf, mongodbp2.conf 세개의 Arbiter 설정파일을 생성.  
 ```shell
 $ vi /etc/mongod0.conf
 # for documentation of all options, see:
@@ -211,22 +220,40 @@ $ mongod -f conf/mongod1.conf
 
 ### Replicaset 구성  
 ```shell
+$ mongo --port 27018
 > rs.initiate( {
    _id : "rs0",
    members: [
-      { _id: 0, host: "mongodbp01:27018" },
-      { _id: 1, host: "mongodbs01:27018" },
-      { _id: 2, host: "mongoarb:27021", arbiterOnly:true }
+      { _id: 0, host: "mongodbp:27018" },
+      { _id: 1, host: "mongodbs:27018" },
+      { _id: 2, host: "monogarb:27021", arbiterOnly:true }
    ]
 })
-
-```
-
+{ "ok" : 1 }
 
 
+$ mongo --port 27028
+> rs.initiate( {
+   _id : "rs1",
+   members: [
+      { _id: 0, host: "mongodbp:27028" },
+      { _id: 1, host: "mongodbs:27028" },
+      { _id: 2, host: "monogarb:27022", arbiterOnly:true }
+   ]
+})
+{ "ok" : 1 }
 
-
-
+$ mongo --port 27038
+> rs.initiate( {
+   _id : "rs2",
+   members: [
+      { _id: 0, host: "mongodbp:27038" },
+      { _id: 1, host: "mongodbs:27038" },
+      { _id: 2, host: "monogarb:27023", arbiterOnly:true }
+   ]
+})
+{ "ok" : 1 }
+```  
 
 ## 참고  
 [NCloud MongoDB Cluster 구성하기](https://guide.ncloud-docs.com/docs/database-database-10-3)  
