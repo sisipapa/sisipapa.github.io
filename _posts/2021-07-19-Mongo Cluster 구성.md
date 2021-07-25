@@ -72,8 +72,8 @@ rs1 – mongodbp:27028, mongodbs:27028, mongoarb:27022
 rs1 – mongodbp:27038, mongodbs:27038, mongoarb:27023  
   
 ### Replicaset mongod.conf
-Primary - mongodbp0.conf, mongodbp1.conf, mongodbp2.conf
-Secondary - mongodbs0.conf, mongodbs1.conf, mongodbs2.conf
+Primary - mongodbp0.conf, mongodbp1.conf, mongodbp2.conf  
+Secondary - mongodbs0.conf, mongodbs1.conf, mongodbs2.conf  
 ```shell
 $ vi /home/mongo/mongodbp0.conf  
 
@@ -139,6 +139,17 @@ net:
 replication:
   replSetName: "rs0"
 ...
+```  
+
+실행
+```shell
+$ mongod -f conf/mongodp0.conf
+$ mongod -f conf/mongodp1.conf
+$ mongod -f conf/mongodp2.conf
+
+$ mongod -f conf/mongods0.conf
+$ mongod -f conf/mongods1.conf
+$ mongod -f conf/mongods2.conf
 ```  
 
 ### Arbiter mongod.conf
@@ -214,8 +225,9 @@ replication:
 ```  
 실행  
 ```shell
-$ mongod -f conf/mongod0.conf
-$ mongod -f conf/mongod1.conf
+$ mongod -f conf/mongoda0.conf
+$ mongod -f conf/mongoda1.conf
+$ mongod -f conf/mongoda2.conf
 ```  
 
 ### Replicaset 구성  
