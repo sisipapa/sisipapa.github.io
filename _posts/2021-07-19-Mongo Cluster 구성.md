@@ -69,7 +69,7 @@ Arbiter hostname: monogarb
 - Replicaset 구성  
 rs0 – mongodbp:27018, mongodbs:27018, mongoarb:27021    
 rs1 – mongodbp:27028, mongodbs:27028, mongoarb:27022   
-rs1 – mongodbp:27038, mongodbs:27038, mongoarb:27023  
+rs2 – mongodbp:27038, mongodbs:27038, mongoarb:27023  
   
 ### Replicaset mongod.conf
 Primary - mongodbp0.conf, mongodbp1.conf, mongodbp2.conf  
@@ -155,7 +155,8 @@ $ mongod -f conf/mongods2.conf
 ### Arbiter mongod.conf
 mongodba0.conf, mongodbp1.conf, mongodbp2.conf 세개의 Arbiter 설정파일을 생성.  
 ```shell
-$ vi /etc/mongod0.conf
+$ vi /home/mongo/conf/mongod0.conf
+
 # for documentation of all options, see:
 #   http://docs.mongodb.org/manual/reference/configuration-options/
 # where to write logging data.
@@ -201,8 +202,8 @@ sharding:
 #snmp:
 
 ```  
-수정해야 할 부분(systemLog.path, storage.dbPath, processManagement.pidFilePath, net.port, replication.replSetName)  
-Arbiter의 경우 하나의 노드에 port로 구분해서 두개의 mongo를 띄우는 거라 수정할 부분이 많다.  
+
+수정해야 할 부분(systemLog.path, storage.dbPath, processManagement.pidFilePath, net.port, replication.replSetName)     
 ```shell
 systemLog:
 ...
@@ -266,6 +267,165 @@ $ mongo --port 27038
 })
 { "ok" : 1 }
 ```  
+
+## mongos & config 서버 구성  
+- hostname : mongos
+GCP 무료계정에서는 같은 리전에 인스턴스 생성이 최대 4개로 제한이 되어있다. 그래서 부득이하게 config서버와 mongos 서버를 한대로 구성을 하게 되었고 config 서버는 P-S-S 구조로 port로 구분하여 설치할 예정이다.  
+
+- Replicaset 구성  
+  rs0 – mongos:27019      
+  rs1 – mongos:27029     
+  rs2 – mongos:27039  
+
+### config 서버 구성  
+mongod_config0.conf, mongod_config1.conf, mongod_config2.conf Config 서버관련 conf 파일 생성
+```shell
+$ vi /home/mongo/conf/mongod_config0.conf
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod_cfg0.log
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongo/cfg0
+  journal:
+    enabled: true
+    commitIntervalMs: 200
+#  engine:
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 1
+      journalCompressor: snappy
+      directoryForIndexes: false
+    collectionConfig:
+      blockCompressor: snappy
+    indexConfig:
+      prefixCompression: true
+# how the process runs
+processManagement:
+  fork: true  # fork and run in background
+  pidFilePath: /var/run/mongodb/mongod_cfg0.pid  # location of pidfile
+  timeZoneInfo: /usr/share/zoneinfo
+# network interfaces
+net:
+  port: 27019
+  bindIp: 0.0.0.0  # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
+setParameter:
+  enableLocalhostAuthBypass: false
+#security:
+#operationProfiling:
+replication:
+  replSetName: "cfgrepl"
+sharding:
+  clusterRole: configsvr
+## Enterprise-Only Options
+#auditLog:
+#snmp:
+```  
+
+수정해야 할 부분(systemLog.path, storage.dbPath, processManagement.pidFilePath, net.port, replication.replSetName, sharding.clusterRole)  
+```shell
+systemLog:
+...
+  path: /var/log/mongodb/mongod_cfg0.log
+...
+storage:
+  dbPath: /var/lib/mongo/cfg0
+...
+processManagement:
+  ...
+  pidFilePath: /var/run/mongodb/mongod_cfg0.pid  # location of pidfile
+...
+net:
+  port: 27019
+...
+...
+replication:
+  replSetName: "cfgrepl"
+sharding:
+  clusterRole: configsvr
+```   
+
+Config 실행
+```shell
+$ mongod -f /home/mongo/conf/mongod_config0.conf
+$ mongod -f /home/mongo/conf/mongod_config1.conf
+$ mongod -f /home/mongo/conf/mongod_config2.conf
+```
+
+Config Replicaset 설정
+```shell
+rs.initiate( {
+   _id : "cfgrepl",
+   members: [
+      { _id: 0, host: "mongos:27019"},
+      { _id: 1, host: "mongos:27029"},
+      { _id: 2, host: "mongos:27039"}
+   ]
+})
+
+{
+	"ok" : 1,
+	"$gleStats" : {
+		"lastOpTime" : Timestamp(1627304988, 1),
+		"electionId" : ObjectId("000000000000000000000000")
+	},
+	"lastCommittedOpTime" : Timestamp(0, 0)
+}
+```  
+
+### mongos 설정  
+```shell
+$ vi /home/mongo/conf/mongos.conf
+
+sharding:
+    configDB: "cfgrepl/mongos:27019,mongos:27029,mongos:27039"
+systemLog:
+    destination: file
+    logAppend: true
+    path: /var/log/mongodb/mongos.log
+processManagement:
+    fork: true
+net:
+    port: 27017
+    bindIpAll: true
+```  
+
+mongos 실행
+```shell
+$ mongos -f /home/mongo/conf/mongos.conf
+```  
+
+mongos 접속
+```shell
+$ mongo localhost:27017
+
+mongos> rs.status()
+{
+	"info" : "mongos",
+	"ok" : 0,
+	"errmsg" : "replSetGetStatus is not supported through mongos",
+	"operationTime" : Timestamp(1627305097, 1),
+	"$clusterTime" : {
+		"clusterTime" : Timestamp(1627305097, 1),
+		"signature" : {
+			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+			"keyId" : NumberLong(0)
+		}
+	}
+}
+```  
+
+mongos shard 등록
+```shell
+mongos> sh.addShard("rs0/mongodbp:27018,mongodbs:27018")
+mongos> sh.addShard("rs1/mongodbp:27028,mongodbs:27028")
+mongos> sh.addShard("rs2/mongodbp:27038,mongodbs:27038")
+```
 
 ## 참고  
 [NCloud MongoDB Cluster 구성하기](https://guide.ncloud-docs.com/docs/database-database-10-3)  
