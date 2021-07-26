@@ -432,4 +432,4 @@ mongos> sh.addShard("rs2/mongodbp:27038,mongodbs:27038")
 [MongoDB Shard Cluster 구성하기](https://rastalion.me/mongodb-shard-cluster-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/)
 
 ## Github
-<https://github.com/sisipapa/oauth2-ResourceServer.git> 
+<https://github.com/sisipapa/mongo-cluster.git> 
