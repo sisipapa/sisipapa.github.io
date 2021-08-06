@@ -92,14 +92,10 @@ $ echo 2 > /home/kafka/zookeeper/myid
 $ echo 3 > /home/kafka/zookeeper/myid
 ```  
 
-
-
-
-
+현재 작성중인 노트입니다. 빠른 시일내에 완료하도록 하겠습니다.  
 
 
 ## 참고  
-[Be OK - MongoDB Spring 연동](https://sg-choi.tistory.com/388)  
+
 
 ## Github  
-<https://github.com/sisipapa/Springboot-mongoDB.git> 
