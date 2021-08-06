@@ -92,6 +92,18 @@ $ echo 2 > /home/kafka/zookeeper/myid
 $ echo 3 > /home/kafka/zookeeper/myid
 ```  
 
+## zookeeper 서버 기동  
+```shell
+$ sh bin/zookeeper-server-start.sh config/zookeeper.properties
+```  
+
+## kafka 서버 기동  
+```shell
+$ sh bin/kafka-server-start.sh config/server.properties
+```  
+
+
+
 
 
 
