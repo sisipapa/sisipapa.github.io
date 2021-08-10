@@ -1,6 +1,6 @@
 ---
 layout: post 
-title: Springboot Querydsl정리1
+title: Springboot Querydsl정리
 category: [querydsl]
 tags: [querydsl, springboot]
 redirect_from:
