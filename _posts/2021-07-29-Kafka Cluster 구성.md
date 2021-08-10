@@ -111,7 +111,5 @@ $ sh bin/kafka-server-start.sh config/server.properties
 
 
 ## 참고  
-[Be OK - MongoDB Spring 연동](https://sg-choi.tistory.com/388)  
 
 ## Github  
-<https://github.com/sisipapa/Springboot-mongoDB.git> 
