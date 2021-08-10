@@ -250,6 +250,7 @@ public class QuerydslExam3Test {
 
 ## BooleanBuilder 활용  
 where절의 처리를 BooleanBuilder를 활용해 처리하고 Projection DTO를 생성해 쿼리 결과를 원하는 필드만 조회하는 예제이다.  
+
 ```java
 @SpringBootTest
 public class QuerydslExam4Test {
@@ -308,7 +309,7 @@ public class QuerydslExam4Test {
             and team1_.name=?
             and member0_.age>=?
             and member0_.age<=?
-        * */
+        */
     }
 
     @Test
@@ -394,7 +395,7 @@ public class QuerydslExam4Test {
 }
 ```  
 
-## Projection 활용의 다양한 방법
+## Projection 활용의 다양한 방법  
 QueryDsl에서 Projection을 활용해서 필요한 필드만을 query하는 다양한 방법이다.  
 ```java
 @SpringBootTest
@@ -583,8 +584,7 @@ public class QuerydslExam6Test {
         log.info("result : {}", result);
     }
 }
-```
-
+```  
 
 ## 참고
 [스프링 데이터 JPA와 Querydsl 인프런 강의 정리 - lelecoder](https://lelecoder.com/145)
