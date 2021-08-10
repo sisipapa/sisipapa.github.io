@@ -187,7 +187,8 @@ public class QuerydslExam2Test {
 ## orderBy, groupBy, paging  
 - orderBy : orderBy 메서드 인자에는 여러 인자를 넘긴다. 
 - paging : offset, limit를 이용해서 페이징 기능 지원한다. (offset:시작번호, limit:개수)
-- groupBy : having도 사용가능하다. Tuple 타입은 Querydsl에서 지원하는 서로 다른 타입을 처리할 수 있는 반환값이다.
+- groupBy : having도 사용가능하다. Tuple 타입은 Querydsl에서 지원하는 서로 다른 타입을 처리할 수 있는 반환값이다.  
+
 ```java
 @SpringBootTest
 public class QuerydslExam3Test {
