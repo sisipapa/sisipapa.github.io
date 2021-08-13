@@ -100,16 +100,10 @@ $ sh bin/zookeeper-server-start.sh config/zookeeper.properties
 ## kafka 서버 기동  
 ```shell
 $ sh bin/kafka-server-start.sh config/server.properties
-```  
+```
 
-
-
-
-
-
-
-
+GCP에서 Kafka Cluster를 구성해 보려고 했으나 GCP 무료계정의 경우 한국 리전으로 최대 4개의 서버만 구성이 가능했다. 그래서 제일 가까운 리전을 선택해서 Kafka 클러스터를 구성해 보려고 했는데 접속이 불안정해서 구성을 진행하기가 힘들었다. 그래서 내린 결론은 AWS에서 2CPU,4G MEMORY정도로 docker-compose를 활용해 Kafka cluster를 구성해보려고 한다. Kafka Cluster 구성을 빨리하고 Springboot와의 연동을 정리해 보려고 했는데 시간이 많이 늦어졌다....
 
 ## 참고  
-
-## Github  
+[Message Broker/Kafka # Kafka - 2 # Kafka Multi Cluster 구성](https://skysoo1111.tistory.com/75)
+[플랫폼 개발팀 기술 블로그](https://team-platform.tistory.com/13)
