@@ -173,9 +173,11 @@ services:
       - kafka1
       - kafka2
       - kafka3
-      - zookeeper
+      - zoo1
+      - zoo2
+      - zoo3
     environment:
-      ZK_HOSTS: zookeeper:2181
+      ZK_HOSTS: zoo1:2181,zoo2:2182,zoo3:2183
       APPLICATION_SECRET: "random-secret"
       KM_ARGS: -Djava.net.preferIPv4Stack=true
     ports:
@@ -185,16 +187,22 @@ services:
 ```shell
 # 로그를 확인하면서 실행
 $ docker-compose -f kafka-cluster.yaml up
-
-# backgroud 실행
-$ docker-compose -d kafka-cluster.yaml up
+$ docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                                                     NAMES
+bdf222c1905f   hlebalbau/kafka-manager:2.0.0.2   "/kafka-manager/bin/…"   56 seconds ago   Up 54 seconds   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp                                 kafka-manager
+7522a122ea8c   confluentinc/cp-kafka:5.5.1       "/etc/confluent/dock…"   10 hours ago     Up 56 seconds   9092/tcp, 0.0.0.0:9093->9093/tcp, :::9093->9093/tcp                       ubuntu_kafka2_1
+7b23cf081c6c   confluentinc/cp-kafka:5.5.1       "/etc/confluent/dock…"   10 hours ago     Up 2 hours      0.0.0.0:9092->9092/tcp, :::9092->9092/tcp                                 ubuntu_kafka1_1
+16182f6dd6e1   confluentinc/cp-kafka:5.5.1       "/etc/confluent/dock…"   10 hours ago     Up 2 hours      9092/tcp, 0.0.0.0:9094->9094/tcp, :::9094->9094/tcp                       ubuntu_kafka3_1
+f31dbbae7c3b   zookeeper:3.4.9                   "/docker-entrypoint.…"   10 hours ago     Up 2 hours      2888/tcp, 0.0.0.0:2181->2181/tcp, :::2181->2181/tcp, 3888/tcp             ubuntu_zoo1_1
+4215c2e87d3c   zookeeper:3.4.9                   "/docker-entrypoint.…"   10 hours ago     Up 2 hours      2181/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2182->2182/tcp, :::2182->2182/tcp   ubuntu_zoo2_1
+d69b5b0b608d   zookeeper:3.4.9                   "/docker-entrypoint.…"   10 hours ago     Up 2 hours      2181/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2183->2183/tcp, :::2183->2183/tcp   ubuntu_zoo3_1
 ```  
 
 Docker-Compose가 정상적으로 실행되고 나면 kafka, zookeeper, kafka manager가 정상적으로 동작하는 것을 로그로 확인이 가능하다. yaml 내용중 volumes 부분은 각 경로에 맞게 커스텀해서 사용이 가능하다. 나의 경우는 [Apache kafka Installation by docker - DaddyProgrammer](https://daddyprogrammer.org/post/12087/apache-kafka-install-by-docker/) yaml 파일에 [docker-compose 를 사용하여 kafka Cluster 및 Kafka Manger 세팅하기](https://akageun.github.io/2020/05/01/docker-compose-kafka-cluster-manager.html) kafka manager 설정만 가져와서 사용했다.  
 
 ### kafka manager 접속(AWS 보안그룹설정) 
-AWS는 기본적으로 Instance를 생성하면 22번 port만 열려있기 때문에 로컬PC에서 Kafka Manager에 접속을 하기 위해서는 9000번 port를 열어주어야 한다.  
-AWS 메뉴 - 서비스 > 네트워크 및 보안 > 보안 그룹 - 우측 상단의 작업 Selectbox > 인바운드 규칙 편집  
+- AWS는 기본적으로 Instance를 생성하면 22번 port만 열려있기 때문에 로컬PC에서 Kafka Manager에 접속을 하기 위해서는 9000번 port를 열어주어야 한다.    
+- AWS 메뉴 - 서비스 > 네트워크 및 보안 > 보안 그룹 - 우측 상단의 작업 Selectbox > 인바운드 규칙 편집    
 <img src="https://sisipapa.github.io/assets/images/posts/aws-security-group1.png" >  
 <img src="https://sisipapa.github.io/assets/images/posts/aws-security-group2.png" >  
 <img src="https://sisipapa.github.io/assets/images/posts/aws-security-group3.png" >  
@@ -202,7 +210,70 @@ AWS 메뉴 - 서비스 > 네트워크 및 보안 > 보안 그룹 - 우측 상단
 Kafka Manager를 활용해 Topic 생성,삭제 관리를 해볼 수도 있지만 이번에는 아빠프로그래머님의 블로그에 정리되어 있는 것처럼 Kafka 프로젝트내의 Shell을 이용해 Kafka Cluster 테스트를 해보려고 한다.  
 
 ## Kafka Cluster 테스트  
+### kafka download
+```shell
+$ wget https://mirror.navercorp.com/apache/kafka/2.8.0/kafka_2.12-2.8.0.tgz
+```  
 
+### 압축해제 후 kafka bin폴더로 이동
+```shell
+$ tar xvf kafka_2.12-2.8.0.tgz
+$ cd kafka_2.12-2.8.0/bin
+$ ls
+connect-distributed.sh        kafka-console-producer.sh    kafka-log-dirs.sh                    kafka-server-start.sh               windows
+connect-mirror-maker.sh       kafka-consumer-groups.sh     kafka-metadata-shell.sh              kafka-server-stop.sh                zookeeper-security-migration.sh
+connect-standalone.sh         kafka-consumer-perf-test.sh  kafka-mirror-maker.sh                kafka-storage.sh                    zookeeper-server-start.sh
+kafka-acls.sh                 kafka-delegation-tokens.sh   kafka-preferred-replica-election.sh  kafka-streams-application-reset.sh  zookeeper-server-stop.sh
+kafka-broker-api-versions.sh  kafka-delete-records.sh      kafka-producer-perf-test.sh          kafka-topics.sh                     zookeeper-shell.sh
+kafka-cluster.sh              kafka-dump-log.sh            kafka-reassign-partitions.sh         kafka-verifiable-consumer.sh
+kafka-configs.sh              kafka-features.sh            kafka-replica-verification.sh        kafka-verifiable-producer.sh
+kafka-console-consumer.sh     kafka-leader-election.sh     kafka-run-class.sh                   trogdor.sh
+```  
+
+### JDK설치가 안되어 있다면
+```shell
+$ sudo apt-get install openjdk-11-jdk
+```  
+
+### 신규 Topic 생성
+```shell
+$ ./kafka-topics.sh --create --zookeeper localhost:2181,localhost:2182,localhost:2183 --replication-factor 3 --partitions 1 --topic news
+```  
+
+### Cluster내 모든 Topic 리스트 조회
+```shell
+$ ./kafka-topics.sh --list --bootstrap-server localhost:9092,localhost:9093,localhost:9094 __confluent.support.metrics __consumer_offsets
+__confluent.support.metrics
+news
+```  
+
+### Topic 정보조회
+```shell
+# ./kafka-topics.sh --describe --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic news
+Topic: news	PartitionCount: 1	ReplicationFactor: 3	Configs: 
+Topic: news	Partition: 0	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2
+```  
+
+### Topic 메세지 발행
+```shell
+$ ./kafka-console-producer.sh --broker-list localhost:9092,localhost:9093,localhost:9094 --topic news
+>news message-1
+>news message-2
+>news message-3
+```
+
+### Topic 메세지 소비
+-from-beginning 옵션을 주면 Topic의 첫 메세지부터 모든 메세지를 받아오게 된다.
+```shell
+$ ./kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic news --from-beginning
+news message-1
+news message-2
+news message-3
+```  
+### Partition을 지정해서 메세지 소비
+```shell
+$ ./kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic news --from-beginning --partition 0
+```  
 
 
 
