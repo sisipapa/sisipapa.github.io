@@ -199,6 +199,12 @@ AWS 메뉴 - 서비스 > 네트워크 및 보안 > 보안 그룹 - 우측 상단
 <img src="https://sisipapa.github.io/assets/images/posts/aws-security-group2.PNG" >  
 <img src="https://sisipapa.github.io/assets/images/posts/aws-security-group3.PNG" >  
 
+Kafka Manager를 활용해 Topic 생성,삭제 관리를 해볼 수도 있지만 이번에는 아빠프로그래머님의 블로그에 정리되어 있는 것처럼 Kafka 프로젝트내의 Shell을 이용해 Kafka Cluster 테스트를 해보려고 한다.  
+
+## Kafka Cluster 테스트  
+
+
+
 
 
 ## 참고
