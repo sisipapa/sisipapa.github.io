@@ -275,7 +275,7 @@ news message-3
 $ ./kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic news --from-beginning --partition 0
 ```  
 
-
+Kafka-Cluster와 Springboot 연동을 위한 기본적인 Cluster 구성이 완료 되었다. 다음에는 Springboot와의 연동을 정리해야 할 것 같다.   
 
 
 ## 참고
