@@ -208,10 +208,10 @@ Kafka Manager를 활용해 Topic 생성,삭제 관리를 해볼 수도 있지만
 
 
 ## 참고
-[Ubuntu 20.04 Docker 설치하기](https://blog.dalso.org/linux/ubuntu-20-04-lts/13118)
-[Apache kafka Installation by docker - DaddyProgrammer](https://daddyprogrammer.org/post/12087/apache-kafka-install-by-docker/)
-[(docker-compose) zookeeper/kafka 클러스터 구성](https://javachoi.tistory.com/413)
-[docker-compose 를 사용하여 kafka Cluster 및 Kafka Manger 세팅하기](https://akageun.github.io/2020/05/01/docker-compose-kafka-cluster-manager.html)
+[Ubuntu 20.04 Docker 설치하기](https://blog.dalso.org/linux/ubuntu-20-04-lts/13118)  
+[Apache kafka Installation by docker - DaddyProgrammer](https://daddyprogrammer.org/post/12087/apache-kafka-install-by-docker/)  
+[(docker-compose) zookeeper/kafka 클러스터 구성](https://javachoi.tistory.com/413)  
+[docker-compose 를 사용하여 kafka Cluster 및 Kafka Manger 세팅하기](https://akageun.github.io/2020/05/01/docker-compose-kafka-cluster-manager.html)  
 
 ## Github
 
