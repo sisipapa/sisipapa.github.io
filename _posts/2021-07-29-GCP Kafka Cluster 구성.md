@@ -1,8 +1,8 @@
 ---
 layout: post 
-title: kafka cluster 구성
+title: GCP Kafka Cluster 구성
 category: [kafka]
-tags: [kafka,cluster]
+tags: [kafka,GCP]
 redirect_from:
 
 - /2021/07/29/
