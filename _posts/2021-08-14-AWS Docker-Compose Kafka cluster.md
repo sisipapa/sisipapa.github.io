@@ -195,9 +195,9 @@ Docker-Compose가 정상적으로 실행되고 나면 kafka, zookeeper, kafka ma
 ### kafka manager 접속(AWS 보안그룹설정) 
 AWS는 기본적으로 Instance를 생성하면 22번 port만 열려있기 때문에 로컬PC에서 Kafka Manager에 접속을 하기 위해서는 9000번 port를 열어주어야 한다.  
 AWS 메뉴 - 서비스 > 네트워크 및 보안 > 보안 그룹 - 우측 상단의 작업 Selectbox > 인바운드 규칙 편집  
-<img src="https://sisipapa.github.io/assets/images/posts/aws-security-group1.PNG" >  
-<img src="https://sisipapa.github.io/assets/images/posts/aws-security-group2.PNG" >  
-<img src="https://sisipapa.github.io/assets/images/posts/aws-security-group3.PNG" >  
+<img src="https://sisipapa.github.io/assets/images/posts/aws-security-group1.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/aws-security-group2.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/aws-security-group3.png" >  
 
 Kafka Manager를 활용해 Topic 생성,삭제 관리를 해볼 수도 있지만 이번에는 아빠프로그래머님의 블로그에 정리되어 있는 것처럼 Kafka 프로젝트내의 Shell을 이용해 Kafka Cluster 테스트를 해보려고 한다.  
 
