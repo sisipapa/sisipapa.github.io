@@ -284,5 +284,3 @@ Kafka-Cluster와 Springboot 연동을 위한 기본적인 Cluster 구성이 완�
 [(docker-compose) zookeeper/kafka 클러스터 구성](https://javachoi.tistory.com/413)  
 [docker-compose 를 사용하여 kafka Cluster 및 Kafka Manger 세팅하기](https://akageun.github.io/2020/05/01/docker-compose-kafka-cluster-manager.html)  
 
-## Github
-
