@@ -14,15 +14,15 @@ Springboot로 MSA 환경을 구성해보려고 생각을 하다가 Intellij에�
 ## Intellij Multi Module 환경구성   
 ### Root 프로젝트 생성(Gradle 프로젝트)  
 1. New Project > 왼쪽메뉴 Gradle 선택 | Java선택 후 Next버튼 클릭  
-   <img src="https://sisipapa.github.io/assets/images/posts/intellij-multi1.png" >  
+   <img src="https://sisipapa.github.io/assets/images/posts/intellij-multi1.PNG" >  
 2. Name,Location 정보 입력 후 Finish  
-   <img src="https://sisipapa.github.io/assets/images/posts/intellij-multi2.png" >  
+   <img src="https://sisipapa.github.io/assets/images/posts/intellij-multi2.PNG" >  
    
 ### Sub module 프로젝트 생성(Spring 프로젝트 - common, sub1, sub2)  
 1. Root프로젝트를 선택하고 Ctrl + Alt + Insert 버튼을 클릭  
-   <img src="https://sisipapa.github.io/assets/images/posts/intellij-sub1.png" >
+   <img src="https://sisipapa.github.io/assets/images/posts/intellij-sub1.PNG" >
 2. Spring Initializer 선택하고 Java선택 후 Next버튼 클릭  
-   <img src="https://sisipapa.github.io/assets/images/posts/intellij-sub2.png" >  
+   <img src="https://sisipapa.github.io/assets/images/posts/intellij-sub2.PNG" >  
 3. common과 동일한 과정으로 sub1,sub2 module 생성   
    
 ### Root 프로젝트 settings.gradle
@@ -103,7 +103,7 @@ common, sub1, sub2 Sub Module의 build.gradle의 내용을 모두 삭제했다. 
 ## 설정 확인 및 테스트
 ### 설정 확인
 화면 우측 Gradle 메뉴를 클릭 후 Root프로젝트 하위의 sub1, sub2 Sub Module의 Dependency를 확인해 보면 추가하지 않은 Dependency가 존재하는 것을 확인할 수 있다.  
-<img src="https://sisipapa.github.io/assets/images/posts/intellij-sub3.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/intellij-sub3.PNG" >  
 
 ### 테스트  
 
