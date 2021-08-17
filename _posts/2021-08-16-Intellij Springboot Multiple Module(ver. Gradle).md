@@ -108,12 +108,8 @@ common, sub1, sub2 Sub Module의 build.gradle의 내용을 모두 삭제했다. 
 ### 테스트  
 common module에 Stirng 값을 return 해주는 CommonService의 Method를 만들고 sub1, sub2 module의 Controller에서 사용해 보는 예제이다.  
 
-- common Module에 만든 Service  
+common Module에 만든 Service  
 ```java
-package com.sisipapa.study.multimodule.common.service;
-
-import org.springframework.stereotype.Service;
-
 @Service
 public class CommonService {
     public String getIndex(String index){
@@ -122,9 +118,8 @@ public class CommonService {
 }
 ```  
 
-- sub1 Module Controller  
-
-```java  
+sub1 Module Controller  
+```java
 @AllArgsConstructor
 @RestController
 public class Sub1Controller {
@@ -137,9 +132,9 @@ public class Sub1Controller {
     }
 
 }
-```    
+```  
 
-- sub2 Module Controller    
+sub2 Module Controller    
 ```java
 @AllArgsConstructor
 @RestController
@@ -155,22 +150,23 @@ public class Sub2Controller {
 }
 ```  
 
-- sub1 module application.properties   
+sub1 module application.properties  
 ```properties
 server.port=8081
 ```  
 
-- sub2 module application.properties  
+
+sub2 module application.properties  
 ```properties
 server.port=8082
-```    
+```  
 
-- sub1 module 결과화면  
-  <img src="https://sisipapa.github.io/assets/images/posts/sub1_index.PNG" >  
-- sub2 module 결과화면  
-  <img src="https://sisipapa.github.io/assets/images/posts/sub2_index.PNG" >  
 
-  
+sub1 module 결과화면  
+   <img src="https://sisipapa.github.io/assets/images/posts/sub1_index.PNG" >  
+sub2 module 결과화면  
+   <img src="https://sisipapa.github.io/assets/images/posts/sub2_index.PNG" >  
+
 ## 참고  
 [springboot - gradle을 이용한 멀티모듈 프로젝트 만들기](https://www.hanumoka.net/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/)  
 [Spring Boot2 멀티 모듈 프로젝트 with Gradle](https://blog.selectjun.com/9)  
