@@ -100,9 +100,12 @@ common, sub1, sub2 Sub Module의 build.gradle의 내용을 모두 삭제했다. 
 
 여기까지 해주면 Intellij에서 Multi Module에 대한 기본설정은 되었다.  
 
-## 설정 확인 및 테스트  
+## 설정 확인 및 테스트
+### 설정 확인
+화면 우측 Gradle 메뉴를 클릭 후 Root프로젝트 하위의 sub1, sub2 Sub Module의 Dependency를 확인해 보면 추가하지 않은 Dependency가 존재하는 것을 확인할 수 있다.  
+<img src="https://sisipapa.github.io/assets/images/posts/intellij-sub3.png" >  
 
-
+### 테스트  
 
 
 ## 참고
