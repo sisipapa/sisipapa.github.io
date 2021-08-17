@@ -139,7 +139,7 @@ public class Sub1Controller {
 }
 ```    
 
-- sub2 Module COntroller  
+- sub2 Module Controller    
 ```java
 @AllArgsConstructor
 @RestController
@@ -155,7 +155,7 @@ public class Sub2Controller {
 }
 ```  
 
-- sub1 module application.properties  
+- sub1 module application.properties   
 ```properties
 server.port=8081
 ```  
