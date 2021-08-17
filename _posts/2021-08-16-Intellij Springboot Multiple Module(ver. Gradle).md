@@ -93,11 +93,15 @@ project(':sub2') {
         implementation project(':common')
     }
 }
-```
+```  
 
-여기까지 해주면 Intellij에서 Multi Module에 대한 기본설정은 되었다.
+### Sub module 프로젝트 build.gradle
+common, sub1, sub2 Sub Module의 build.gradle의 내용을 모두 삭제했다. 파일을 삭제하지는 않았다.  
 
-## 테스트  
+여기까지 해주면 Intellij에서 Multi Module에 대한 기본설정은 되었다.  
+
+## 설정 확인 및 테스트  
+
 
 
 
