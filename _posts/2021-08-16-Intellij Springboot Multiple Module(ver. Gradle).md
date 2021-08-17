@@ -109,8 +109,7 @@ common, sub1, sub2 Sub Module의 build.gradle의 내용을 모두 삭제했다. 
 common module에 Stirng 값을 return 해주는 CommonService의 Method를 만들고 sub1, sub2 module의 Controller에서 사용해 보는 예제이다.  
 
 - common Module에 만든 Service  
-
-```java  
+```java
 package com.sisipapa.study.multimodule.common.service;
 
 import org.springframework.stereotype.Service;
@@ -121,7 +120,7 @@ public class CommonService {
         return index;
     }
 }
-```   
+```  
 
 - sub1 Module Controller  
 
@@ -140,7 +139,7 @@ public class Sub1Controller {
 }
 ```    
 
-- sub2 Module COntroller    
+- sub2 Module COntroller  
 ```java
 @AllArgsConstructor
 @RestController
@@ -154,7 +153,7 @@ public class Sub2Controller {
     }
 
 }
-```    
+```  
 
 - sub1 module application.properties  
 ```properties
