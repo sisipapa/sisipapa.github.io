@@ -651,9 +651,6 @@ prometheus-service   LoadBalancer   10.99.72.195   xx.xx.xxx.xxx   	8080:31213/T
 ```
 
 ### 참고
-
-[Kubernetes Monitoring - Prometheus 실습](https://gruuuuu.github.io/cloud/monitoring-02/#)
-
-[프로메테우스와 그라파나로 개발 서버 모니터링하기](https://essem-dev.medium.com/%ED%94%84%EB%A1%9C%EB%A9%94%ED%85%8C%EC%9A%B0%EC%8A%A4%EC%99%80-%EA%B7%B8%EB%9D%BC%ED%8C%8C%EB%82%98%EB%A1%9C-%EA%B0%9C%EB%B0%9C-%EC%84%9C%EB%B2%84-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81%ED%95%98%EA%B8%B0-8942aea724b3)
-
-[Prometheus 모니터링 실무 적용기 2탄](https://medium.com/coinone/prometheus-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EC%8B%A4%EB%AC%B4-%EC%A0%81%EC%9A%A9%EA%B8%B0-2%ED%83%84-8a210a7f2ff)
+[Kubernetes Monitoring - Prometheus 실습](https://gruuuuu.github.io/cloud/monitoring-02/#)  
+[프로메테우스와 그라파나로 개발 서버 모니터링하기](https://essem-dev.medium.com/%ED%94%84%EB%A1%9C%EB%A9%94%ED%85%8C%EC%9A%B0%EC%8A%A4%EC%99%80-%EA%B7%B8%EB%9D%BC%ED%8C%8C%EB%82%98%EB%A1%9C-%EA%B0%9C%EB%B0%9C-%EC%84%9C%EB%B2%84-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81%ED%95%98%EA%B8%B0-8942aea724b3)    
+[Prometheus 모니터링 실무 적용기 2탄](https://medium.com/coinone/prometheus-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EC%8B%A4%EB%AC%B4-%EC%A0%81%EC%9A%A9%EA%B8%B0-2%ED%83%84-8a210a7f2ff)  
