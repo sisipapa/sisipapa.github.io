@@ -3,7 +3,7 @@ layout: post
 title: Springboot MSA 구성
 category: [msa]
 tags: [msa, springboot]
-redirect_from:
+redirect_from
 
 - /2021/08/20/
 
