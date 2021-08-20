@@ -116,11 +116,11 @@ public static void basic7(){
         System.err.println("NullPointerException");
     }
 }
-```
-
-## Github
-<https://github.com/sisipapa/ModernJava.git>  
+```  
 
 ## 참고  
-[Java8의 Optional 사용 방법 및 예제](https://codechacha.com/ko/java8-stream-optional/)  
-[자바의 정석 - 스트림(Stream)](https://ryan-han.com/post/java/java-stream/)  
+[Java8의 Optional 사용 방법 및 예제](https://codechacha.com/ko/java8-stream-optional/)   
+[자바의 정석 - 스트림(Stream)](https://ryan-han.com/post/java/java-stream/)    
+
+## Github  
+<https://github.com/sisipapa/ModernJava.git>    
