@@ -9,17 +9,19 @@ redirect_from
 
 ---  
 
+
 ## TDD란?  
-TDD란 Test Driven Development의 약자로 '테스트 주도 개발'이라고 한다. 반복 테스트를 이용한 소프트웨어 방법론으로, 작은 단위의 테스트 케이스를 작성하고 이를 통과하는 코드를 추가하는 단계를 반복하여 구현한다.  
+TDD란 Test Driven Development의 약자로 '테스트 주도 개발'이라고 한다. 반복 테스트를 이용한 소프트웨어 방법론으로, 작은 단위의 테스트 케이스를 작성하고 이를 통과하는 코드를 추가하는 단계를 반복하여 구현한다.    
+  
 
 ## 나의 TDD    
-나는 사실 항상 TDD에 맞게 개발을 하고 있지는 못하다. 하지만 시간과 여건이 허락된다면 TDD 방법대로 개발을 해보려고 한다. 내가 TDD을 활용해 개발하는 방식을 정리해 보려고 한다.  
-정리는 Member의 등록,조회,삭제 기능 개발을 한다는 전제로 진행할 예정이다. Springboot2.5.4, JPA, QueryDSL, H2, Gradle, Junit5 환경에서 Rest API를 Member의 등록,조회,삭제 API를 만들어 보려고 한다.    
+나는 사실 항상 TDD에 맞게 개발을 하고 있지는 못하다. 하지만 시간과 여건이 허락된다면 TDD 방법대로 개발을 해보려고 한다. 내가 TDD을 활용해 개발하는 방식을 정리해 보려고 한다.    
+정리는 Member의 등록,조회,삭제 기능 개발을 한다는 전제로 진행할 예정이다. Springboot2.5.4, JPA, QueryDSL, H2, Gradle, Junit5 환경에서 Rest API를 Member의 등록,조회,삭제 API를 만들어 보려고 한다.  
 
 ### PreSetting
 build.grale  
 build.gradle의 dependency 내용이다.  
-```properties
+```text
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
