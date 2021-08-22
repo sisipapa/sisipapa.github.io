@@ -234,6 +234,7 @@ public class MemberController {
 }
 ```  
 
+나의 경우 Repository,Service,Controller 순서로 단위테스트를 진행한다. 실제 업무에서 DB 또는 Mongo에 비지니스 비중이 크다면 Repository 단위테스트만 만들어서 진행하고 Service 단계에서 업무 비지니스가 많다면 Service 단위테스트만 만들어서 진행을 했다. 지금처럼 Repository,Service,Controller 모든 구간별로 단위테스트를 진행해 본적은 없는 것 같아 정리를 한번 해보았다. TDD 정말 좋은 개발 방법론인데 내가 내 업무에 제대로 녹여서 사용하고 있지 못한것 같다. 더 나은 내일을 위해 정리를 한다. 이상........ 
 
 ## 참고  
 [Taes-k DevLog - TDD Spring 실무에서 적용하기](https://taes-k.github.io/2021/03/19/spring-tdd-practice/)  
