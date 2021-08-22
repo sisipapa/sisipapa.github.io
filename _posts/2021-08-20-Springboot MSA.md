@@ -1,6 +1,6 @@
 ---
 layout: post 
-title: Springboot Kafka 설정
+title: Springboot MSA
 category: [MSA]
 tags: [MSA, springboot]
 redirect_from:
