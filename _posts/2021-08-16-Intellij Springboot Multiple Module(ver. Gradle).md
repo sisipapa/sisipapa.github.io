@@ -9,7 +9,7 @@ redirect_from:
 
 ---
 
-Springboot로 MSA 환경을 구성해보려고 생각을 하다가 Intellij에서 Springboot관련한 Multi Module 환경을 구성에 대한 정리를 먼저 해야 겠다는 생각이 들어 정리를 시작합니다. 
+Springboot로 MSA 환경을 구성해보려고 생각을 하다가 Intellij에서 Springboot관련한 Multi Module 환경을 구성에 대한 정리를 먼저 해야 겠다는 생각이 들어 정리를 시작합니다.  
 
 ## Intellij Multi Module 환경구성   
 ### Root 프로젝트 생성(Gradle 프로젝트)  
