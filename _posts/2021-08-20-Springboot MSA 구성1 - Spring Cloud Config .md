@@ -118,7 +118,7 @@ spring:
 여기까지만 하면 Spring Cloud Config 서버의 설정은 끝이다. 로컬서버 구동시 -Dspring.profiles.active=local로 설정 후 서버를 기동한다.  
 
 ### Config 서버 테스트
-```http request
+```json
 GET http://localhost:9000/resource/local
 
 HTTP/1.1 200 
@@ -216,7 +216,7 @@ public class ResourceController {
 ```  
 
 ### Resource 서버에서 Config 조회  
-```http request
+```json
 GET http://localhost:8080/message
 
 HTTP/1.1 200 
@@ -232,7 +232,7 @@ Response code: 200; Time: 327ms; Content length: 63 bytes
 ```  
 
 Resource 서버의 [GET]/message API 호출 결과로 Config property를 정상적으로 읽어 온 것을 확인했다. 이제 config-repo의 설정파일의 내용을 수정하고 동일한 API를 호출하면 변경된 결과가 나오지 않는다. 변경된 설정을 Resource 서버에서도 적용을 하기 위해서는 [POST]/actuator/refresh API를 호출해야 변경된 설정이 적용된다. API 결과로 변경된 property 목록이 리턴된다.     
-```http request
+```json
 POST http://localhost:8080/actuator/refresh
 
 HTTP/1.1 200 
@@ -253,7 +253,7 @@ Response code: 200; Time: 1540ms; Content length: 42 bytes
 ## Property value 암호화/복호화  
 Config 서버에서 Resource 서버에 제공하는 설정 정보 중에는 외부에 노출되어서는 안되는 정보들이 있을 수 있다. 그래서 value값을 저장 시 암호화된 값을 저장할 수 있도록 지원한다.  
 
-
+``````
 
 ## 참고
 [DaddyProgrammer Spring CLoud MSA](https://daddyprogrammer.org/post/4347/spring-cloud-msa-configuration-server/)  
