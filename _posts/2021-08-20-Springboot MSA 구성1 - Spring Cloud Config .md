@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Springboot MSA 구성1 - Spring Cloud Config
-category: [tdd]
+category: [msa]
 tags: [msa, springboot, config]
 redirect_from:
 
@@ -392,7 +392,7 @@ Response code: 200; Time: 235ms; Content length: 56 bytes
 Config 서버에서 암호화 되있던 property db.ip,db.port,db.id,db.password 정보가 resource 서버에서 복호화 된 데이터로 출력되는 것을 확인할 수 있다.  
 
 ## 참고
-[DaddyProgrammer Spring CLoud MSA](https://daddyprogrammer.org/post/4347/spring-cloud-msa-configuration-server/)  
+[DaddyProgrammer Spring CLoud MSA(1)](https://daddyprogrammer.org/post/4347/spring-cloud-msa-configuration-server/)  
 [Jorten [Spring] Cloud Config 구축하기](https://goateedev.tistory.com/167)  
 [Spring Cloud Config 에서 변경된 정보를 마이크로서비스 인스턴스에서 Spring Boot Actuator 를 이용하여 반영하기](https://wonit.tistory.com/505)  
 
