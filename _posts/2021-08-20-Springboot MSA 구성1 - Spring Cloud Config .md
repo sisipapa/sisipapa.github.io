@@ -27,10 +27,6 @@ Spring Cloud Config는 MSA 시스템의 환경 설정들을 중앙화해서 한 
 - Resource : Application 서버
 - Resource2 : Application 서버  
 
-##
-
-
-
 ## Config 서버  
 
 
