@@ -248,7 +248,10 @@ Connection: keep-alive
 ]
 
 Response code: 200; Time: 1540ms; Content length: 42 bytes
-```  
+```   
+
+## Property value 암호화/복호화  
+Config 서버에서 Resource 서버에 제공하는 설정 정보 중에는 외부에 노출되어서는 안되는 정보들이 있을 수 있다. 그래서 value값을 저장 시 암호화된 값을 저장할 수 있도록 지원한다.  
 
 
 
