@@ -254,7 +254,8 @@ Response code: 200; Time: 1540ms; Content length: 42 bytes
 Config 서버에서 Resource 서버에 제공하는 설정 정보 중에는 외부에 노출되어서는 안되는 정보들이 있을 수 있다. 그래서 value값을 저장 시 암호화된 값을 저장할 수 있도록 지원한다.  
 
 ### keypair 생성
-- keytool -genkeypair 옵션 설명  
+keytool -genkeypair 옵션 설명   
+
 ```shell
 $ keytool -genkeypair -help
 keytool -genkeypair [OPTION]...
@@ -288,7 +289,8 @@ Options:
 
 Use "keytool -?, -h, or --help" for this help message
 ```  
-- keypair 생성 
+
+keypair 생성  
 Window PC의 경우 JDK를 환경변수 Path등록을 하지 않았다면 JDK가 설치된 경로로 이동해서 아래 명령어를 실행한다.
 ```shell
 $ keytool -genkeypair -alias config-server-key -keyalg RSA \
@@ -387,7 +389,7 @@ ResourceController db : 10.10.10.10: 2222 [dbid: dbpass]
 Response code: 200; Time: 235ms; Content length: 56 bytes
 ```  
 
-Config 서버에서 암호화 되있던 property 정보를 resource 서버에서 복호화된 데이터로 정상적으로 출력된다.  
+Config 서버에서 암호화 되있던 property db.ip,db.port,db.id,db.password 정보가 resource 서버에서 복호화 된 데이터로 출력되는 것을 확인할 수 있다.  
 
 ## 참고
 [DaddyProgrammer Spring CLoud MSA](https://daddyprogrammer.org/post/4347/spring-cloud-msa-configuration-server/)  
