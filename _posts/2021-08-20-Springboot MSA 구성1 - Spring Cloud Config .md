@@ -1,9 +1,9 @@
 ---
-layout: post 
-title: Springboot MSA 구성1 - Spring Cloud Config 
-category: [msa]
-tags: [msa, springboot]
-redirect_from
+layout: post
+title: Springboot MSA 구성1 - Spring Cloud Config
+category: [tdd]
+tags: [msa, springboot, config]
+redirect_from:
 
 - /2021/08/20/
 
