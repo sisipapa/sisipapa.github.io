@@ -20,7 +20,7 @@ Spring Cloud Gateway는 API로 라우팅할 수 있는 간단하면서도 효과
 
 ### Gateway Route 설정추가  
 ```yaml
-# zuul-gateway-local.yml
+# gateway-local.yml
 zuul:
   routes:
     member:
@@ -41,7 +41,7 @@ zuul:
       
 --- 
 
-# zuul-gateway-prod.yml
+# gateway-prod.yml
 zuul:
   routes:
     member:
@@ -63,7 +63,7 @@ zuul:
 
 ### Config 서버확인  
 ```json
-GET http://localhost:9000/zuul-gateway/local
+GET http://localhost:9000/gateway/local
 
 HTTP/1.1 200 
 Content-Type: application/json
@@ -73,7 +73,7 @@ Keep-Alive: timeout=60
 Connection: keep-alive
 
 {
-  "name": "zuul-gateway",
+  "name": "gateway",
   "profiles": [
     "local"
   ],
@@ -82,7 +82,7 @@ Connection: keep-alive
   "state": null,
   "propertySources": [
     {
-      "name": "https://github.com/sisipapa/Springboot-MSA/file:C:\\Users\\user\\AppData\\Local\\Temp\\config-repo-10700435317011410158\\config-repo\\local\\zuul-gateway-local.yml",
+      "name": "https://github.com/sisipapa/Springboot-MSA/file:C:\\Users\\user\\AppData\\Local\\Temp\\config-repo-10700435317011410158\\config-repo\\local\\gateway-local.yml",
       "source": {
         "spring.profiles": "local",
         "zuul.routes.member.stripPrefix": false,
@@ -107,15 +107,177 @@ Response code: 200; Time: 1120ms; Content length: 843 bytes
 ## Gateway 모듈 구성  
 Gateway 서버의 경우 클라이언트들의 엔드포인트로 트래픽이 높기 때문에 단일 서비스로 운영하기 보다는 여러대로 구성하고 LoadBalancer로 묶어 HA를 확보하는 것이 좋다.  
 ### build.gradle  
+Multi Module 프로젝트 구성의 build.gradle의 Gateway 모듈에 해당하는 부분만 정리. spring-cloud-starter-netflix-zuul dependency 추가한다. gradle에서 zuul 라이브러리를 내려받지 못해 2.2.9.RELEASE 버전을 입력해 주었다.   
 ```properties
+project(':Gateway') {
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul:2.2.9.RELEASE'
+        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    }
 
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
 ```  
 
+### Gateway 모듈 application-{env}.yml
+local, prod 내용은 동일하다. 
+```yaml
+# application-local.yml
+server:
+  port: 9100
+spring:
+  application:
+    name: gateway
+  config:
+    import: "optional:configserver:http://localhost:9000"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
 
+---
 
+# application-local.yml
+server:
+  port: 9100
+spring:
+  application:
+    name: gateway
+  config:
+    import: "optional:configserver:http://localhost:9000"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+```  
 
+### Application.java  
+EnableZuulProxy 어노테이션을 추가한다.  
+```java
+@EnableZuulProxy
+@SpringBootApplication
+public class GatewayApplication {
 
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayApplication.class, args);
+    }
 
+}
+```  
+
+### Resource 서버에서 확인을 위한 Gateway Routing 확인을 위한 Controller 추가
+#### Resource 서버(8080) 추가된 Controller  
+```java
+@RequestMapping("/v1")
+@RestController
+@RefreshScope
+public class MemberController {
+
+    @GetMapping("/member/health")
+    public String memberHealth() {
+        return "MemberController running";
+    }
+    
+    @GetMapping("/member2/health")
+    public String member2Health() {
+        return "MemberController running";
+    }
+
+}
+```  
+#### Resource2 서버(8081) 추가된 Controller  
+PayController
+```java
+@RequestMapping("/v1/pay")
+@RestController
+@RefreshScope
+public class PayController {
+    @GetMapping("/health")
+    public String health() {
+        return "PayController running";
+    }
+}
+```  
+ProductController
+```java
+@RequestMapping("/v1")
+@RestController
+@RefreshScope
+public class ProductController {
+    @GetMapping("/product/health")
+    public String productHealth() {
+        return "PayController running";
+    }
+    @GetMapping("/product2/health")
+    public String product2Health() {
+        return "PayController running";
+    }
+}
+```  
+
+## Gateway Route Test 테스트 중 오류발생
+```shell
+java.lang.NoSuchMethodError: org.springframework.boot.web.servlet.error.ErrorController.getErrorPath()Ljava/lang/String;
+	at org.springframework.cloud.netflix.zuul.web.ZuulHandlerMapping.lookupHandler(ZuulHandlerMapping.java:87) ~[spring-cloud-netflix-zuul-2.2.9.RELEASE.jar:2.2.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.getHandlerInternal(AbstractUrlHandlerMapping.java:152) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(AbstractHandlerMapping.java:498) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at org.springframework.web.servlet.DispatcherServlet.getHandler(DispatcherServlet.java:1258) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655) ~[tomcat-embed-core-9.0.52.jar:4.0.FR]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.9.jar:5.3.9]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764) ~[tomcat-embed-core-9.0.52.jar:4.0.FR]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96) ~[spring-boot-actuator-2.5.4.jar:2.5.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.3.9.jar:5.3.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1726) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.52.jar:9.0.52]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+```  
+spring-boot-starter 버전이 업그레이드 되면서 spring-cloud-starter-netflix-zuul의 ZuulHandlerMapping 클래스에서 ErrorController.getErrorPath() NoSuchMethodError 발생했고 오류 두시간 이상 오류 해결이 되지 않아 springboot, spring cloud 라이브러리 버전을 변경하게 되었다.  
+|라이브러리|변경전|변경후|
+|------|---|---|
+|Springboot|2.5.4|2.3.12.RELEASE|
+|Spring Cloud|2020.0.3|Hoxton.SR5|
 
 
 
