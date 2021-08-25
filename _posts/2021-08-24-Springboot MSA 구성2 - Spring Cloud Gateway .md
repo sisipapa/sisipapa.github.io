@@ -360,8 +360,168 @@ Response code: 200; Time: 56ms; Content length: 21 bytes
 여기까지 Spring Cloud Gateway 설정을 통한 Routing 기능을 확인해 보았다.  
 
 ## Spring Cloud Gateway 필터 적용  
+- Pre Filter - 라우팅 전 실행되고 logging 및 인증 등 처리  
+- Routing Filter - 요청에 대한 라우팅 처리  
+- Post Filter - 라우팅 후 실행되고 사용자 정의 헤더 추가/제거 또는 통계 및 matrix 수집   
+- Error Filter - 에러 발생시 핸들링   
 
+### Filter class 생성
+```java
+@Slf4j
+public class GatewayPreFilter extends ZuulFilter {
+    @Override
+    public String filterType() {
+        return FilterConstants.PRE_TYPE;
+    }
 
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+    @Override
+    public Object run() {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
+        log.info("Using Pre Filter : "+request.getMethod() + " request to " + request.getRequestURL().toString());
+        return null;
+    }
+}
+```  
+
+```java
+@Slf4j
+public class GatewayRouteFilter extends ZuulFilter {
+
+    @Override
+    public String filterType() {
+        return FilterConstants.ROUTE_TYPE;
+    }
+
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+    @Override
+    public Object run() {
+        log.info("GatewayRouteFilter");
+        return null;
+    }
+}
+```  
+
+```java
+@Slf4j
+public class GatewayPostFilter extends ZuulFilter {
+
+    @Override
+    public String filterType() {
+        return FilterConstants.POST_TYPE;
+    }
+
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+    @Override
+    public Object run() {
+        log.info("GatewayPostFilter");
+        return null;
+    }
+}
+```  
+
+```java
+@Slf4j
+public class GatewayErrorFilter extends ZuulFilter {
+    @Override
+    public String filterType() {
+        return FilterConstants.ERROR_TYPE;
+    }
+
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+    @Override
+    public Object run() {
+        log.info("GatewayErrorFilter");
+        return null;
+    }
+}
+```  
+
+### Filter Bean 등록
+```java
+@Configuration
+public class ZuulFilterConfig {
+    @Bean
+    public GatewayPreFilter preFilter() {
+        return new GatewayPreFilter();
+    }
+
+    @Bean
+    public GatewayPostFilter postFilter() {
+        return new GatewayPostFilter();
+    }
+
+    @Bean
+    public GatewayRouteFilter routeFilter() {
+        return new GatewayRouteFilter();
+    }
+
+    @Bean
+    public GatewayErrorFilter errorFilter() {
+        return new GatewayErrorFilter();
+    }
+}
+```  
+
+### Filter 테스트
+Filter는 확인을 위한 로그만 출력한다.  
+```json
+GET http://localhost:9100/v1/product/health
+
+HTTP/1.1 200 
+Date: Wed, 25 Aug 2021 14:29:17 GMT
+Keep-Alive: timeout=60
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+PayController running
+
+Response code: 200; Time: 181ms; Content length: 21 bytes
+```   
+Filter 적용 후 로그  
+```shell
+2021-08-25 23:37:17.758  INFO 13004 --- [nio-9100-exec-7] c.s.s.m.gateway.filter.GatewayPreFilter  : Using Pre Filter : GET request to http://localhost:9100/v1/product/health
+2021-08-25 23:37:17.758  INFO 13004 --- [nio-9100-exec-7] c.s.s.m.g.filter.GatewayRouteFilter      : GatewayRouteFilter
+2021-08-25 23:37:17.775  INFO 13004 --- [nio-9100-exec-7] c.s.s.m.g.filter.GatewayPostFilter       : GatewayPostFilter
+```  
 
 ## 참고
 [DaddyProgrammer Spring CLoud MSA(2)](https://daddyprogrammer.org/post/4401/spring-cloud-msa-gateway-routing-by-netflix-zuul/)  
