@@ -221,7 +221,8 @@ public class ProductController {
 }
 ```  
 
-## Gateway Route Test 테스트 중 오류발생
+## Gateway Route Test 테스트  
+### 장애발생!!!!!
 ```shell
 java.lang.NoSuchMethodError: org.springframework.boot.web.servlet.error.ErrorController.getErrorPath()Ljava/lang/String;
 	at org.springframework.cloud.netflix.zuul.web.ZuulHandlerMapping.lookupHandler(ZuulHandlerMapping.java:87) ~[spring-cloud-netflix-zuul-2.2.9.RELEASE.jar:2.2.9.RELEASE]
@@ -277,10 +278,81 @@ spring-boot-starter 버전이 업그레이드 되면서 spring-cloud-starter-net
 |라이브러리|변경전|변경후|
 |------|---|---|
 |Springboot|2.5.4|2.3.12.RELEASE|
-|Spring Cloud|2020.0.3|Hoxton.SR5|
+|Spring Cloud|2020.0.3|Hoxton.SR5|  
+
+라이브러리 변경 후 config 서버 설정변경
+```yaml
+#AS-IS(Spring Cloud-2020.0.3)
+spring:
+  config:
+    import: "optional:configserver:http://localhost:9000"  
+    
+---
+
+#TO-BE(Spring Cloud-Hoxton.SR5)
+spring:
+  cloud:
+    config:
+      uri: http://localhost:9000
+```
 
 
+라이브러리 버전 변경후 Config 서버 구동시 오류  
+Springboot 2.5.3 버전에서는 applicaition.yml 파일내에서 encrypt설정을 정상적으로 로드가 되지만 Springboot 버전을 2.3.12.RELEASE로 변경 후 아래 오류가 발생해서 Config 서버의 application-{env}.yml 파일의 이름을 bootstrap-{env}.yml로 변경
+```shell
+***************************l
+APPLICATION FAILED TO START
+***************************
 
+Description:
+
+Field rsaProperties in org.springframework.cloud.config.server.config.EncryptionAutoConfiguration$KeyStoreConfiguration required a bean of type 'org.springframework.cloud.bootstrap.encrypt.RsaProperties' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=false)
+
+
+Action:
+
+Consider defining a bean of type 'org.springframework.cloud.bootstrap.encrypt.RsaProperties' in your configuration.
+```
+
+[장애와 관련된 링크](https://github.com/spring-cloud/spring-cloud-netflix/issues/4008) 해결책을 못찾아서 현재는 라이브러리 버전 다운그레이드....  
+
+### 장애해결 후 재테스트!!!
+Gateway 서버로 요청을 보내면 Resource, Resource2 서버로 Routing 되는 것을 확인할 수 있다.  
+
+#### Gateway(9000) 서버로 요청 > Resource 서버로 Routing
+```json
+GET http://localhost:9100/v1/member/health
+
+HTTP/1.1 200 
+Date: Wed, 25 Aug 2021 09:03:23 GMT
+Keep-Alive: timeout=60
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+MemberController running
+
+Response code: 200; Time: 195ms; Content length: 24 bytes
+```  
+
+#### Gateway(9000) 서버로 요청 > Resource2 서버로 Routing  
+```json
+GET http://localhost:9100/v1/product/health
+
+HTTP/1.1 200 
+Date: Wed, 25 Aug 2021 08:56:42 GMT
+Keep-Alive: timeout=60
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+PayController running
+
+Response code: 200; Time: 56ms; Content length: 21 bytes
+```  
 
 
 ## 참고
