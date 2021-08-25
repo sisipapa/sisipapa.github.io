@@ -201,6 +201,7 @@ management:
 ### Controller  
 GIT 에 저장된 property 값이 변경 된 경우, client에서 최신 파일을 다시 받아 값을 refresh 하기 위해서 RefreshScope 어노테이션을 추가해준다.  
 ```java
+@RequestMapping("/v1/resource")
 @RestController
 @RefreshScope
 public class ResourceController {
@@ -217,7 +218,7 @@ public class ResourceController {
 
 ### Resource 서버에서 Config 조회  
 ```json
-GET http://localhost:8080/message
+GET http://localhost:8080/v1/resource/message
 
 HTTP/1.1 200 
 Content-Type: application/json
@@ -345,6 +346,7 @@ db:
 ### 복호화 테스트
 config-repo 모듈에서 resource 서버의 local 서버가 바라보는 설정파일에 db접속정보를 조회하는 API 호출테스트
 ```java
+@RequestMapping("/v1/resource")
 @RestController
 @RefreshScope
 public class ResourceController {
@@ -375,7 +377,7 @@ public class ResourceController {
 ```  
 
 ```json
-GET http://localhost:8080/db
+GET http://localhost:8080/v1/resource/db
 
 HTTP/1.1 200 
 Content-Type: application/json
