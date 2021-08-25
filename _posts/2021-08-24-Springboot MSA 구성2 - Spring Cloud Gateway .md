@@ -222,7 +222,7 @@ public class ProductController {
 ```  
 
 ## Gateway Route Test 테스트  
-### 장애발생!!!!!
+### 테스트 중 Exception 발생
 ```shell
 java.lang.NoSuchMethodError: org.springframework.boot.web.servlet.error.ErrorController.getErrorPath()Ljava/lang/String;
 	at org.springframework.cloud.netflix.zuul.web.ZuulHandlerMapping.lookupHandler(ZuulHandlerMapping.java:87) ~[spring-cloud-netflix-zuul-2.2.9.RELEASE.jar:2.2.9.RELEASE]
@@ -275,12 +275,15 @@ java.lang.NoSuchMethodError: org.springframework.boot.web.servlet.error.ErrorCon
 	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
 ```  
 spring-boot-starter 버전이 업그레이드 되면서 spring-cloud-starter-netflix-zuul의 ZuulHandlerMapping 클래스에서 ErrorController.getErrorPath() NoSuchMethodError 발생했고 오류 두시간 이상 오류 해결이 되지 않아 springboot, spring cloud 라이브러리 버전을 변경하게 되었다.  
-|라이브러리|변경전|변경후|
-|------|---|---|
-|Springboot|2.5.4|2.3.12.RELEASE|
-|Spring Cloud|2020.0.3|Hoxton.SR5|  
+변경전
+Springboot - 2.5.4  
+Spring Cloud - 2020.0.3
 
-라이브러리 변경 후 config 서버 설정변경
+변경후
+Springboot - 2.3.12.RELEASE  
+Spring Cloud - Hoxton.SR5  
+
+라이브러리 변경 후 Resource,Resource2 서버에서 config 서버에 접속하기 위한 설정변경  
 ```yaml
 #AS-IS(Spring Cloud-2020.0.3)
 spring:
@@ -317,7 +320,8 @@ Action:
 Consider defining a bean of type 'org.springframework.cloud.bootstrap.encrypt.RsaProperties' in your configuration.
 ```
 
-[장애와 관련된 링크](https://github.com/spring-cloud/spring-cloud-netflix/issues/4008) 해결책을 못찾아서 현재는 라이브러리 버전 다운그레이드....  
+[장애와 관련된 링크](https://github.com/spring-cloud/spring-cloud-netflix/issues/4008) 이다.  
+관련해서 해결책을 못찾아서 현재는 라이브러리 버전 다운그레이드....    
 
 ### 장애해결 후 재테스트!!!
 Gateway 서버로 요청을 보내면 Resource, Resource2 서버로 Routing 되는 것을 확인할 수 있다.  
@@ -353,6 +357,10 @@ PayController running
 
 Response code: 200; Time: 56ms; Content length: 21 bytes
 ```  
+여기까지 Spring Cloud Gateway 설정을 통한 Routing 기능을 확인해 보았다.  
+
+## Spring Cloud Gateway 필터 적용  
+
 
 
 ## 참고
