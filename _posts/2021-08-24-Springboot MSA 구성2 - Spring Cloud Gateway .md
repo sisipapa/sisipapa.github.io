@@ -524,7 +524,7 @@ Filter 적용 후 로그
 ```  
 
 ## 참고
-[DaddyProgrammer Spring CLoud MSA(2)](https://daddyprogrammer.org/post/4401/spring-cloud-msa-gateway-routing-by-netflix-zuul/)  
+[DaddyProgrammer Spring CLoud MSA(2) - Gateway(Routing & Filter) Server by Netflix zuul](https://daddyprogrammer.org/post/4401/spring-cloud-msa-gateway-routing-by-netflix-zuul/)  
 
 ## Github
 <https://github.com/sisipapa/Springboot-MSA.git>
