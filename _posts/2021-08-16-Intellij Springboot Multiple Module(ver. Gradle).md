@@ -167,9 +167,146 @@ sub1 module 결과화면
 sub2 module 결과화면  
    <img src="https://sisipapa.github.io/assets/images/posts/sub2_index.PNG" >  
 
+## Multi Module 프로젝트에서 bootJar 적용  
+bootJar가 적용된 Springboot MSA 구성에서 작성한 build.gradle 파일이다.
+```properties
+
+buildscript {
+    ext {
+        springBootVersion = '2.3.12.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group 'com.sisipapa.study'
+    version '0.01-SNAPSHOT'
+//    sourceCompatibility '11'
+
+    repositories {
+        mavenCentral()
+    }
+
+    ext {
+        set('springCloudVersion', "Hoxton.SR5")
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar {
+        enabled false
+    }
+
+    jar {
+        enabled true
+    }
+}
+
+project(':Config') {
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-config-server'
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+project(':Gateway') {
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+project(':Eureka') {
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+project(':Resource') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+project(':Resource2') {
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    bootJar {
+        enabled true
+    }
+
+    jar {
+        enabled false // bootJar이 jar보다 먼저 실행되기 때문에 jar이 활성화 돼있다면 bootJar 결과물을 덮어씁니다.
+    }
+}
+```
+
 ## 참고  
 [springboot - gradle을 이용한 멀티모듈 프로젝트 만들기](https://www.hanumoka.net/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/)  
 [Spring Boot2 멀티 모듈 프로젝트 with Gradle](https://blog.selectjun.com/9)  
+[Spring 멀티 모듈 프로젝트 실행 가능한 Jar 생성하는 방법](https://velog.io/@puroong/Spring-%EB%A9%80%ED%8B%B0-%EB%AA%A8%EB%93%88-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%8B%A4%ED%96%89-%EA%B0%80%EB%8A%A5%ED%95%9C-Jar-%EC%83%9D%EC%84%B1%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95)  
 
 ## Github  
 <https://github.com/sisipapa/Springboot-MultiModule-Gradle.git>  
