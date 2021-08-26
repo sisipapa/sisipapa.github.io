@@ -290,7 +290,7 @@ spring:
 
 ### Eureka 대시보드 확인  
 Eureka 대시보드에서 Config 서버 등록 확인.  
-<img src="https://sisipapa.github.io/assets/images/posts/beureka-oard3.PNG" >  
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-board3.PNG" >  
 
 ### config 서버 service명으로 접속 확인
 resource, reource2 서버의 config서버의 설정 파일에 설정 값을 읽어오는 API 호출 시 정상 응답 확인.
