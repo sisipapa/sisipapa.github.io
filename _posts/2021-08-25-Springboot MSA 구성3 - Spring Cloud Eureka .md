@@ -60,7 +60,7 @@ Eureka의 설정정보를 Config 서버에서 가져오도록 Config서버에 Eu
 
 ### Eureka 대시보드 확인   
 Eureka 서버의 기본설정은 여기까지이고 -Dspring.profiles.active=local 파라미터를 주고 서버를 구동하고 대시보드에 접속한다.     
-Eureka 대시보드 접속 - [http://localhost:8761]   
+Eureka 대시보드 접속 - <http://localhost:8761>   
 <img src="https://sisipapa.github.io/assets/images/posts/eureka-board.PNG" >  
 
 ## Eureka Discovery에 클라이언트 서비스 등록  
@@ -151,7 +151,7 @@ public class GatewayApplication {
 
 ### Eureka 대시보드 확인  
 gateway, resource, resource2 모듈을 재기동하고 대시보드를 확인한다.  
-Eureka 대시보드 접속 - [http://localhost:8761]
+Eureka 대시보드 접속 - <http://localhost:8761>  
 <img src="https://sisipapa.github.io/assets/images/posts/eureka-board2.PNG" >  
 
 ## Eureka Discovery 활용1  
