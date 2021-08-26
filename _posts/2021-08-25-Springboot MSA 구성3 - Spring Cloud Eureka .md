@@ -9,7 +9,7 @@ redirect_from:
 
 ---
 
-Spring Cloud Eureka는 MSA 시스템에서 서비스의 로드밸런싱과 실패처리 등을 유연하게 하기 위해 각 서비스들의 IP|PORT|InstanceId를 가지고 있는 REST 기반의 미들웨어 서버이다. Eureka는 마이크로 서비스 기반의 아키텍처의 핵심 원칙 중 하나인 Service Discovery의 역할을 수행한다. MSA에서는 Service의 IP와 Port가 일정하지 않고 지속적을 변화한다. Eureka는 Client-Server의 방식으로 Eureka Server는 모든 Client 서버들이 본인의 IP와 Port, InstanceId를 Eureka-Server로 전달한다. 그리고 Eureka에 있는 정보를 Fetch하여 Eureka-Client간 통신에 사용한다.  
+Spring Cloud Eureka는 MSA 시스템에서 서비스의 로드밸런싱과 실패처리 등을 유연하게 하기 위해 각 서비스들의 IP,PORT,InstanceId를 가지고 있는 REST 기반의 미들웨어 서버이다. Eureka는 마이크로 서비스 기반의 아키텍처의 핵심 원칙 중 하나인 Service Discovery의 역할을 수행한다. MSA에서는 Service의 IP와 Port가 일정하지 않고 지속적을 변화한다. Eureka는 Client-Server의 방식으로 Eureka Server는 모든 Client 서버들이 본인의 IP와 Port, InstanceId를 Eureka-Server로 전달한다. 그리고 Eureka에 있는 정보를 Fetch하여 Eureka-Client간 통신에 사용한다.    
 
 ## Eureka 서버
 
