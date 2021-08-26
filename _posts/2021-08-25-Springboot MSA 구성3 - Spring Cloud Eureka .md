@@ -61,7 +61,7 @@ Eureka의 설정정보를 Config 서버에서 가져오도록 Config서버에 Eu
 ### Eureka 대시보드 확인   
 Eureka 서버의 기본설정은 여기까지이고 -Dspring.profiles.active=local 파라미터를 주고 서버를 구동하고 대시보드에 접속한다.     
 Eureka 대시보드 접속 - (http://localhost:8761)   
-<img src="https://sisipapa.github.io/assets/images/posts/eureka_board.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-board.PNG" >  
 
 ## Eureka Discovery에 클라이언트 서비스 등록  
 gateway, resource, resource2 모듈에 eureka client 설정을 추가한다.  
@@ -152,7 +152,7 @@ public class GatewayApplication {
 ### Eureka 대시보드 확인  
 gateway, resource, resource2 모듈을 재기동하고 대시보드를 확인한다.  
 Eureka 대시보드 접속 - (http://localhost:8761)
-<img src="https://sisipapa.github.io/assets/images/posts/eureka_board2.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-board2.PNG" >  
 
 ## Eureka Discovery 활용1  
 config-repo 모듈의 gateway 관련 설정 중 zuul관련설정을 변경한다.  
@@ -290,7 +290,7 @@ spring:
 
 ### Eureka 대시보드 확인  
 Eureka 대시보드에서 Config 서버 등록 확인.  
-<img src="https://sisipapa.github.io/assets/images/posts/eureka_board3.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/beureka-oard3.PNG" >  
 
 ### config 서버 service명으로 접속 확인
 resource, reource2 서버의 config서버의 설정 파일에 설정 값을 읽어오는 API 호출 시 정상 응답 확인.
@@ -314,7 +314,7 @@ Resource2 서버의 요청이 많아서 서버의 증설이 필요한 상황을 
 
 ### 실행 가능한 jar파일 생성  
 IntelliJ의 Gradle bootJar를 실행해서 실행가능한 jar파일을 생성한다.  
-<img src="https://sisipapa.github.io/assets/images/posts/eureka_bootjar.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-bootjar.PNG" >  
 
 ### jar 파일 실행
 ```shell
@@ -323,7 +323,7 @@ $ java -jar -Dserver.port=8082 -Dspring.profiles.active=local C:\projects\Spring
 
 ### Eureka 대시보드 확인  
 8082 포트로 실행한 Resource2 서비스 추가확인
-<img src="https://sisipapa.github.io/assets/images/posts/eureka_board4.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-board4.PNG" >  
 
 ### 테스트  
 2번의 요청을 날렸는데 8081, 8082로 한번씩 로드밸런싱 되어 요청을 한다.  
