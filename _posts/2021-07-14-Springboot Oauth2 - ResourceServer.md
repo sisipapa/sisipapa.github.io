@@ -373,8 +373,8 @@ C22l+rBHI2tZEUEcDVwd/G6t620x2ASyLAAo
 -----END CERTIFICATE-----
 ```  
 
-#### 인증서버 reources 폴더에 jsk 파일을 복사  
-#### 인증서버 Oauth2AuthorizationConfig TokenCOnverter 수정
+#### 인증서버 reources 폴더에 jks 파일을 복사  
+#### 인증서버 Oauth2AuthorizationConfig TokenConverter 수정
 ```java
 /**
      * jwt converter를 등록
