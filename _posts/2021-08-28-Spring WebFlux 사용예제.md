@@ -29,10 +29,10 @@ Mono : 0 ~ 1 개의 데이터 전달
 [devKuma님의 Spring WebFlux의 간단한 사용법](https://devuna.tistory.com/108) 정리가 잘되어 있어 예제들을 따라해 보면서 webFlux가 무엇인지 이해를 해보려고 한다.  
 
 ### Spring Initializr 프로젝트 생성  
-<img src="https://sisipapa.github.io/assets/images/posts/webFlux-project1.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/webflux-project1.png" >  
 
 ### Spring reactive web 선택  
-<img src="https://sisipapa.github.io/assets/images/posts/webFlux-project2.png" >  
+<img src="https://sisipapa.github.io/assets/images/posts/webflux-project2.png" >  
 
 ## HelloController 
 
@@ -96,7 +96,7 @@ String을 반환하는 API로 차이를 느끼기 어렵기 때문에 이번에�
 
 
 ## 참고  
-[devKuma - Spring WebFlux의 간단한 사용법](http://www.devkuma.com/pages/1514)
+[devKuma - Spring WebFlux의 간단한 사용법](http://www.devkuma.com/pages/1514)  
 [튜나 개발일기 - [Spring] WebFlux의 개념 / Spring MVC와 간단비교](https://devuna.tistory.com/108)
 
 
