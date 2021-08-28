@@ -198,7 +198,7 @@ spring:
 ```  
 
 ## 테스트
-1. 로그인페이지 접속 : http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read  
+1. 로그인페이지 접속 : <http://localhost:8081/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8081/oauth2/callback&response_type=code&scope=read>  
 2. 아이디/패스워드 입력 후 Sign in 버튼 클릭(test / test)  
    <img src="https://sisipapa.github.io/assets/images/posts/oauth2-login.png" >  
 3. Oauth Approval 설정 - Approve 체크박스 선택 후 Authorize 버튼 클릭  
