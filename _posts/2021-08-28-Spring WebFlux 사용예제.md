@@ -34,9 +34,7 @@ Mono : 0 ~ 1 개의 데이터 전달
 ### Spring reactive web 선택  
 <img src="https://sisipapa.github.io/assets/images/posts/webflux-project2.png" >  
 
-## HelloController 
-
-### @GetMapping("/") API 작성  
+## HelloController - hello(Flux 기본 API)
 ```java
 @RestController
 public class HelloController {
@@ -45,6 +43,7 @@ public class HelloController {
     Flux<String> hello() {
         return Flux.just("Hello", "World");
     }
+    
 } 
 ```  
 
@@ -91,7 +90,107 @@ HelloWorld
 Response code: 200 (OK); Time: 203ms; Content length: 10 bytes
 ```  
 
-String을 반환하는 API로 차이를 느끼기 어렵기 때문에 이번에는 Flux의 Stream을 생성해서 응답 결과를 비교해 보려고 한다.  
+## HelloController - stream(무한 Stream API)
+String을 반환하는 API로 차이를 느끼기 어렵기 때문에 이번에는 Flux의 무한 Stream을 생성해서 응답 결과를 비교해 보려고 한다.
+```java
+@RestController
+public class HelloController {
+
+    @GetMapping("/")
+    Flux<String> hello() {
+        return Flux.just("Hello", "World");
+    }
+
+    @GetMapping("/stream")
+    Flux<Map<String, Integer>> stream() {
+        Stream<Integer> stream = Stream.iterate(0, i -> i + 1); // Java8의 무한Stream
+        return Flux.fromStream(stream.limit(200))
+                .map(i -> Collections.singletonMap("value", i));
+    }
+    
+} 
+```  
+아래 그림은 Intellij의 Http Request에서 요청한 이미지이다. 요청 후 10분이 지나도 webflux-request#4, webflux-request#5 계속 진행중인 걸 확인했다. 현재 툴에서는 현재 진행 중인 과정 확인이 어려워 응답 결과 확인을 위해 limit 200을 주고 진행해 보려고 한다.  
+<img src="https://sisipapa.github.io/assets/images/posts/webflux-project2.png" >  
+
+### @GetMapping("/stream") API 요청테스트(Accept: application/json)  
+```json
+GET http://localhost:8080/stream
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+Content-Type: application/stream+json
+
+{
+  "value": 0
+}
+{
+  "value": 1
+}
+
+...
+
+{
+"value": 198
+}
+{
+"value": 199
+}
+
+
+Response code: 200 (OK); Time: 179ms; Content length: 2690 bytes
+```  
+
+### @GetMapping("/stream") API 요청테스트(Accept: text/event-stream)   
+```json
+GET http://localhost:8080/stream
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+Content-Type: text/event-stream;charset=UTF-8
+
+data:{"value":0}
+
+data:{"value":1}
+
+...
+
+data:{"value":198}
+
+data:{"value":199}
+
+
+
+Response code: 200 (OK); Time: 198ms; Content length: 3890 bytes
+```  
+
+### @GetMapping("/stream") API 요청테스트(Accept: application/stream+json)  
+```json
+GET http://localhost:8080/stream
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+Content-Type: application/stream+json
+
+{
+  "value": 0
+}
+{
+  "value": 1
+}
+
+...
+
+{
+"value": 198
+}
+{
+"value": 199
+}
+
+
+Response code: 200 (OK); Time: 206ms; Content length: 2690 bytes
+```
 
 
 
