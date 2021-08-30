@@ -11,6 +11,9 @@ redirect_from:
 
 간단한 SpringBoot 프로젝트를 만들고, Dockerfile을 통해서 애플리케이션을 docker image로 만들고, 실행해보고, docker hub에 remote로 푸시하는 방법에 대해서 알아보려고 한다.  
 
+## PreSetting  
+Docker 설치
+
 ## Springboot 프로젝트 만들기  
 
 ## Dockerfile  
