@@ -15,9 +15,34 @@ redirect_from:
 
 쿠버네티스 시험은 2회까지 볼 수 있기때문에 일단 위의 계획대로 시험을 보고 불합격이 되면 다음 플랜을 세워야 할 것 같다. 여기서는 인프런 강의 실습 내용을 따라해 보면서 정리해 나갈 예정이다.  
 
+# 기본 오브젝트  
+## Pod  
+파드는 하나 이상의 컨테이너의 그룹이고 쿠버네티스에서 생성하고 관리할 수 있는 배포 가능한 가장 작은 컴퓨팅 단위이다.  
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-1
+spec:
+  containers:
+  - name: container1
+    image: coolguy239/p8000
+    ports:
+    - containerPort: 8000
+  - name: container2
+    image: coolguy239/p8080
+    ports:
+    - containerPort: 8080
+```  
 
 
-## 참고  
-[KUBETM BLOG](https://kubetm.github.io/k8s/)  
+## Service  
+## Volume  
+## ConfigMap  
+## Namespace  
+
+## 참고
+[KUBETM BLOG](https://kubernetes.io/ko/docs/concepts/workloads/pods/)  
+[쿠버네티스 공식사이트](https://kubetm.github.io/k8s/)   
 
 ## Github    
