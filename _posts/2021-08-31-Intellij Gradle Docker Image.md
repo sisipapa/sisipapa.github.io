@@ -106,7 +106,7 @@ public class CommonController {
 
 
 ### Docker hub Image 확인  
-<img src="https://sisipapa.github.io/assets/images/posts/docker-push2.PNG" >  
+<img src="https://sisipapa.github.io/assets/images/posts/docker-push2.png" >  
 
 ## Docker Image run  
 ### Dos 창에서 실행  
