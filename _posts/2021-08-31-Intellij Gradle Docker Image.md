@@ -101,35 +101,8 @@ public class CommonController {
 
 ## Docker hub push  
 ### gradle > docker > dockerPushDockerHub 더블클릭 
-<img src="https://sisipapa.github.io/assets/images/posts/docker-push1.PNG" >  
-```shell
-> Task :compileJava
-> Task :processResources
-> Task :classes
-> Task :bootJarMainClassName
-> Task :bootJar
-> Task :dockerClean UP-TO-DATE
-> Task :dockerPrepare
-> Task :docker
-> Task :dockerTagDockerHub
-> Task :dockerPushDockerHub
-The push refers to repository [docker.io/coolguy239/p8000]
-e7b55fef7c08: Preparing
-b62ce2e20fb6: Preparing
-974adc247f15: Preparing
-9a8bad52f245: Preparing
-d9ff549177a9: Preparing
-d9ff549177a9: Layer already exists
-9a8bad52f245: Layer already exists
-b62ce2e20fb6: Layer already exists
-974adc247f15: Layer already exists
-e7b55fef7c08: Pushed
-1.2: digest: sha256:6418f883e000bcb234f9ed9d91f1be95f6fdc61f6f212a8fd43b20ab7590a39e size: 1370
-
-BUILD SUCCESSFUL in 44s
-9 actionable tasks: 8 executed, 1 up-to-date
-오후 12:21:06: Task execution finished 'dockerPushDockerHub'.
-```   
+<img src="https://sisipapa.github.io/assets/images/posts/docker-push1.PNG" >   
+<img src="https://sisipapa.github.io/assets/images/posts/docker-push-log.PNG" >    
 
 
 ### Docker hub Image 확인  
