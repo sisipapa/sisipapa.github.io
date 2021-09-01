@@ -66,42 +66,95 @@ $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: replication-1
+  name: rpc
 spec:
-  replicas: 1
+  replicas: 2
   selector:
-    app: rc
+    label1: labelVal1
+    label2: labelVal2
   template:
     metadata:
-      name: pod-1
       labels:
-        app: rc
+        label1: labelVal1
+        label2: labelVal2
     spec:
       containers:
         - name: container
-          image: kubetm/init
+          image: coolguy239/init
 EOF
 ```
 
 ### 2-2. ReplicationController Yaml 결과확인  
-ReplicationController의 경우 pod를 삭제하면 pod가 재생성 되면서 IP가 변경된다.  
+ReplicationController의 경우 pod를 삭제하면 pod가 재생성 되면서 pod명과 IP가 변경된다.  
 ```shell
 $ kubectl get pod -o wide
 NAME                  READY   STATUS    RESTARTS      AGE   IP              NODE          NOMINATED NODE   READINESS GATES
-pod-multi-container   2/2     Running   4 (18m ago)   52m   20.100.194.66   k8s-worker1   <none>           <none>
-replication-1-jtcg4   1/1     Running   0             51s   20.110.126.4    k8s-worker2   <none>           <none>
+pod-multi-container   2/2     Running   4 (36m ago)   70m   20.100.194.66   k8s-worker1   <none>           <none>
+rpc-2k2sx             1/1     Running   0             37s   20.110.126.8    k8s-worker2   <none>           <none>
+rpc-6jdsh             1/1     Running   0             37s   20.110.126.7    k8s-worker2   <none>           <none>
 
-$ kubectl delete pod replication-1-jtcg4
-pod "replication-1-jtcg4" deleted
+
+$ kubectl delete pod rpc-6jdsh
+pod "rpc-6jdsh" deleted
 
 $ kubectl get pod -o wide
-NAME                  READY   STATUS    RESTARTS      AGE   IP              NODE          NOMINATED NODE   READINESS GATES
-pod-multi-container   2/2     Running   4 (19m ago)   53m   20.100.194.66   k8s-worker1   <none>           <none>
-replication-1-vcxnz   1/1     Running   0             35s   20.110.126.5    k8s-worker2   <none>           <none>
+NAME                  READY   STATUS    RESTARTS      AGE     IP              NODE          NOMINATED NODE   READINESS GATES
+pod-multi-container   2/2     Running   4 (38m ago)   72m     20.100.194.66   k8s-worker1   <none>           <none>
+rpc-2k2sx             1/1     Running   0             2m21s   20.110.126.8    k8s-worker2   <none>           <none>
+rpc-65vc8             1/1     Running   0             36s     20.110.126.9    k8s-worker2   <none>           <none>
 ```
 
-### 3-1. Pod의 labels를 이용해 Service 연결 Yaml 실행
-### 3-2. Pod의 labels를 이용해 Service 연결 Yaml 결과확인
+### 3-1. Pod의 labels를 이용해 Service 연결 Yaml 실행  
+Service에 연결할 Pod 생성  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod01
+  labels:
+    profile: local
+    team: dev1
+spec:
+  containers:
+  - name: container
+    image: coolguy239/init
+EOF  
+
+$ kubectl get pod -o wide 
+NAME                  READY   STATUS    RESTARTS      AGE   IP              NODE          NOMINATED NODE   READINESS GATES
+pod-multi-container   2/2     Running   4 (55m ago)   89m   20.100.194.66   k8s-worker1   <none>           <none>
+pod01                 1/1     Running   0             99s   20.100.194.68   k8s-worker1   <none>           <none>
+rpc-2k2sx             1/1     Running   0             19m   20.110.126.8    k8s-worker2   <none>           <none>
+rpc-65vc8             1/1     Running   0             17m   20.110.126.9    k8s-worker2   <none>           <none>
+```  
+
+Pod에 연결할 Service 생성  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod01-svc
+spec:
+  selector:
+    profile: local
+  ports:
+  - port: 8080
+EOF
+
+kubectl get svc -o wide
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    4h15m   <none>
+pod01-svc    ClusterIP   10.96.109.213   <none>        8080/TCP   2m11s   profile=local
+```
+
+### 3-2. Pod의 labels를 이용해 Service 연결 Yaml 결과확인  
+Service의 CLUSTER-IF의 8080 PORT로 API 호출 결과
+```shell
+$ curl 10.96.109.213:8080/init
+This is InitController..
+```  
 
 ### 4-1. Pod nodeSelector Yaml 실행  
 ### 4-2. Pod nodeSelector Yaml 결과확인
