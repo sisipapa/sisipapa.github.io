@@ -208,7 +208,7 @@ volumes:
   elasticsearch:
 ```  
 
-## docker-stack.yml 수정  
+## 5. docker-stack.yml 수정  
 services.elasticsearch.environment.ELASTIC_PASSWORD 수정  
 ```yaml
 version: '3.3'
@@ -285,7 +285,7 @@ networks:
     driver: overlay
 ```  
 
-## Docker-Compose 실행 및 종료  
+## 6. Docker-Compose 실행 및 종료  
 ```shell
 # 실행
 $ docker-compose build && docker-compose up -d  
@@ -294,12 +294,11 @@ $ docker-compose build && docker-compose up -d
 $ docker-compose down -v  
 ```  
 
-## Port 확인   
+## 7. 키바나 접속
 - Elasticsearch : 9200, 9300  
 - Logstash : 5044, 5000, 9600
-- Kibana : 5601
+- Kibana : 5601  
 
-## 키바나 접속
 http://{kibana-server-ip}:5601 웹브라우저 접속.  
 <img src="https://sisipapa.github.io/assets/images/posts/kibana.PNG" >  
 
