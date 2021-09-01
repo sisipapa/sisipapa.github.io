@@ -60,7 +60,10 @@ $ kubectl apply -f git주소!!!
 
 ### 5-1. Pod requests,limits Yaml 작성
 ### 5-2. Pod requests,limits Yaml 파일실행
-### 5-3. Pod requests,limits Yaml 결과확인
+### 5-3. Pod requests,limits Yaml 결과확인  
+
+> CPU와 Memory의 request,limits    
+> 파드의 CPU가 limits 수치까지 올라갔다고 해서 항상 reuqests 수치까지 낮추는 것이 아니고, 노드의 할당된 CPU, Memory 자원을 넘어섰을 때 동작한다. 노드의 파드들이 노드의 자원을 모두 사용하고 더 많은 자원을 요구하게 되면 CPU의 경우는 limits 수치의 파드들을 requests 수치까지 떨어뜨리게 하고 Memory의 경우는 limits까지 올라간 파드들을 재기동한다.   
 
 ## Service  
 ## Volume  
