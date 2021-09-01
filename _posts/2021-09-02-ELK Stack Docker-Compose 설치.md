@@ -304,9 +304,9 @@ http://{kibana-server-ip}:5601 웹브라우저 접속.
 <img src="https://sisipapa.github.io/assets/images/posts/kibana.PNG" >  
 
 ## 참고  
-[Git Repository - docker-elk](https://github.com/deviantony/docker-elk.git)
-[Docker로 ELK스택 설치하기](https://velog.io/@dion/Docker%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-ELK-%EC%8A%A4%ED%83%9D-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0)  
-[MSA 와 Log - 중앙 집중식 로깅 ELK stack 편](https://bravenamme.github.io/2021/01/28/elk-stack/)  
+[Git Repository - docker-elk](https://github.com/deviantony/docker-elk.git)  
+[Docker로 ELK스택 설치하기](https://velog.io/@dion/Docker%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-ELK-%EC%8A%A4%ED%83%9D-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0)    
+[MSA 와 Log - 중앙 집중식 로깅 ELK stack 편](https://bravenamme.github.io/2021/01/28/elk-stack/)    
 
 ## Github
 <https://github.com/sisipapa/ELK-7.1.4-Docker-Compose.git>  
