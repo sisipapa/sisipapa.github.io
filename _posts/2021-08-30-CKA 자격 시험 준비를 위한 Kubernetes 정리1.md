@@ -46,6 +46,8 @@ EOF
 > command terminated with exit code 126    
 >   
 > **Docker Image가 Alpine이라면 /bin/bash를 지원하지 않을 수 있다. 대신 /bin/sh를 사용한다.**    
+> Docker build 시 Dockerfile의 jdk 설정이 FROM openjdk:11-jdk로 하면 /bin/bash를 지원
+> Docker build 시 Dockerfile의 jdk 설정이 FROM lpicanco/java11-alpine 로 하면 /bin/sh 지원
 
 Pod의 Container에 접속해서 호출  
 ```shell
