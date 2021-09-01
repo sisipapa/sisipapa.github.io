@@ -159,6 +159,21 @@ This is InitController..
 ```  
 
 ### 4-1. Pod nodeSelector Yaml 실행  
+Kubernetes Cluster 내에서 Pod가 특정 Node에 생성되도록 하고 싶다면 spec.nodeSelector 를 이용하면 된다.  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nodeSelector
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: k8s-node1
+  containers:
+  - name: con-nodeSelector
+    image: kubetm/init
+EOF
+```
 ### 4-2. Pod nodeSelector Yaml 결과확인
 
 ### 5-1. Pod requests,limits Yaml 실행
