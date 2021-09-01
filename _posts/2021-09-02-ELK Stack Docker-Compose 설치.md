@@ -9,17 +9,17 @@ redirect_from:
 
 ---
 
-얼마전 Springboot MSA 프로젝트를 구성하고 중앙 집중식 로깅을 위해 ELK Stack을 적용해 봐야겠다고 생각을 했다. 처음에는 개인 AWS 클라우드 서버에 구성을 하려고 헀으나 비용의 압박으로 로컬 PC의 Docker환경으로 구성을 해보려고 한다. 여기서는 X-Pack: Elastic Stack의 확장팩은 설치하지 않을 것이다.     
+얼마전 Springboot MSA 프로젝트를 구성하고 중앙 집중식 로깅을 위해 ELK Stack을 적용해 봐야겠다고 생각을 했다. 처음에는 개인 AWS 클라우드 서버에 구성을 하려고 헀으나 비용의 압박으로 로컬 PC의 Docker환경으로 구성을 해보려고 한다. 여기서는 X-Pack: Elastic Stack의 확장팩은 설치하지 않을 것이다.
 
-## ELK Docker Repository Clone  
+## ELK Docker Repository Clone
 ```shell
 $ git clone https://github.com/deviantony/docker-elk.git
 $ cd docker-elk
 ```  
 
-## 1. Elasticsearch 설정 변경  
-### 1-1. elasticsearch.yml 수정  
-X-Pack settings 관련 내용 주석.  
+## 1. Elasticsearch 설정 변경
+### 1-1. elasticsearch.yml 수정
+X-Pack settings 관련 내용 주석.
 ```shell
 $ vi elasticsearch/config/elasticsearch.yml
 ```  
@@ -39,8 +39,8 @@ network.host: 0.0.0.0
 # xpack.monitoring.collection.enabled: true
 ```  
 
-### 1-2. Dockerfile  
-Dockerfile에 한글 분석기 nori 설치 관련 설정 추가.  
+### 1-2. Dockerfile
+Dockerfile에 한글 분석기 nori 설치 관련 설정 추가.
 ```shell
 $ vi elasticsearch/Dockerfile
 ```  
@@ -56,7 +56,7 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
 RUN elasticsearch-plugin install analysis-nori
 ```  
 
-## 2. Kibana 설정 변경  
+## 2. Kibana 설정 변경
 ### 2-1. kibana.yml 수정
 X-Pack security credentials 관련 내용 주석
 ```shell
@@ -78,7 +78,7 @@ monitoring.ui.container.elasticsearch.enabled: true
 # elasticsearch.password: changeme
 ```  
 ## 3. Logstash 설정 변경
-### 3-1. logstash.yml 수정  
+### 3-1. logstash.yml 수정
 X-Pack security credentials 관련 내용 주석
 ```shell
 $ vi kibana/config/kibana.yml
@@ -98,10 +98,10 @@ xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 # xpack.monitoring.elasticsearch.password: changeme
 ```  
 
-### 3-2. logstash.conf 수정  
+### 3-2. logstash.conf 수정
 output.elasticsearch.user 수정   
 output.elasticsearch.password 수정  
-output.elasticsearch.index 추가  
+output.elasticsearch.index 추가
 ```properties
 input {
 	beats {
@@ -121,13 +121,16 @@ output {
 		user => "sisipapa"
 		password => "sisipapa!23$"
 		ecs_compatibility => disabled
-		index => "logstash-sisipapa"
+		index => "logstash-sisipapa-%{+YYYY.MM.dd}"
 	}
+    stdout {
+        codec => rubydebug
+    }
 }
 ```  
 
-## 4. docker-compose.yml 설정 변경  
-services.elasticsearch.environment.ELASTIC_PASSWORD 수정  
+## 4. docker-compose.yml 설정 변경
+services.elasticsearch.environment.ELASTIC_PASSWORD 수정
 ```yaml
 version: '3.2'
 
@@ -208,8 +211,8 @@ volumes:
   elasticsearch:
 ```  
 
-## 5. docker-stack.yml 수정  
-services.elasticsearch.environment.ELASTIC_PASSWORD 수정  
+## 5. docker-stack.yml 수정
+services.elasticsearch.environment.ELASTIC_PASSWORD 수정
 ```yaml
 version: '3.3'
 
@@ -285,7 +288,7 @@ networks:
     driver: overlay
 ```  
 
-## 6. Docker-Compose 실행 및 종료  
+## 6. Docker-Compose 실행 및 종료
 ```shell
 # 실행
 $ docker-compose build && docker-compose up -d  
@@ -295,17 +298,17 @@ $ docker-compose down -v
 ```  
 
 ## 7. 키바나 접속
-- Elasticsearch : 9200, 9300  
+- Elasticsearch : 9200, 9300
 - Logstash : 5044, 5000, 9600
-- Kibana : 5601  
+- Kibana : 5601
 
 http://{kibana-server-ip}:5601 웹브라우저 접속.  
-<img src="https://sisipapa.github.io/assets/images/posts/kibana.PNG" >  
+<img src="https://sisipapa.github.io/assets/images/posts/kibana.PNG" >
 
-## 참고  
+## 참고
 [Git Repository - docker-elk](https://github.com/deviantony/docker-elk.git)  
-[Docker로 ELK스택 설치하기](https://velog.io/@dion/Docker%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-ELK-%EC%8A%A4%ED%83%9D-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0)    
-[MSA 와 Log - 중앙 집중식 로깅 ELK stack 편](https://bravenamme.github.io/2021/01/28/elk-stack/)    
+[Docker로 ELK스택 설치하기](https://velog.io/@dion/Docker%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-ELK-%EC%8A%A4%ED%83%9D-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0)  
+[MSA 와 Log - 중앙 집중식 로깅 ELK stack 편](https://bravenamme.github.io/2021/01/28/elk-stack/)  
 
 ## Github
 <https://github.com/sisipapa/ELK-7.1.4-Docker-Compose.git>  
