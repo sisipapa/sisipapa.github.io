@@ -19,33 +19,46 @@ redirect_from:
 ## Pod  
 파드는 하나 이상의 컨테이너의 그룹이고 쿠버네티스에서 생성하고 관리할 수 있는 배포 가능한 가장 작은 컴퓨팅 단위이다.  
 
-### 1-1. Pod Multi Container Yaml 작성
-강의에서는 kubetm/p8000, kubetm/p8080 Nodejs Image를 사용했는데 나의 경우는 동일한 기능을 하는 coolguy239/p8000, coolguy239/p8080 Springboot Image를 Docker Hub에 업로드해서 사용할 예정이다.  
+### 1-1. Pod Multi Container Yaml 실행
+강의에서는 kubetm/p8000, kubetm/p8080 Nodejs Image를 사용했는데 여기서는 동일한 기능을 하는 coolguy239/p8000, coolguy239/p8080 Springboot Image를 Docker Hub에 업로드해서 사용할 예정이다.  
 파드내의 Continer는 Multi로 구성이 가능하지만 동일한 port를 사용할 수 없다.  
 ```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-1
-spec:
-  containers:
-  - name: container1
-    image: coolguy239/p8000
-    ports:
-    - containerPort: 8000
-  - name: container2
-    image: coolguy239/p8080
-    ports:
-    - containerPort: 8080
+kubectl apply -f - <<EOF
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: pod-multi-container
+ spec:
+   containers:
+   - name: container1
+     image: coolguy239/p8000
+     ports:
+     - containerPort: 8000
+   - name: container2
+     image: coolguy239/p8080
+     ports:
+     - containerPort: 8080
+EOF
 ```  
+### 1-2. Pod Multi Container Yaml 결과확인  
+> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+> OCI runtime exec failed: exec failed: container_linux.go:380: starting container process caused: exec: "/bin/bash": stat /bin/bash: no such file or directory: unknown
+> command terminated with exit code 126  
+> Docker Image가 Alpine이라면 /bin/bash를 지원하지 않을 수 있다. 대신 /bin/sh를 사용한다.  
+>
+> kubectl exec pod-multi-container -c container1 -it /bin/sh
+> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+> / #
 
-### 1-2.  Pod Multi Container Yaml 파일실행
 ```shell
-$ kubectl apply -f git주소!!!
+# curl localhost:8080
+8080
+# curl localhost:8000
+8000
 ```  
 
-### 1-3. Pod Multi Container Yaml 결과확인    
-작성예정   
+
+
 
 ### 2-1. ReplicationController Yaml 작성  
 ### 2-2. ReplicationController Yaml 파일실행  
