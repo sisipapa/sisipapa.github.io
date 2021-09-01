@@ -100,8 +100,8 @@ pod-multi-container   2/2     Running   4 (19m ago)   53m   20.100.194.66   k8s-
 replication-1-vcxnz   1/1     Running   0             35s   20.110.126.5    k8s-worker2   <none>           <none>
 ```
 
-### 3-1. Pod, Service 연결 Yaml 실행
-### 3-2. Pod, Service 연결 Yaml 결과확인
+### 3-1. Pod의 labels를 이용해 Service 연결 Yaml 실행
+### 3-2. Pod의 labels를 이용해 Service 연결 Yaml 결과확인
 
 ### 4-1. Pod nodeSelector Yaml 실행  
 ### 4-2. Pod nodeSelector Yaml 결과확인
