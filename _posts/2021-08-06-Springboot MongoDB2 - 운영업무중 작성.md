@@ -446,4 +446,4 @@ class MobonMongoApplicationTests {
 }
 ```
 
-MongoDB에 대한 운영경험이 많지가 않아서 단순 쿼리로 처리할 수 있는 부분을 굳이 Application으로 만들어서 처리를 하는 생각도 든다. 혹시라도 두서 없이 적은 글에 더 좋은 대안이 있다면 siupapa239@gmail.com으로 조언 부탁드립니다.  
+MongoDB에 대한 운영경험이 많지가 않아서 단순 쿼리로 처리할 수 있는 부분을 굳이 Application으로 만들어서 처리를 하는 생각도 든다. 더 좋은 처리 방법을 찾게 되면 추가로 정리를 해야겠다.  
