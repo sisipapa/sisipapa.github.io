@@ -41,13 +41,14 @@ kubectl apply -f - <<EOF
 EOF
 ```  
 ### 1-2. Pod Multi Container Yaml 결과확인  
-> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
-> OCI runtime exec failed: exec failed: container_linux.go:380: starting container process caused: exec: "/bin/bash": stat /bin/bash: no such file or directory: unknown
-> command terminated with exit code 126  
-> Docker Image가 Alpine이라면 /bin/bash를 지원하지 않을 수 있다. 대신 /bin/sh를 사용한다.  
->
-> kubectl exec pod-multi-container -c container1 -it /bin/sh
-> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.  
+> OCI runtime exec failed: exec failed: container_linux.go:380: starting container process caused: exec: "/bin/bash": stat /bin/bash: no such file or directory: unknown  
+> command terminated with exit code 126    
+>   
+> Docker Image가 Alpine이라면 /bin/bash를 지원하지 않을 수 있다. 대신 /bin/sh를 사용한다.    
+>   
+> kubectl exec pod-multi-container -c container1 -it /bin/sh  
+> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.  
 > / #
 
 ```shell
