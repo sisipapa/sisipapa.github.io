@@ -18,6 +18,9 @@ redirect_from:
 # 기본 오브젝트  
 ## Pod  
 파드는 하나 이상의 컨테이너의 그룹이고 쿠버네티스에서 생성하고 관리할 수 있는 배포 가능한 가장 작은 컴퓨팅 단위이다.  
+
+### 1-1. Pod Multi Container Yaml 작성
+강의에서는 kubetm/p8000, kubetm/p8080 Nodejs Image를 사용했는데 나의 경우는 동일한 기능을 하는 coolguy239/p8000, coolguy239/p8080 Springboot Image를 Docker Hub에 업로드해서 사용할 예정이다.  
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -35,6 +38,29 @@ spec:
     - containerPort: 8080
 ```  
 
+### 1-2.  Pod Multi Container Yaml 파일실행
+```shell
+$ kubectl apply -f git주소!!!
+```  
+
+### 1-3. Pod Multi Container Yaml 결과확인    
+작성예정   
+
+### 2-1. ReplicationController Yaml 작성  
+### 2-2. ReplicationController Yaml 파일실행  
+### 2-3. ReplicationController Yaml 결과확인  
+
+### 3-1. Pod, Service 연결 Yaml 작성
+### 3-2. Pod, Service 연결 Yaml 파일실행
+### 3-3. Pod, Service 연결 Yaml 결과확인
+
+### 4-1. Pod nodeSelector Yaml 작성  
+### 4-2. Pod nodeSelector Yaml 파일실행  
+### 4-3. Pod nodeSelector Yaml 결과확인
+
+### 5-1. Pod requests,limits Yaml 작성
+### 5-2. Pod requests,limits Yaml 파일실행
+### 5-3. Pod requests,limits Yaml 결과확인
 
 ## Service  
 ## Volume  
