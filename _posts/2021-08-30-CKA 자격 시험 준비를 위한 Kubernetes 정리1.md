@@ -45,36 +45,68 @@ EOF
 > OCI runtime exec failed: exec failed: container_linux.go:380: starting container process caused: exec: "/bin/bash": stat /bin/bash: no such file or directory: unknown  
 > command terminated with exit code 126    
 >   
-> Docker Image가 Alpine이라면 /bin/bash를 지원하지 않을 수 있다. 대신 /bin/sh를 사용한다.    
->   
-> kubectl exec pod-multi-container -c container1 -it /bin/sh  
-> kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.  
-> / #
+> **Docker Image가 Alpine이라면 /bin/bash를 지원하지 않을 수 있다. 대신 /bin/sh를 사용한다.**    
 
+Pod의 Container에 접속해서 호출  
 ```shell
-# curl localhost:8080
-8080
+$ kubectl exec pod-multi-container -c container1 -it /bin/sh  
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
 # curl localhost:8000
 8000
+
+$ kubectl exec pod-multi-container -c container2 -it /bin/sh  
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+# curl localhost:8080
+8080
 ```  
 
+### 2-1. ReplicationController Yaml 실행
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: replication-1
+spec:
+  replicas: 1
+  selector:
+    app: rc
+  template:
+    metadata:
+      name: pod-1
+      labels:
+        app: rc
+    spec:
+      containers:
+        - name: container
+          image: kubetm/init
+EOF
+```
 
+### 2-2. ReplicationController Yaml 결과확인  
+ReplicationController의 경우 pod를 삭제하면 pod가 재생성 되면서 IP가 변경된다.  
+```shell
+$ kubectl get pod -o wide
+NAME                  READY   STATUS    RESTARTS      AGE   IP              NODE          NOMINATED NODE   READINESS GATES
+pod-multi-container   2/2     Running   4 (18m ago)   52m   20.100.194.66   k8s-worker1   <none>           <none>
+replication-1-jtcg4   1/1     Running   0             51s   20.110.126.4    k8s-worker2   <none>           <none>
 
+$ kubectl delete pod replication-1-jtcg4
+pod "replication-1-jtcg4" deleted
 
-### 2-1. ReplicationController Yaml 작성  
-### 2-2. ReplicationController Yaml 파일실행  
-### 2-3. ReplicationController Yaml 결과확인  
+$ kubectl get pod -o wide
+NAME                  READY   STATUS    RESTARTS      AGE   IP              NODE          NOMINATED NODE   READINESS GATES
+pod-multi-container   2/2     Running   4 (19m ago)   53m   20.100.194.66   k8s-worker1   <none>           <none>
+replication-1-vcxnz   1/1     Running   0             35s   20.110.126.5    k8s-worker2   <none>           <none>
+```
 
-### 3-1. Pod, Service 연결 Yaml 작성
-### 3-2. Pod, Service 연결 Yaml 파일실행
-### 3-3. Pod, Service 연결 Yaml 결과확인
+### 3-1. Pod, Service 연결 Yaml 실행
+### 3-2. Pod, Service 연결 Yaml 결과확인
 
-### 4-1. Pod nodeSelector Yaml 작성  
-### 4-2. Pod nodeSelector Yaml 파일실행  
-### 4-3. Pod nodeSelector Yaml 결과확인
+### 4-1. Pod nodeSelector Yaml 실행  
+### 4-2. Pod nodeSelector Yaml 결과확인
 
-### 5-1. Pod requests,limits Yaml 작성
-### 5-2. Pod requests,limits Yaml 파일실행
+### 5-1. Pod requests,limits Yaml 실행
 ### 5-3. Pod requests,limits Yaml 결과확인  
 
 > CPU와 Memory의 request,limits    
