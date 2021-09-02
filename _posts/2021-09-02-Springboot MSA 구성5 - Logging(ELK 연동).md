@@ -90,7 +90,17 @@ logback 설정에 console,stash에 로그가 적재되도록 설정을 했고 �
 ## Kibana 설정/확인  
 ### Index 생성을 위해 Manage 클릭  
 <img src="https://sisipapa.github.io/assets/images/posts/kibana-index1.PNG" >   
-
+### Kibana > Index Pattern 클릭   
+<img src="https://sisipapa.github.io/assets/images/posts/kibana-index2.PNG" >   
+### Create Index Pattern 버튼 클릭
+<img src="https://sisipapa.github.io/assets/images/posts/kibana-index3.PNG" >
+### Create Index Step1 - index명 설정(index => "logstash-%{+YYYY.MM.dd}")
+이전 노트 [ELK Stack Docker-Compose 설치](https://sisipapa.github.io/blog/2021/09/02/ELK-Stack-Docker-Compose-%EC%84%A4%EC%B9%98/)에서 정리했던 logstash.conf 파일내용 참고해서 index명 설정  
+<img src="https://sisipapa.github.io/assets/images/posts/kibana-index4.PNG" >   
+### Create Index Step2 - Time Field 설정  
+<img src="https://sisipapa.github.io/assets/images/posts/kibana-index5.PNG" >  
+### Analytics >Discover 메뉴에서 결과확인    
+<img src="https://sisipapa.github.io/assets/images/posts/kibana-index6.PNG" >    
 
 ## 참고  
 [MSA 와 Log - 중앙 집중식 로깅 ELK stack 편](https://bravenamme.github.io/2021/01/28/elk-stack/)  
