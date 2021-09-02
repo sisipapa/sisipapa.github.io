@@ -102,6 +102,8 @@ logback 설정에 console,stash에 로그가 적재되도록 설정을 했고 �
 ### Analytics >Discover 메뉴에서 결과확인    
 <img src="https://sisipapa.github.io/assets/images/posts/kibana-index6.PNG" >    
 
+여기까지 해서 분산된 로그를 하나의 저장소로 모으는 일이 끝났다. 앞으로 중앙 집중식으로 모인 로그에 대한 추적 및 분석이 용이하도록 하기 위한 설정이 필요할 것 같다.  
+
 ## 참고  
 [MSA 와 Log - 중앙 집중식 로깅 ELK stack 편](https://bravenamme.github.io/2021/01/28/elk-stack/)  
 [Elasticsearch + Logstash + Kibana 구축하기 (2) - Spring boot와 연동](https://investment-engineer.tistory.com/m/5)  
