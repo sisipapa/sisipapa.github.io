@@ -171,7 +171,7 @@ spec:
     kubernetes.io/hostname: k8s-node1
   containers:
   - name: con-nodeSelector
-    image: kubetm/init
+    image: coolguy239/init
 EOF
 ```
 ### 4-2. Pod nodeSelector Yaml 결과확인
