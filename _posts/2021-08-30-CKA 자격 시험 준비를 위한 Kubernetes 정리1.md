@@ -183,7 +183,7 @@ pod-node-selector   1/1     Running   0          3m37s   20.100.194.65   k8s-wor
 ```  
 
 ### 5-1. Pod requests,limits Yaml 실행
-```yaml
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -230,6 +230,96 @@ Allocated resources:
 > 파드의 CPU가 limits 수치까지 올라갔다고 해서 항상 reuqests 수치까지 낮추는 것이 아니고, 노드의 할당된 CPU, Memory 자원을 넘어섰을 때 동작한다. 노드의 파드들이 노드의 자원을 모두 사용하고 더 많은 자원을 요구하게 되면 CPU의 경우는 limits 수치의 파드들을 requests 수치까지 떨어뜨리게 하고 Memory의 경우는 limits까지 올라간 파드들을 재기동한다.   
 
 ## Service  
+Service, Pod 모두 Cluster IP를 가지고 있다. 그러다면 Pod에 직접 연결을 하면 되는데 왜 Service를 통해서 Pod을 하는 것일까? Pod는 시스템,성능 장애로 언제든지 죽고 재생성 되도록 설계가 되어있는 Object이다. 그리고 Pod는 재생성되면서 IP가 변경이 되기 때문에 신뢰성이 떨어진다. 그래서 서비스를 통해 Pod에 접근을 한다.  
+한개의 서비스에 여러개의 Pod를 연결할 수가 있고 Service가 로드밸런스 해준다.    
+
+### ClusterIP
+ClusterIP는 쿠버네티스 클러스터 내에서만 접근이 가능하다. 외부에서 접근할 수 없고 인가된 사용자만 접근이 가능하다.  
+여기서는 아래와 같은 시나리오로 테스트를 진행할 예정이다. 
+1. Service(ClusterIP),Pod 생성   
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-01
+  labels:
+     app: pod
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: k8s-worker1
+  containers:
+  - name: container
+    image: coolguy239/app
+    ports:
+    - containerPort: 8080
+EOF  
+```  
+
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-01
+spec:
+  selector:
+    app: pod
+  ports:
+    - port: 9000
+      targetPort: 8080
+EOF      
+```  
+
+2. 쿠버네티스 클러스터 내부에서 Service의 IP,PORT로 접속 테스트  
+hostname API는 String값의 hostname을 리턴한다.  
+3. 
+```shell
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    20h
+service-01   ClusterIP   10.102.133.92   <none>        9000/TCP   3m49s
+
+$ curl 10.102.133.92:9000/hostname
+pod-01
+```  
+3. Pod 삭제  
+```shell
+$ kubectl delete pod pod-01
+pod "pod-01" deleted
+```  
+4. Pod 생성  
+```shell
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-01
+  labels:
+     app: pod
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: k8s-worker1
+  containers:
+  - name: container
+    image: coolguy239/app
+    ports:
+    - containerPort: 8080
+EOF  
+```  
+5. 쿠버네티스 클러스터 내부에서 Service의 IP,PORT로 접속 테스트  
+```shell
+$ curl 10.102.133.92:9000/hostname
+pod-01
+```  
+
+### NodePort
+NodePort의 경우 Pod가 존재하는 Node에만 설정한 Port가 열리는 게 아니라 쿠버네티스 클러스터 내의 모든 Node의 Port가 오픈된다. NodePort type의 nodePort 속성은 Optional이고 값이 없다면 30000~32767 범위내에서 자동 생성된다.   
+
+### Load Balancer  
+외부 시스템 노출용도로 사용된다.  
+
+
 ## Volume  
 ## ConfigMap  
 ## Namespace  
