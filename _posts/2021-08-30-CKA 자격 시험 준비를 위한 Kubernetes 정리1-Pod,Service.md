@@ -1,6 +1,6 @@
 ---
 layout: post
-title: CKA 자격 시험 준비를 위한 Kubernetes 정리1-Pod,Service
+title: CKA 자격 시험 준비를 위한 Kubernetes 정리1
 category: [k8s]
 tags: [k8s, cka, kubernetes]
 redirect_from:
@@ -22,8 +22,8 @@ redirect_from:
 ### 1-1. Pod Multi Container Yaml 실행
 강의에서는 kubetm/p8000, kubetm/p8080 Nodejs Image를 사용했는데 여기서는 동일한 기능을 하는 coolguy239/p8000, coolguy239/p8080 Springboot Image를 Docker Hub에 업로드해서 사용할 예정이다.  
 파드내의 Continer는 Multi로 구성이 가능하지만 동일한 port를 사용할 수 없다.  
-```yaml
-kubectl apply -f - <<EOF
+```shell
+$ kubectl apply -f - <<EOF
  apiVersion: v1
  kind: Pod
  metadata:
