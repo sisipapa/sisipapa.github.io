@@ -1,6 +1,6 @@
 ---
 layout: post
-title: CKA 자격 시험 준비를 위한 Kubernetes 정리1 
+title: CKA 자격 시험 준비를 위한 Kubernetes 정리1-Pod,Service
 category: [k8s]
 tags: [k8s, cka, kubernetes]
 redirect_from:
