@@ -9,7 +9,7 @@ redirect_from:
 
 ---
 
-오늘은 인프런 강의 대세는 쿠버네티스 강의 중 Volume, ConfigMap, Namespace 관련 내용을 따라해 보면서 정리 할 예정이다.  
+오늘은 인프런 강의 대세는 쿠버네티스 강의 중 Volume, ConfigMap, Namespace 관련 내용을 실습해 보면서 정리 할 예정이다.  
 Volume - <https://kubetm.github.io/k8s/03-beginner-basic-resource/volume/>   
 ConfigMap - <https://kubetm.github.io/k8s/03-beginner-basic-resource/ConfigMap/>   
 Namespace - <https://kubetm.github.io/k8s/03-beginner-basic-resource/Namespace/>    
