@@ -319,13 +319,6 @@ NodePort의 경우 Pod가 존재하는 Node에만 설정한 Port가 열리는 �
 ### Load Balancer  
 외부 시스템 노출용도로 사용된다.  
 
-
-## Volume  
-## ConfigMap  
-## Namespace  
-
 ## 참고
 [KUBETM BLOG](https://kubernetes.io/ko/docs/concepts/workloads/pods/)  
 [쿠버네티스 공식사이트](https://kubetm.github.io/k8s/)   
-
-## Github    
