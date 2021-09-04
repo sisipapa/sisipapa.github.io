@@ -235,8 +235,9 @@ Service, Pod 모두 Cluster IP를 가지고 있다. 그러다면 Pod에 직접 �
 
 ### ClusterIP
 ClusterIP는 쿠버네티스 클러스터 내에서만 접근이 가능하다. 외부에서 접근할 수 없고 인가된 사용자만 접근이 가능하다.  
-여기서는 아래와 같은 시나리오로 테스트를 진행할 예정이다. 
-- Service(ClusterIP),Pod 생성
+여기서는 아래와 같은 시나리오로 테스트를 진행할 예정이다.  
+
+Service(ClusterIP),Pod 생성  
 ```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -254,8 +255,7 @@ spec:
     ports:
     - containerPort: 8080
 EOF
-```
-
+```  
 ```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -268,10 +268,11 @@ spec:
   ports:
     - port: 9000
       targetPort: 8080
-EOF      
+EOF
 ```  
-- 쿠버네티스 클러스터 내부에서 Service의 IP,PORT로 접속 테스트  
-   hostname API는 String값의 hostname을 리턴한다.
+
+쿠버네티스 클러스터 내부에서 Service의 IP,PORT로 접속 테스트   
+   hostname API는 String값의 hostname을 리턴한다.  
 ```shell
 $ kubectl get svc
 NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
@@ -282,14 +283,12 @@ $ curl 10.102.133.92:9000/hostname
 pod-01
 ```  
 
-- Pod 삭제  
+Pod 삭제   
 ```shell
 $ kubectl delete pod pod-01
 pod "pod-01" deleted
-```  
-
-- Pod 생성  
-
+```
+Pod 생성   
 ```shell
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -309,12 +308,11 @@ spec:
 EOF
 ```  
 
-- 쿠버네티스 클러스터 내부에서 Service의 IP,PORT로 접속 테스트  
+쿠버네티스 클러스터 내부에서 Service의 IP,PORT로 접속 테스트  
 ```shell
 $ curl 10.102.133.92:9000/hostname
 pod-01
 ```  
-
 
 ### NodePort
 NodePort의 경우 Pod가 존재하는 Node에만 설정한 Port가 열리는 게 아니라 쿠버네티스 클러스터 내의 모든 Node의 Port가 오픈된다. NodePort type의 nodePort 속성은 Optional이고 값이 없다면 30000~32767 범위내에서 자동 생성된다.   
