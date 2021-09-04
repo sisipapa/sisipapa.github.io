@@ -231,7 +231,6 @@ Allocated resources:
 
 ## Service  
 Service, Pod 모두 Cluster IP를 가지고 있다. 그러다면 Pod에 직접 연결을 하면 되는데 왜 Service를 통해서 Pod을 하는 것일까? Pod는 시스템,성능 장애로 언제든지 죽고 재생성 되도록 설계가 되어있는 Object이다. 그리고 Pod는 재생성되면서 IP가 변경이 되기 때문에 신뢰성이 떨어진다. 그래서 서비스를 통해 Pod에 접근을 한다.  
-한개의 서비스에 여러개의 Pod를 연결할 수가 있고 Service가 로드밸런스 해준다.    
 
 ### ClusterIP
 ClusterIP는 쿠버네티스 클러스터 내에서만 접근이 가능하다. 외부에서 접근할 수 없고 인가된 사용자만 접근이 가능하다.  
@@ -315,10 +314,70 @@ pod-01
 ```  
 
 ### NodePort
-NodePort의 경우 Pod가 존재하는 Node에만 설정한 Port가 열리는 게 아니라 쿠버네티스 클러스터 내의 모든 Node의 Port가 오픈된다. NodePort type의 nodePort 속성은 Optional이고 값이 없다면 30000~32767 범위내에서 자동 생성된다.   
+NodePort의 경우 Pod가 존재하는 Node에만 설정한 Port가 열리는 게 아니라 쿠버네티스 클러스터 내의 모든 Node의 Port가 오픈된다. NodePort type의 nodePort 속성은 Optional이고 값이 없다면 30000~32767 범위내에서 자동 생성된다.  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-01
+spec:
+  selector:
+    app: pod
+  ports:
+    - port: 9000
+      targetPort: 8080
+      nodePort: 30000
+  type: NodePort    
+  externalTrafficPolicy: Local
+EOF
+```
+#### externalTrafficPolicy 옵션 없거나 externalTrafficPolicy: cluster로 설정한 경우  
+k8s-worker1, k8s-worker2 IP의 nodePort로 접근이 가능하다. 클러스터 내부는 아니지만 같은 네트워크인 로컬PC에서 호출한 결과이다.    
+```shell
+C:\k8s>curl 192.168.56.31:30000/hostname
+pod-01
+C:\k8s>curl 192.168.56.32:30000/hostname
+pod-01
+```  
+
+#### externalTrafficPolicy: local로 설정한 경우     
+k8s-worker1 노드에 Pod가 생성된 것을 확인했고 k8s-worker2 nodePort로는 접근이 안된다.  
+```shell
+kubectl get pod -o wide
+NAME     READY   STATUS    RESTARTS   AGE     IP              NODE          NOMINATED NODE   READINESS GATES
+pod-01   1/1     Running   0          3h36m   20.100.194.69   k8s-worker1   <none>           <none>
+
+C:\k8s>curl 192.168.56.31:30000/hostname
+pod-01
+C:\k8s>curl 192.168.56.32:30000/hostname
+curl: (7) Failed to connect to 192.168.56.32 port 30000: Timed out
+```
 
 ### Load Balancer  
-외부 시스템 노출용도로 사용된다.  
+외부 시스템 노출용도로 사용된다. AWS, GCP, ASURE, Naver 같은 클라우드 환경 내에서는 쿠버네티스 환경내에서는 External IP를 생성해 주는 Plugin이 기본적으로 설치되어 있는데 지금 나와 같은 Window Virtual Box 환경에서는 바로 테스트 하기가 어려워 현재 결과화면만 확인해 보겠다. EXTERNAL-IP가 pending 되어 있는 것을 볼 수 있다.  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-01
+spec:
+  selector:
+    app: pod
+  ports:
+  - port: 9000
+    targetPort: 8080
+  type: LoadBalancer
+EOF
+```
+  
+```shell
+kubectl get svc -o wide
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE     SELECTOR
+kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP          25h     <none>
+service-01   LoadBalancer   10.102.133.92   <pending>     9000:30000/TCP   5h32m   app=pod
+```
 
 ## 참고
 [KUBETM BLOG](https://kubernetes.io/ko/docs/concepts/workloads/pods/)  
