@@ -165,19 +165,66 @@ $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-nodeSelector
+  name: pod-node-selector
 spec:
   nodeSelector:
-    kubernetes.io/hostname: k8s-node1
+    kubernetes.io/hostname: k8s-worker1
   containers:
-  - name: con-nodeSelector
+  - name: con-node-selector
     image: coolguy239/init
 EOF
 ```
 ### 4-2. Pod nodeSelector Yaml 결과확인
+spec.nodeSelector에서 설정한 k8s-worker1 노드에 파드 생성확인
+```shell
+[root@k8s-master ~]# kubectl get pod -o wide
+NAME                READY   STATUS    RESTARTS   AGE     IP              NODE          NOMINATED NODE   READINESS GATES
+pod-node-selector   1/1     Running   0          3m37s   20.100.194.65   k8s-worker1   <none>           <none>
+```  
 
 ### 5-1. Pod requests,limits Yaml 실행
-### 5-3. Pod requests,limits Yaml 결과확인  
+```yaml
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-resource2
+spec:
+  containers:
+  - name: container
+    image: kubetm/init
+    resources:
+      requests:
+        memory: 0.5Gi
+      limits:
+        memory: 0.5Gi
+EOF
+```
+### 5-3. Pod requests,limits Yaml 결과확인
+node의 describe 명령으로 node내의 resource 상태를 확인할 수 있다.  
+```shell
+$ kubectl describe node k8s-worker1
+
+...
+Non-terminated Pods:          (3 in total)
+  Namespace                   Name                 CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                 ------------  ----------  ---------------  -------------  ---
+  default                     pod-resource2        0 (0%)        0 (0%)      2Gi (74%)        3Gi (111%)     16m
+  kube-system                 calico-node-cplnm    250m (12%)    0 (0%)      0 (0%)           0 (0%)         15h
+  kube-system                 kube-proxy-sfkdh     0 (0%)        0 (0%)      0 (0%)           0 (0%)         15h
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                250m (12%)  0 (0%)
+  memory             2Gi (74%)   3Gi (111%)
+  ephemeral-storage  0 (0%)      0 (0%)
+  hugepages-2Mi      0 (0%)      0 (0%)
+...
+
+```  
+
+쿠버네티스가 Pod를 스케줄링할 때 노드마다 점수를 매겨서 가장 높은 점수가 있는 노드에 파드를 생성한다. 현재는 노드의 리소스 양을 더 적게 사용하고 있는 k8s-worker1 노드에 자원이 할당되었다.
 
 > CPU와 Memory의 request,limits    
 > 파드의 CPU가 limits 수치까지 올라갔다고 해서 항상 reuqests 수치까지 낮추는 것이 아니고, 노드의 할당된 CPU, Memory 자원을 넘어섰을 때 동작한다. 노드의 파드들이 노드의 자원을 모두 사용하고 더 많은 자원을 요구하게 되면 CPU의 경우는 limits 수치의 파드들을 requests 수치까지 떨어뜨리게 하고 Memory의 경우는 limits까지 올라간 파드들을 재기동한다.   
