@@ -437,10 +437,10 @@ daga1=false
 
 #### 2-1. file로 ConfigMap, Secret 생성  
 ```shell
-$ echo "val" >> data.txt
+$ echo "val" >> cm-data.txt
 $ kubectl create configmap cm-02 --from-file=./cm-data.txt
 
-$ echo "3333" >> data.txt
+$ echo "3333" >> sec-data.txt
 $ kubectl create secret generic sec-02 --from-file=./sec-data.txt
 ```  
 #### 2-2. Pod  
