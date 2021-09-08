@@ -567,9 +567,7 @@ $ cat ./mount/cm-data.txt
 val1212
 ```
 
-## Namespace
-
 ## 참고
-[KUBETM BLOG](https://kubernetes.io/ko/docs/concepts/workloads/pods/)  
-[쿠버네티스 공식사이트](https://kubetm.github.io/k8s/)   
+[KUBETM BLOG](https://kubetm.github.io/k8s/)   
+[쿠버네티스 공식사이트](https://kubernetes.io/ko/docs/home/)
 [WEBNORI - Kubernetes](http://wiki.webnori.com/pages/viewpage.action?pageId=12583285)   
