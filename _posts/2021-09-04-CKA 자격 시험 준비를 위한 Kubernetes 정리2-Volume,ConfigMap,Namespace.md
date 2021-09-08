@@ -358,7 +358,80 @@ pv-04   1G         RWO            Retain           Bound    default/pvc-04      
 
 ```
 
-## ConfingMap
+## ConfingMap, Secret  
+### 1. Literal 방식  
+#### 1-1. ConfigMap
+ConfigMap 생성시 key,value 형태로 yaml을 생성한다. Boolean형은 싱글쿼테이션으로 감싸준다.  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-01
+data:
+  data1: 'false'
+  data2: stringValue
+EOF
+```  
+
+#### 1-2. Secret
+Secret은 yaml파일 생성시 value 값을 base64 Encoding을 해서 생성한다.  
+```shell
+$ echo -n '1111' | base64
+MTExMQ==
+
+$ echo -n '2222' | base64
+MjIyMg==
+```  
+```shell 
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sec-01
+data:
+  pwd1: MTExMQ==
+  pwd2: MjIyMg==
+EOF
+```  
+
+#### 1-3. Pod
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-1
+spec:
+  containers:
+  - name: container
+    image: coolguy239/init
+    envFrom:
+    - configMapRef:
+        name: cm-01
+    - secretRef:
+        name: sec-01
+EOF
+```  
+
+#### 1-4. Env 확인
+pod-1 Container로 접속해서 env 환경변수를 확인한다.
+```shell
+$ kubectl exec -ti pod-1 bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+$ env
+...
+pwd2=2222
+pwd1=1111
+...
+data2=stringValue
+...
+daga1=false
+...
+```  
+### 2. File 방식  
+
+
 ## Namespace
 
 ## 참고
