@@ -1,6 +1,6 @@
 ---
 layout: post
-title: CKA 자격 시험 준비를 위한 Kubernetes 정리2-Volume,ConfigMap,Namespace 
+title: CKA 자격 시험 준비를 위한 Kubernetes 정리2-Volume,ConfigMap,Secret 
 category: [k8s]
 tags: [k8s, cka, kubernetes]
 redirect_from:
@@ -11,8 +11,7 @@ redirect_from:
 
 오늘은 인프런 강의 대세는 쿠버네티스 강의 중 Volume, ConfigMap, Namespace 관련 내용을 실습해 보면서 정리 할 예정이다.  
 Volume - <https://kubetm.github.io/k8s/03-beginner-basic-resource/volume/>   
-ConfigMap - <https://kubetm.github.io/k8s/03-beginner-basic-resource/ConfigMap/>   
-Namespace - <https://kubetm.github.io/k8s/03-beginner-basic-resource/Namespace/>    
+ConfigMap,Secret - <https://kubetm.github.io/k8s/03-beginner-basic-resource/ConfigMap/>   
 
 ## Volume  
 ### 1. emptyDir  
@@ -439,11 +438,36 @@ daga1=false
 ```shell
 $ echo "val" >> cm-data.txt
 $ kubectl create configmap cm-02 --from-file=./cm-data.txt
+$ kubectl get configmap cm-02 -o yaml
+apiVersion: v1
+data:
+  cm-data.txt: |
+    val
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2021-09-07T19:52:42Z"
+  name: cm-02
+  namespace: default
+  resourceVersion: "61862"
+  uid: 3d36cfdd-ae83-4260-a318-62d7e519a385
 
 $ echo "3333" >> sec-data.txt
 $ kubectl create secret generic sec-02 --from-file=./sec-data.txt
+$ kubectl get secret sec-02 -o yaml
+apiVersion: v1
+data:
+  sec-data.txt: MzMzMwo=
+kind: Secret
+metadata:
+  creationTimestamp: "2021-09-07T19:54:28Z"
+  name: sec-02
+  namespace: default
+  resourceVersion: "62005"
+  uid: dae91458-8874-44b7-9bc7-1fa51fb5360b
+type: Opaque
 ```  
 #### 2-2. Pod  
+spec.containers.env.name이 환경변수에서 사용하게 될 key값이 된다.  
 ```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -455,20 +479,93 @@ spec:
   - name: container
     image: coolguy239/init
     env:
-    - name: cm-02
+    - name: env-key-cm-02 
       valueFrom:
         configMapKeyRef:
           name: cm-02
           key: cm-data.txt
-    - name: sec-02
+    - name: env-key-sec-02
       valueFrom:
         secretKeyRef:
           name: sec-02
           key: sec-data.txt
 EOF
+pod/pod-02 created
 ```  
 
+#### 2-3. Env 확인  
+spec.containers.env.name으로 설정한 env-key-cm-02, env-key-sec-02 값으로 key 값이 설정된 것을 확인.  
+```shell
+$ kubectl exec -ti pod-02 bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+$ env
+env-key-cm-02=val
 
+env-key-sec-02=3333
+
+...
+```  
+### 3. Volume Mount(File) 방식
+File을 직접 ConfigMap을 설정했을 경우는 환경변수로 설정된 값이 변경이 되도 Pod가 재생성 되기 전까지는 변경이 없다. 하지만 Mount된 파일로 설정된 환경변수 값은 파일의 값을 변경하게 되면 환경변수에 바로 적용된다.  
+#### 3-1. Pod
+cm-02 ConfigMap을 Container에 Mount  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-03
+spec:
+  containers:
+  - name: container
+    image: coolguy239/init
+    volumeMounts:
+    - name: file-volume
+      mountPath: /mount
+  volumes:
+  - name: file-volume
+    configMap:
+      name: cm-02
+EOF
+```  
+#### 3-2. ConfigMap 수정(cm-02)
+값을 val에서 val1212로 변경
+```shell
+$ kubectl edit configmap cm-02  
+
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+data:
+  cm-data.txt: |
+    val1212
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2021-09-07T19:52:42Z"
+  name: cm-02
+  namespace: default
+  resourceVersion: "61862"
+  uid: 3d36cfdd-ae83-4260-a318-62d7e519a385
+```  
+
+#### 3-2. File방식과 File Mount 방식 비교  
+```shell
+# File 방식(pod-02)
+$ kubectl exec -ti pod-02 bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+root@pod-02:/# env
+env-key-cm-02=val
+
+env-key-sec-02=3333
+
+# File Mount 방식(pod-03)
+$ kubectl exec -ti pod-03 bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+$ cat ./mount/cm-data.txt
+val1212
+```
 
 ## Namespace
 
