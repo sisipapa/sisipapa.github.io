@@ -401,7 +401,7 @@ $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-1
+  name: pod-01
 spec:
   containers:
   - name: container
@@ -417,7 +417,7 @@ EOF
 #### 1-4. Env 확인
 pod-1 Container로 접속해서 env 환경변수를 확인한다.
 ```shell
-$ kubectl exec -ti pod-1 bash
+$ kubectl exec -ti pod-01 bash
 kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
 $ env
 ...
@@ -430,6 +430,44 @@ daga1=false
 ...
 ```  
 ### 2. File 방식  
+> --form-file={{file name}} : 파일 이름과 동일한 시크릿 데이터 키를 사용해 파일에서 적재    
+> --from-file={{키}}={{file name}} : 명시적으로 지정된 시크릿 데이터 키를 사용해 파일에서 적재    
+> --form-file={{디렉토리}} : 파일이름이 수용할 수 있는 키 이름이 지정된 디렉토리의 모든 파일을 적재    
+> --form-literal={{키}={{값}} : 지정된 키/값 쌍으로 직접 사용  
+
+#### 2-1. file로 ConfigMap, Secret 생성  
+```shell
+$ echo "val" >> data.txt
+$ kubectl create configmap cm-02 --from-file=./cm-data.txt
+
+$ echo "3333" >> data.txt
+$ kubectl create secret generic sec-02 --from-file=./sec-data.txt
+```  
+#### 2-2. Pod  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-02
+spec:
+  containers:
+  - name: container
+    image: coolguy239/init
+    env:
+    - name: cm-02
+      valueFrom:
+        configMapKeyRef:
+          name: cm-02
+          key: cm-data.txt
+    - name: sec-02
+      valueFrom:
+        secretKeyRef:
+          name: sec-02
+          key: sec-data.txt
+EOF
+```  
+
 
 
 ## Namespace
@@ -437,3 +475,4 @@ daga1=false
 ## 참고
 [KUBETM BLOG](https://kubernetes.io/ko/docs/concepts/workloads/pods/)  
 [쿠버네티스 공식사이트](https://kubetm.github.io/k8s/)   
+[WEBNORI - Kubernetes](http://wiki.webnori.com/pages/viewpage.action?pageId=12583285)   
