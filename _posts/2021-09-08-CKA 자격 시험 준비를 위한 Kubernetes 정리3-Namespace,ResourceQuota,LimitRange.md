@@ -304,8 +304,151 @@ Error from server (Forbidden): error when creating "STDIN": pods "pod-03" is for
 
 ## LimitRange
 Namespace에 들어오는 Pod의 자원의 범위를 설정한다. maxLimitRequestRatio 값으로 limit와 request의 비율설정도 가능하다.  
+ResourceQuota는 Namespace 뿐만 아니라 Cluster 전체에 부여할 수 있는 권한이지만, LimitRange의 경우 Namespace내에서만 사용 가능하다.  
+### 1. LimitRange에 설정한 
+#### 1-1. Namespace
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nm-05
+EOF
+```  
 
+#### 1-2. LimitRange
+type: Container => Container마다 제한을 걸겠다는 의미.
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: lr-01
+  namespace: nm-05
+spec:
+  limits:
+  - type: Container # Container마다 제한을 걸겠다는 의미.
+    min:
+      memory: 0.1Gi
+    max:
+      memory: 0.4Gi
+    maxLimitRequestRatio:
+      memory: 3
+    defaultRequest:
+      memory: 0.1Gi
+    default:
+      memory: 0.2Gi
+EOF
 
-## 참고
-[KUBETM BLOG](https://kubetm.github.io/k8s/)   
-[쿠버네티스 공식사이트](https://kubernetes.io/ko/docs/home/)
+$ kubectl describe limitranges -n=nm-05
+Name:       lr-01
+Namespace:  nm-05
+Type        Resource  Min            Max            Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---            ---            ---------------  -------------  -----------------------
+Container   memory    107374182400m  429496729600m  107374182400m    214748364800m  3
+```  
+
+#### 1-3. Pod
+maxLimitRequestRatio 비율이 3보다 높고, limits 메모리가 LimitRange에 설정한 0.4보다 크기때문에 Pod 생성시 오류가 난다. 
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-01
+  namespace: nm-05
+spec:
+  containers:
+  - name: container
+    image: coolguy239/app
+    resources:
+      requests:
+        memory: 0.1Gi
+      limits:
+        memory: 0.5Gi
+EOF
+Warning: spec.containers[0].resources.requests[memory]: fractional byte value "107374182400m" is invalid, must be an integer
+Error from server (Forbidden): error when creating "STDIN": pods "pod-01" is forbidden: [maximum memory usage per Container is 429496729600m, but limit is 512Mi, memory max limit to request ratio per Container is 3, but provided ratio is 5.000000]
+```    
+
+#### 1-4. Pod 생성 default
+Pod 생성 시 resources를 지정하지 않으면 LimitRange에 설정한 default 값으로 생성된다.  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-02
+  namespace: nm-05
+spec:
+  containers:
+  - name: container
+    image: coolguy239/app
+EOF
+Warning: spec.containers[0].resources.limits[memory]: fractional byte value "214748364800m" is invalid, must be an integer
+Warning: spec.containers[0].resources.requests[memory]: fractional byte value "107374182400m" is invalid, must be an integer
+pod/pod-02 created
+
+$ kubectl describe pod pod-02 -n nm-05
+Name:         pod-02
+Namespace:    nm-05
+Priority:     0
+Node:         k8s-worker2/192.168.56.32
+Start Time:   Thu, 09 Sep 2021 14:41:26 +0000
+Labels:       <none>
+Annotations:  cni.projectcalico.org/containerID: 12920f6ad3027d337b748af10363289eedb10ec6ddbf48009f034fb03990ec80
+              cni.projectcalico.org/podIP: 20.110.126.10/32
+              cni.projectcalico.org/podIPs: 20.110.126.10/32
+              kubernetes.io/limit-ranger: LimitRanger plugin set: memory request for container container; memory limit for container container
+Status:       Running
+IP:           20.110.126.10
+IPs:
+  IP:  20.110.126.10
+Containers:
+  container:
+    Container ID:   docker://10350612dc81e6e18fad748ad054062341a07293de9b159381a35a114e91d5ec
+    Image:          coolguy239/app
+    Image ID:       docker-pullable://coolguy239/app@sha256:4749c0be4b64eaed9829e103ebc37c56e88627b88f179fe7f56cc07a9ef040f3
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Thu, 09 Sep 2021 14:41:30 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      memory:  214748364800m
+    Requests:
+      memory:     107374182400m
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-47xlc (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-47xlc:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age        From               Message
+  ----    ------     ----       ----               -------
+  Normal  Scheduled  23s        default-scheduler  Successfully assigned nm-05/pod-02 to k8s-worker2
+  Normal  Pulling    <invalid>  kubelet            Pulling image "coolguy239/app"
+  Normal  Pulled     <invalid>  kubelet            Successfully pulled image "coolguy239/app" in 2.615529079s
+  Normal  Created    <invalid>  kubelet            Created container container
+  Normal  Started    <invalid>  kubelet            Started container container
+```  
+
+## 참고  
+[KUBETM BLOG](https://kubetm.github.io/k8s/)     
+[쿠버네티스 공식사이트](https://kubernetes.io/ko/docs/home/)  
