@@ -159,6 +159,148 @@ test
 
 ## ResourceQuota
 Namespace 마다 설정이 가능하고 최대 허용 자원(CPU,Memory)을 설정한다. ResourceQuata가 지정된 Namespace에 Pod를 생성할 경우에는 반드시 requests,limits Spec을 명시해야 한다. ResourceQuata로 CPU,Memory,Storage,일부 오브젝트들의 숫자를 제한할 수 있다.  
+### 1. Namespace ResourceQuota 설정 후 Pod 생성 테스트
+#### 1-1. Namespace
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nm-03
+EOF
+```  
+
+#### 1-2. ResourceQuota
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: rq-01
+  namespace: nm-03
+spec:
+  hard:
+    requests.memory: 1Gi
+    limits.memory: 1Gi
+EOF
+
+
+$ kubectl describe resourcequotas -n=nm-03
+Name:            rq-01
+Namespace:       nm-03
+Resource         Used  Hard
+--------         ----  ----
+limits.memory    0     1Gi
+requests.memory  0     1Gi
+
+```  
+
+#### 1-3. Pod 생성 오류
+spec.containers.resources.request,spec.containers.resources.limits 설정안한 Pod는 아래와 같은 오류가 난다.
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-01
+  namespace: nm-03
+spec:
+  containers:
+  - name: container
+    image: coolguy239/app
+EOF
+Error from server (Forbidden): error when creating "STDIN": pods "pod-01" is forbidden: failed quota: rq-01: must specify limits.memory,requests.memory
+```  
+
+#### 1-4. Pod 생성 정상
+spec.containers.resources.request,spec.containers.resources.limits 설정 한 Pod는 정상 create 확인
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-02
+  namespace: nm-03
+spec:
+  containers:
+  - name: container
+    image: coolguy239/app
+    resources:
+      requests:
+        memory: 0.5Gi
+      limits:
+        memory: 0.5Gi
+EOF
+pod/pod-02 created
+```  
+
+#### 1-4. Pod 생성 오류
+pod-02를 requests.memory: 0.5Gi, limits.memory: 0.5Gi로 생성했기 때문에 남는 자원보다 큰 reqquests,limits 설정 시 오류.
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-03
+  namespace: nm-03
+spec:
+  containers:
+  - name: container
+    image: coolguy239/app
+    resources:
+      requests:
+        memory: 0.7Gi
+      limits:
+        memory: 0.7Gi
+EOF
+Warning: spec.containers[0].resources.limits[memory]: fractional byte value "751619276800m" is invalid, must be an integer
+Warning: spec.containers[0].resources.requests[memory]: fractional byte value "751619276800m" is invalid, must be an integer
+Error from server (Forbidden): error when creating "STDIN": pods "pod-03" is forbidden: exceeded quota: rq-01, requested: limits.memory=751619276800m,requests.memory=751619276800m, used: limits.memory=512Mi,requests.memory=512Mi, limited: limits.memory=1Gi,requests.memory=1Gi
+```  
+
+### 2. Namespace ResourceQuota Pod 갯수 제한
+#### 2-1. Namespace 생성
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nm-04
+EOF
+```
+
+#### 2-2. ResourceQuata 생성
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: rq-02
+  namespace: nm-04
+spec:
+  hard:
+    pods: 2
+EOF
+```  
+
+#### 2-3. Pod생성 - metadata.name만 바꿔서 세번실행
+pod-01,pod-02는 정상적으로 생성되었지만 pod-03은 ResourceQuota의 pod수 제한에 걸려 생성 오류 발생함.
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  #name: pod-01
+  #name: pod-02
+  name: pod-03
+  namespace: nm-04
+spec:
+  containers:
+  - name: container
+    image: coolguy239/app
+EOF
+Error from server (Forbidden): error when creating "STDIN": pods "pod-03" is forbidden: exceeded quota: rq-02, requested: pods=1, used: pods=2, limited: pods=2
+```
 
 ## LimitRange
 Namespace에 들어오는 Pod의 자원의 범위를 설정한다. maxLimitRequestRatio 값으로 limit와 request의 비율설정도 가능하다.  
