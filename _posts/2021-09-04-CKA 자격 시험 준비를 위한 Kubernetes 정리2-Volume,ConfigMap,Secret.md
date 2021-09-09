@@ -569,5 +569,6 @@ val1212
 
 ## 참고
 [KUBETM BLOG](https://kubetm.github.io/k8s/)   
-[쿠버네티스 공식사이트](https://kubernetes.io/ko/docs/home/)
+[쿠버네티스 공식사이트-Configure a Pod to Use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+[쿠버네티스 공식사이트-Distribute Credentials Securely Using Secrets](https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/)
 [WEBNORI - Kubernetes](http://wiki.webnori.com/pages/viewpage.action?pageId=12583285)   

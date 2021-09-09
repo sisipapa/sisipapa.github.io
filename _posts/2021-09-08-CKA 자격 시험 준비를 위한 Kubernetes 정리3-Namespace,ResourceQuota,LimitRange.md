@@ -451,4 +451,6 @@ Events:
 
 ## 참고  
 [KUBETM BLOG](https://kubetm.github.io/k8s/)     
-[쿠버네티스 공식사이트](https://kubernetes.io/ko/docs/home/)  
+[쿠버네티스 공식사이트-Namespaces](https://kubernetes.io/docs/tasks/administer-cluster/namespaces/)  
+[쿠버네티스 공식사이트-Resource Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)  
+[쿠버네티스 공식사이트-Limit Ranges](https://kubernetes.io/docs/concepts/policy/limit-range/)  
