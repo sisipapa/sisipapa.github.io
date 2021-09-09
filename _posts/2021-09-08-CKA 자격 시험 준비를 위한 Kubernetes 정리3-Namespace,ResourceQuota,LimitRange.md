@@ -99,21 +99,27 @@ spec:
   type: NodePort
 ```  
 ### 3. Namespace 예외 - Pod 생성(HostPath)  
-nm-01,nm-02 Namespace 아래 yaml 파일로 Pod를 생성 후 Namespace nm-01/pod-01 Container에서 생성된 파일을 nm-02/pod-01 Container에서도 
-```yaml
+nm-02 Namespace 생성하고 nm-01,nm-02 Namespace에 pod-02 Pod를 생성한다. Namespace nm-01/pod-01 Container에서 생성된 파일을 nm-02/pod-01 Container에서도
+
+#### 3-1. nm-02 namespace 생성
+```shell
+$ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Namespace
 metadata:
   name: nm-02
+EOF
+```  
 
----
-
+#### 3-2. Pod pod-02를 nm-01,nm-02 Namespace에 생성한다.
+```shell
+$ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: nm-01
-  #namespace: nm-02
- name: pod-02
+  #namespace: nm-01
+  namespace: nm-02
+  name: pod-02
 spec:
   nodeSelector:
     kubernetes.io/hostname: k8s-worker1
@@ -121,15 +127,35 @@ spec:
   - name: container
     image: coolguy239/init
     volumeMounts:
-    - name: hostPath
+    - name: host-path
       mountPath: /mount01
   volumes:
-  - name : hostPath
+  - name : host-path
     hostPath:
       path: /node-mount01
       type: DirectoryOrCreate
+EOF
+```  
+
+#### 3-3. nm-01/pod-02 Pod의 Container에서 HostPath 경로에 파일 생성
+```shell
+$ kubectl exec -ti pod-02 -n nm-01 bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+
+$ cd ./mount01/
+$ echo "test" >> test.txt
+```  
+
+#### 3-4. nm-02/pod-02 Pod의 Container에서 HostPath 경로에 파일 확인
+```shell
+$ kubectl exec -ti pod-02 -n nm-02 bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+
+$ cat ./mount01/test.txt
+test
 ```
 
+서로 다른 Namespace의 HostPath로 설정한 Volume 경로의 파일은 기본적으로 공유된다.  
 
 ## ResourceQuota
 Namespace 마다 설정이 가능하고 최대 허용 자원(CPU,Memory)을 설정한다. ResourceQuata가 지정된 Namespace에 Pod를 생성할 경우에는 반드시 requests,limits Spec을 명시해야 한다. ResourceQuata로 CPU,Memory,Storage,일부 오브젝트들의 숫자를 제한할 수 있다.  
