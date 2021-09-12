@@ -50,7 +50,7 @@ EOF
 ```  
 
 #### 1-2. ReplicaSet
-ReplicaSet은 spec.selector에 matchLabels 외에 matchExpression이 제공되어 Pod와의 연결이 용이하다.
+ReplicaSet은 spec.selector에 matchLabels 외에 matchExpression이 제공되어 Pod와의 연결이 용이하다. ReplicaSet을 삭제 시 casecade옵션을 false로 설정하면 ReplicaSet만 삭제되고 기존 생성된 Pod는 남게 된다.   
 ```shell
 $ kubectl apply -f - <<EOF
 apiVersion: apps/v1
@@ -93,7 +93,74 @@ $ kubectl get pod
 rset-01-99k26   1/1     Running   0                   21s
 rset-01-gltqh   1/1     Running   0                   21s
 rset-01-lp2qx   1/1     Running   0                   2m26s
+```  
 
+#### 1-5. Pod의 Application 버전업  
+edit 명령을 이용해서 원하는 Application의 버전으로 변경 후 pod를 삭제하면 새로운 버전의 Application Pod로 재생성된다.  
+```shell
+$ kubectl edit rs/rset-01
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"ReplicaSet","metadata":{"annotations":{},"name":"rset-01","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"type":"web"}},"template":{"metadata":{"labels":{"type":"web"},"name":"pod-template-01"},"spec":{"containers":[{"image":"coolguy239/app:v1","name":"container"}],"terminationGracePeriodSeconds":0}}}}
+  creationTimestamp: "2021-09-04T22:29:59Z"
+  generation: 4
+  name: rset-01
+  namespace: default
+  resourceVersion: "88129"
+  uid: b5130d2d-f685-4d76-b7b2-495a9db2c180
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: web
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        type: web
+      name: pod-template-01
+    spec:
+      containers:
+      - image: coolguy239/app:v2
+        imagePullPolicy: IfNotPresent
+        name: container
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 0
+replicaset.apps/rset-01 edited
+
+$ kubectl delete pod rset-01-99k26 rset-01-gltqh rset-01-lp2qx
+pod "rset-01-99k26" deleted
+pod "rset-01-gltqh" deleted
+pod "rset-01-lp2qx" deleted
+
+$ kubectl get pod | grep rset-01
+rset-01-9bhvj   1/1     Running   0                   64s
+rset-01-pkrjg   1/1     Running   0                   64s
+rset-01-wbb9x   1/1     Running   0                   64s
+
+$ kubectl describe pod rset-01-9bhvj
+...
+Events:
+  Type    Reason     Age        From               Message
+  ----    ------     ----       ----               -------
+  Normal  Scheduled  96s        default-scheduler  Successfully assigned default/rset-01-9bhvj to k8s-worker2
+  Normal  Pulling    <invalid>  kubelet            Pulling image "coolguy239/app:v2"
+  Normal  Pulled     <invalid>  kubelet            Successfully pulled image "coolguy239/app:v2" in 5.387833393s
+  Normal  Created    <invalid>  kubelet            Created container container
+  Normal  Started    <invalid>  kubelet            Started container container
 ```
 
 ### 2. Updating Controller
