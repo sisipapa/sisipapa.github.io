@@ -96,7 +96,7 @@ rset-01-lp2qx   1/1     Running   0                   2m26s
 ```  
 
 #### 1-5. Pod의 Application 버전업  
-edit 명령을 이용해서 원하는 Application의 버전으로 변경 후 pod를 삭제하면 새로운 버전의 Application Pod로 재생성된다.  
+edit 명령을 이용해서 원하는 Application의 버전을 coolguy239/app:v1에서 coolguy239/app:v2로 변경 후 pod를 삭제하면 새로운 버전의 Application Pod로 재생성된다.  
 ```shell
 $ kubectl edit rs/rset-01
 # Please edit the object below. Lines beginning with a '#' will be ignored,
@@ -164,7 +164,171 @@ Events:
 ```
 
 ### 2. Updating Controller
+
+#### 2-1. ReplicationController 생성
+spec.selector에 바로 key: value 형태의 Label로 Pod와 연결
+````shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: replcon-01
+spec:
+  replicas: 2
+  selector:
+    cascade: "false"
+  template:
+    metadata:
+      labels:
+        cascade: "false"
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v1
+EOF
+
+replicationcontroller/replcon-01 created
+````  
+#### 2-2. ReplicationController 삭제
+replicationcontroller를 삭제 할때 casecade 옵션의 value 값으로 orphan을 설정을 주면 replicationcontroller만 삭제되고 pod는 그대로 존재한다.  
+```shell
+$ kubectl delete replicationcontrollers replcon-01 --cascade=orphan
+replicationcontroller "replcon-01" deleted
+
+$ kubectl get replicationcontrollers
+No resources found in default namespace.
+
+$ kubectl get pod | grep replcon-01
+replcon-01-9629h   1/1     Running   0                   37s
+replcon-01-vp7rp   1/1     Running   0                   37s
+```  
+
+#### 2-3. ReplicaSet 생성
+spec.selector.matchLabels에 key: value 형태로 Pod와 연결
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replset-01
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      cascade: "false"
+  template:
+    metadata:
+      labels:
+        cascade: "false"
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v1
+EOF
+
+replicaset.apps/replset-01 created
+```  
+
+
+#### 2-4. ReplicaSet 삭제
+```shell
+$ kubectl delete replicaset replset-01 --cascade=orphan
+replicaset.apps "replset-01" deleted
+
+$ kubectl get pod | grep replset-01
+replset-01-fbmvw   1/1     Running   0                   17s
+replset-01-n8cts   1/1     Running   0                   17s
+```
+
 ### 3. Selector
+ReplicaSet에서는 matchExpressions 보다는 matchLabels를 주로 사용한다. ReplicaSet의 spec.selector.matchLabels은 template 하위에 spec.template.metadata.labels 하위 목록에 포함이 되어야 한다.
+
+#### 3-1. Selector matchLabels 생성오류 예제  
+spec.selector.matchLabels의 내용이 spec.template.metadata.labels 하위의 내용에 포함되지 않는 경우
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replset-02
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: web
+      ver: v2
+  template:
+    metadata:
+      labels:
+        type: web
+        ver: v1
+        location: dev
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v1
+      terminationGracePeriodSeconds: 0
+EOF
+
+The ReplicaSet "replset-02" is invalid: spec.template.metadata.labels: Invalid value: map[string]string{"location":"dev", "type":"web", "ver":"v1"}: `selector` does not match template `labels`
+```  
+
+#### 3-2. Selector matchLabels 생성
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replset-02
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: web
+      location: dev
+  template:
+    metadata:
+      labels:
+        type: web
+        ver: v1
+        location: dev
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v1
+      terminationGracePeriodSeconds: 0
+EOF
+
+replicaset.apps/replset-02 created
+```  
+
+#### 3-3. Selector matchExpressions 생성
+matchExpressions의 내용이 template 하위에 spec.template.metadata.labels 하위 목록에 포함이 되어야 한다.
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replset-03
+spec:
+  replicas: 1
+  selector:
+    matchExpressions:
+    - {key: type, operator: In, values: [web]}
+    - {key: location, operator: Exists}
+  template:
+    metadata:
+      labels:
+        type: web
+        ver: v1
+        location: dev
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v1
+      terminationGracePeriodSeconds: 0
+EOF
+```  
 
 
 ## 참고  
