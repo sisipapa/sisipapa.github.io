@@ -43,7 +43,7 @@ $ kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-01
+  name: deployment-01
 spec:
   selector:
     matchLabels:
@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
       - name: container
-        image: coolguy239/app:v1
+        image: coolguy239/app:v4
       terminationGracePeriodSeconds: 10
 EOF
 deployment.apps/deploy-01 created
@@ -86,11 +86,12 @@ spec:
     protocol: TCP
     targetPort: 8080
 EOF
+service/svc-01 created
 
 $ kubectl get pod -l type=app -o wide
 NAME                         READY   STATUS    RESTARTS   AGE     IP               NODE          NOMINATED NODE   READINESS GATES
-deploy-01-67b6f8695b-bx5jw   1/1     Running   0          7m57s   20.100.194.124   k8s-worker1   <none>           <none>
-deploy-01-67b6f8695b-h5x2r   1/1     Running   0          7m57s   20.100.194.125   k8s-worker1   <none>           <none>
+deploy-01-67b6f8695b-bx5jw   1/1     Running   0          7m57s   20.100.194.73   k8s-worker1   <none>           <none>
+deploy-01-67b6f8695b-h5x2r   1/1     Running   0          7m57s   20.100.194.76   k8s-worker1   <none>           <none>
 
 $ kubectl describe svc svc-01
 Name:              svc-01
@@ -101,19 +102,109 @@ Selector:          type=app
 Type:              ClusterIP
 IP Family Policy:  SingleStack
 IP Families:       IPv4
-IP:                10.103.246.229
-IPs:               10.103.246.229
+IP:                10.108.136.144
+IPs:               10.108.136.144
 Port:              <unset>  8080/TCP
 TargetPort:        8080/TCP
-Endpoints:         20.100.194.124:8080,20.100.194.125:8080
+Endpoints:         20.100.194.73:8080,20.100.194.76:8080
 Session Affinity:  None
 Events:            <none>
 ```  
 
+#### 1-3. Service의 Cluster IP를 반복호출
+Service를 반복호출 하고 Deployment의 version 정보를 Edit한다.(coolguy239/app:v3 -> coolguy239/app:v4)
+```shell
+$ while true; do curl 10.108.136.144:8080/version; sleep 1; done
+v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3...
 
+$ kubectl edit deployment deployment-01
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"deployment-01","namespace":"default"},"spec":{"replicas":2,"revisionHistoryLimit":1,"selector":{"matchLabels":{"type":"app"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"type":"app"}},"spec":{"containers":[{"image":"coolguy239/app:v3","name":"container"}],"terminationGracePeriodSeconds":10}}}}
+  creationTimestamp: "2021-09-13T15:16:47Z"
+  generation: 1
+  name: deployment-01
+  namespace: default
+  resourceVersion: "109771"
+  uid: ebcb978b-cd79-41e7-8e95-147c7e921f9d
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      type: app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        type: app
+    spec:
+      containers:
+      - image: coolguy239/app:v4
+        imagePullPolicy: IfNotPresent
+        name: container
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        
+deployment.apps/deployment-01 edited
+```  
+
+#### 1-4. Deployment 결과확인
+strategy가 Recreate로 설정을 했기 때문에 중간에 Downtime이 발생하는 것을 확인할 수 있다.  
+```shell
+v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
+v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4
+```  
 
 ### 2. RollingUpdate  
 spec.strategy.type: RollingUpdate로 설정, spec.strategy.minReadySeconds: 10 v1, v2에 Pod가 추가되고 삭제되는 시간(sec)이다.  
+
+
 ### 3. Blue/Green  
 
 ## 참고  
