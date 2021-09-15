@@ -201,8 +201,42 @@ curl: (7) Failed connect to 10.108.136.144:8080; Connection refused
 v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4
 ```  
 
+#### 1-5. 배포 History 확인 및 Undo
+버전을 v4에서 v5 올려서 배포하고 다시 history 조회하면 revisionHistoryLimit: 1 설정을 했기 때문에 현재 revision 이외에 하나만 남는 것을 확인 할 수 있다.
+```shell
+$ kubectl rollout history deployment deployment-01
+deployment.apps/deployment-01 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+# kubectl edit를 통해 v4->v5 변경 후 History 조회
+$ kubectl rollout history deployment deployment-01
+deployment.apps/deployment-01 
+REVISION  CHANGE-CAUSE
+2         <none>
+3         <none>
+ 
+$ kubectl rollout undo deployment deployment-01 --to-revision=2
+deployment.apps/deployment-01 rolled back
+
+$ kubectl get pod
+NAME                             READY   STATUS        RESTARTS   AGE
+deployment-01-7c894b6dd4-782db   1/1     Terminating   0          6m16s
+deployment-01-7c894b6dd4-wnz8c   1/1     Terminating   0          6m16s
+
+$ kubectl get pod
+NAME                             READY   STATUS    RESTARTS   AGE
+deployment-01-5788495b4c-mvqgh   1/1     Running   0          21s
+deployment-01-5788495b4c-np2xw   1/1     Running   0          20s
+```
+
 ### 2. RollingUpdate  
-spec.strategy.type: RollingUpdate로 설정, spec.strategy.minReadySeconds: 10 v1, v2에 Pod가 추가되고 삭제되는 시간(sec)이다.  
+spec.strategy.type: RollingUpdate - Downtime 없이 전환  
+spec.strategy.minReadySeconds: 10 - v1, v2에 Pod가 추가되고 삭제되는 시간(sec)이다.    
+```shell
+
+```
 
 
 ### 3. Blue/Green  
