@@ -232,10 +232,136 @@ deployment-01-5788495b4c-np2xw   1/1     Running   0          20s
 ```
 
 ### 2. RollingUpdate  
-spec.strategy.type: RollingUpdate - Downtime 없이 전환  
+spec.strategy.type: RollingUpdate - type만 Recreate에서 RollingUpdate로 변경하고 동일하게 진행한다.  
 spec.strategy.minReadySeconds: 10 - v1, v2에 Pod가 추가되고 삭제되는 시간(sec)이다.    
-```shell
+revisionHistoryLimit을 명시하지 않았기 때문에 default 10으로 생성된다.  
 
+#### 2-1. Deployment(RollingUpdate)
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-02
+spec:
+  selector:
+    matchLabels:
+      type: app2
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        type: app2
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v1
+      terminationGracePeriodSeconds: 0
+EOF
+```  
+
+#### 2-2. Service
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-02
+spec:
+  selector:
+    type: app2
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+EOF
+```  
+
+#### 2-3. Service의 Cluster IP를 반복호출
+Service를 반복호출 하고 Deployment의 version 정보를 Edit한다.(coolguy239/app:v3 -> coolguy239/app:v4)
+```shell
+$ while true; do curl 10.109.238.1:8080/version; sleep 1; done
+v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3...
+
+$ kubectl edit deployment deployment-01
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    kubectl.kubernetes.io/last-applied-configuration: |
+  creationTimestamp: "2021-09-15T14:53:20Z"
+  generation: 2
+  name: deployment-02
+  namespace: default
+  resourceVersion: "115332"
+  uid: e3d79735-39cc-4ede-bd0b-81a714205e17
+spec:
+  minReadySeconds: 10
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      type: app2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        type: app2
+    spec:
+      containers:
+      - image: coolguy239/app:v4
+        imagePullPolicy: IfNotPresent
+        name: container
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 0
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2021-09-15T14:53:50Z"
+    lastUpdateTime: "2021-09-15T14:53:50Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2021-09-15T14:53:20Z"
+    lastUpdateTime: "2021-09-15T14:56:27Z"
+    message: ReplicaSet "deployment-02-54bb6fbf67" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 2
+  replicas: 2
+  updatedReplicas: 2
+        
+deployment.apps/deployment-02 edited
+```  
+
+#### 2-4. Deployment 결과확인
+v3에서 v4로 버전업 edit를 하고 나면 일시적으로 v3,v4의 요청이 같이 들어오다가 배포가 완료되면 v4 요청만 들어오게 된다.  
+```shell
+$ while true; do curl 10.109.238.1:8080/version; sleep 1; done
+v3v4v3v3v4v3v3v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4
 ```
 
 
