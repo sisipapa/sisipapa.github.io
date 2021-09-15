@@ -477,6 +477,7 @@ spec:
   type: ClusterIP
 status:
   loadBalancer: {}
+service/svc-03 edited
 
 $ while true; do curl 10.101.0.145:8080/version; sleep 1; done
 3v3v3v3v3v3v3v3v3v3v3v3v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4 ...
