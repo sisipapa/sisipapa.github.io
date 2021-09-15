@@ -366,6 +366,121 @@ v3v4v3v3v4v3v3v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4
 
 
 ### 3. Blue/Green  
+#### 3-1. ReplicaSet 생성
+v3, v4 ReplicaSet 두개를 생성하고 v3 ReplicaSet으로 생성된 Pod에만 Service를 연결한다.  
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replica-03
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      ver: v3
+  template:
+    metadata:
+      name: bg-pod
+      labels:
+        ver: v3
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v3
+      terminationGracePeriodSeconds: 0
+EOF
+replicaset.apps/replica-03 created
+
+$ kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replica-04
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      ver: v4
+  template:
+    metadata:
+      name: bg-pod
+      labels:
+        ver: v4
+    spec:
+      containers:
+      - name: container
+        image: coolguy239/app:v4
+      terminationGracePeriodSeconds: 0
+EOF
+replicaset.apps/replica-04 created
+```  
+
+#### 3-2. Service 생성
+```shell
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-03
+spec:
+  selector:
+    ver: v3
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+EOF
+service/svc-03 created
+```
+
+#### 3-3. Service 반복 호출
+```shell
+$ while true; do curl 10.101.0.145:8080/version; sleep 1; done
+v3v3v3v3v3v3v3v3 ...
+```
+
+#### 3-4. Service label 수정
+spec.selector 의 Label을 v3에서 v4 변경을 하게 되면 Downtime 없이 배포를 할 수 있다.
+```shell
+$ kubectl edit svc/svc-03
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"svc-03","namespace":"default"},"spec":{"ports":[{"port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"ver":"v1"}}}
+  creationTimestamp: "2021-09-15T15:27:46Z"
+  name: svc-03
+  namespace: default
+  resourceVersion: "117350"
+  uid: 609d018e-fae1-4b44-8524-408117d3e54f
+spec:
+  clusterIP: 10.101.0.145
+  clusterIPs:
+  - 10.101.0.145
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    ver: v4
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+$ while true; do curl 10.101.0.145:8080/version; sleep 1; done
+3v3v3v3v3v3v3v3v3v3v3v3v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4 ...
+```
 
 ## 참고  
 [KUBETM BLOG](https://kubetm.github.io/k8s/04-beginner-controller/deployment/)     
