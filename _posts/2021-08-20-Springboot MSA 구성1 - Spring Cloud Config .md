@@ -189,8 +189,13 @@ server:
 spring:
   application:
     name: resource
-  config:
-    import: "optional:configserver:http://localhost:9000"
+  cloud:
+    config:
+      fail-fast: true
+      discovery:
+        service-id: config
+        enabled: true
+    # uri: http://localhost:9000
 management:
   endpoints:
     web:

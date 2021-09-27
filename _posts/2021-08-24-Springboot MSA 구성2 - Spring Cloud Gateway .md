@@ -26,17 +26,14 @@ zuul:
     member:
       stripPrefix: false
       path: /v1/member/**
-      url: http://localhost:8080
       serviceId: resource
     pay:
       stripPrefix: false
       path: /v1/pay/**
-      url: http://localhost:8081
       serviceId: resource2
     else:
       stripPrefix: false
       path: /v1/**
-      url: http://localhost:8081
       serviceId: resource2
       
 --- 
@@ -47,17 +44,14 @@ zuul:
     member:
       stripPrefix: false
       path: /v1/member/**
-      url: http://localhost:8080
       serviceId: resource
     pay:
       stripPrefix: false
       path: /v1/pay/**
-      url: http://localhost:8081
       serviceId: resource2
     else:
       stripPrefix: false
       path: /v1/**
-      url: http://localhost:8081
       serviceId: resource2
 ```   
 
