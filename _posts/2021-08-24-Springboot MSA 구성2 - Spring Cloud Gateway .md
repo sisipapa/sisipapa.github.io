@@ -114,10 +114,10 @@ project(':Gateway') {
 }
 ```  
 
-### Gateway 모듈 application-{env}.yml
+### Gateway 모듈 bootstrap-{env}.yml
 local, prod 내용은 동일하다. 
 ```yaml
-# application-local.yml
+# bootstrap-local.yml
 server:
   port: 9100
 spring:
@@ -133,7 +133,7 @@ management:
 
 ---
 
-# application-local.yml
+# bootstrap-local.yml
 server:
   port: 9100
 spring:

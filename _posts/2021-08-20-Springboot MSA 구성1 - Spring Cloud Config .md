@@ -69,7 +69,7 @@ public class ConfigApplication {
 }
 ```  
 
-### application-{env}.yml  
+### bootstrap-{env}.yml  
 #### local
 ```yaml
 server:
