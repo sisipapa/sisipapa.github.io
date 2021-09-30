@@ -69,7 +69,7 @@ public class ConfigApplication {
 }
 ```  
 
-### application-{env}.yml  
+### bootstrap-{env}.yml  
 #### local
 ```yaml
 server:
@@ -101,14 +101,14 @@ spring:
 
 ### config-repo 
 config-repo 모듈에 application 별 active.profiles 별로 설정파일을 만든다. 여기서는 message의 내용만 조금 다르게 설정했다.
-#### Resource/local 
+#### Resource 모듈의 active.profiles가 local일 경우 바라보는 config 설정  
 ```yaml
 spring:
   profiles: local
   message: Resource Service Local Server!!!!!
 ```  
 
-#### Resource2/local  
+#### Resource2 모듈의 active.profiles가 local일 경우 바라보는 config 설정
 ```yaml
 spring:
   profiles: local
@@ -189,8 +189,13 @@ server:
 spring:
   application:
     name: resource
-  config:
-    import: "optional:configserver:http://localhost:9000"
+  cloud:
+    config:
+      fail-fast: true
+      discovery:
+        service-id: config
+        enabled: true
+    # uri: http://localhost:9000
 management:
   endpoints:
     web:

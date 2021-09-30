@@ -26,17 +26,14 @@ zuul:
     member:
       stripPrefix: false
       path: /v1/member/**
-      url: http://localhost:8080
       serviceId: resource
     pay:
       stripPrefix: false
       path: /v1/pay/**
-      url: http://localhost:8081
       serviceId: resource2
     else:
       stripPrefix: false
       path: /v1/**
-      url: http://localhost:8081
       serviceId: resource2
       
 --- 
@@ -47,17 +44,14 @@ zuul:
     member:
       stripPrefix: false
       path: /v1/member/**
-      url: http://localhost:8080
       serviceId: resource
     pay:
       stripPrefix: false
       path: /v1/pay/**
-      url: http://localhost:8081
       serviceId: resource2
     else:
       stripPrefix: false
       path: /v1/**
-      url: http://localhost:8081
       serviceId: resource2
 ```   
 
@@ -87,15 +81,12 @@ Connection: keep-alive
         "spring.profiles": "local",
         "zuul.routes.member.stripPrefix": false,
         "zuul.routes.member.path": "/v1/member/**",
-        "zuul.routes.member.url": "http://localhost:8080",
         "zuul.routes.member.serviceId": "resource",
         "zuul.routes.pay.stripPrefix": false,
         "zuul.routes.pay.path": "/v1/pay/**",
-        "zuul.routes.pay.url": "http://localhost:8081",
         "zuul.routes.pay.serviceId": "resource2",
         "zuul.routes.else.stripPrefix": false,
         "zuul.routes.else.path": "/v1/**",
-        "zuul.routes.else.url": "http://localhost:8081",
         "zuul.routes.else.serviceId": "resource2"
       }
     }
@@ -123,10 +114,10 @@ project(':Gateway') {
 }
 ```  
 
-### Gateway 모듈 application-{env}.yml
+### Gateway 모듈 bootstrap-{env}.yml
 local, prod 내용은 동일하다. 
 ```yaml
-# application-local.yml
+# bootstrap-local.yml
 server:
   port: 9100
 spring:
@@ -142,7 +133,7 @@ management:
 
 ---
 
-# application-local.yml
+# bootstrap-local.yml
 server:
   port: 9100
 spring:
