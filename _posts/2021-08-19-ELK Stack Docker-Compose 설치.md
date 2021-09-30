@@ -303,7 +303,7 @@ $ docker-compose down -v
 - Kibana : 5601
 
 http://{elasticsearch-server-ip}:9200 웹브라우저 접속.  
-<img src="https://sisipapa.github.io/assets/images/posts/elastic-9200.PNG" >  
+<img src="https://sisipapa.github.io/assets/images/posts/elastic-9200.png" >  
 
 http://{kibana-server-ip}:5601 웹브라우저 접속.  
 <img src="https://sisipapa.github.io/assets/images/posts/kibana.PNG" >
