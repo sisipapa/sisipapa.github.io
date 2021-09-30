@@ -297,10 +297,13 @@ $ docker-compose build && docker-compose up -d
 $ docker-compose down -v  
 ```  
 
-## 7. 키바나 접속
+## 7. Elasticsearch/키바나 접속
 - Elasticsearch : 9200, 9300
 - Logstash : 5044, 5000, 9600
 - Kibana : 5601
+
+http://{elasticsearch-server-ip}:9200 웹브라우저 접속.  
+<img src="https://sisipapa.github.io/assets/images/posts/elastic-9200.PNG" >  
 
 http://{kibana-server-ip}:5601 웹브라우저 접속.  
 <img src="https://sisipapa.github.io/assets/images/posts/kibana.PNG" >
