@@ -170,11 +170,113 @@ $ curl -XGET http://localhost:9200/classes/class/1?pretty
 ```shell
 $ echo {"title" : "Math", "professor" : "KKH"} > data.json
 $ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/classes/class/1/ -d @data.json
+```  
+
+### [POST] Document 필드추가 - unit  
+```shell
+$ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/classes/class/1/_update?pretty -d '{"doc" : {"unit" : 1}}'
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 2,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 1,
+  "_primary_term" : 1
+}
+
+$ curl -XGET http://localhost:9200/classes/class/1/?pretty
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 2,
+  "_seq_no" : 1,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "title" : "Algorithm",
+    "professor" : "John",
+    "unit" : 1
+  }
+}
+```  
+
+
+### [POST] Document 필드값 변경 - unit 1에서 2로 변경, professor John에서 John2로 변경  
+```shell
+$ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/classes/class/1/_update?pretty -d '{"doc" : {"unit" : 2, "professor" : "John2"}}'
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 3,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 2,
+  "_primary_term" : 1
+}
+
+$ curl -XGET http://localhost:9200/classes/class/1/?pretty
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 3,
+  "_seq_no" : 2,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "title" : "Algorithm",
+    "professor" : "John2",
+    "unit" : 2
+  }
+}
+```  
+
+### [POST] Document 필드값 변경 - script 사용
+```shell
+$ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/classes/class/1/_update?pretty -d '{"script" : "ctx._source.unit += 5"}'
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 5,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 4,
+  "_primary_term" : 1
+}
+
+$ curl -XGET http://localhost:9200/classes/class/1/?pretty
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 5,
+  "_seq_no" : 4,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "title" : "Algorithm",
+    "professor" : "John2",
+    "unit" : 12
+  }
+}
 ```
-
-
-
-
 
 ## 참고  
 [ELK 스택 (ElasticSearch, Logstash, Kibana) 으로 데이터 분석](https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/lecture/5498?tab=curriculum)     
