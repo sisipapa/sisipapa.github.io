@@ -33,7 +33,7 @@ $ docker exec -ti e32954d58bda bash
 bash-4.4# 
 ```  
 
-## ElasticSearch GET,POST,DELETE,PUT API 호출
+## Index 조회,생성,삭제
 API는 Comman에서 curl 요청을 한다. pretty 파라미터를 붙이면 json포맷으로 깔끔하게 출력된다.  
 
 |ElasticSearch|Relational DB|
@@ -143,6 +143,8 @@ $ curl -XGET http://localhost:9200/classes?pretty
   "status" : 404
 }
 ```  
+
+## Document 생성
 
 ### [POST] Document 생성(직접입력)
 Document는 Index가 있을 때 만들어도 되고 없을 떄도 Index,Type명을 명시해 주면 바로 생성이 가능하다.  
