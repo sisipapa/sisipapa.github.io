@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ELK Stack으로 데이터 분석-Elasticsearch  
+title: ELK Stack으로 데이터 분석-Elasticsearch1  
 category: [elk]
 tags: [elasticsearch, logstash, kibana]
 redirect_from:
@@ -17,6 +17,7 @@ redirect_from:
 Docker에 설치된 ElasticSearch에 접속해서 직접 API를 호출해 보려고 한다.  
 
 ## Docker-Compose ElasticSearch 접속
+나의 경우는 Docker-Compose를 이용해서 ELK를 설치했기 때문에 ElasticSearch가 설치된 Continer 내부로 접속한다.
 
 ### docker ps 명령으로 CONTAINER ID 확인
 ```shell
@@ -33,7 +34,7 @@ $ docker exec -ti e32954d58bda bash
 bash-4.4# 
 ```  
 
-## Index 조회,생성,삭제
+## Index API 요청
 API는 Comman에서 curl 요청을 한다. pretty 파라미터를 붙이면 json포맷으로 깔끔하게 출력된다.  
 
 |ElasticSearch|Relational DB|
@@ -144,7 +145,7 @@ $ curl -XGET http://localhost:9200/classes?pretty
 }
 ```  
 
-## Document 생성
+## Document API 요청
 
 ### [POST] Document 생성(직접입력)
 Document는 Index가 있을 때 만들어도 되고 없을 떄도 Index,Type명을 명시해 주면 바로 생성이 가능하다.  
@@ -278,8 +279,166 @@ $ curl -XGET http://localhost:9200/classes/class/1/?pretty
     "unit" : 12
   }
 }
-```
+```  
+
+## Bulk Insert
+### Bulk Insert를 위한 classes.json
+```json
+{ "index" : { "_index" : "classes", "_type" : "class", "_id" : "1" } }
+{"title" : "Machine Learning","Professor" : "Minsuk Heo","major" : "Computer Science","semester" : ["spring", "fall"],"student_count" : 100,"unit" : 3,"rating" : 5, "submit_date" : "2016-01-02", "school_location" : {"lat" : 36.00, "lon" : -120.00}}
+{ "index" : { "_index" : "classes", "_type" : "class", "_id" : "2" } }
+{"title" : "Network","Professor" : "Minsuk Heo","major" : "Computer Science","semester" : ["fall"],"student_count" : 50,"unit" : 3,"rating" : 4, "submit_date" : "2016-02-02", "school_location" : {"lat" : 36.00, "lon" : -120.00}}
+
+... 생략
+
+{ "index" : { "_index" : "classes", "_type" : "class", "_id" : "24" } }
+{"title" : "Biochemistry","Professor" : "John Miller","major" : "Medical","semester" : ["fall"],"student_count" : 30,"unit" : 3,"rating" : 4, "submit_date" : "2016-01-11", "school_location" : {"lat" : 28.22, "lon" : -81.87}}
+{ "index" : { "_index" : "classes", "_type" : "class", "_id" : "25" } }
+{"title" : "Anatomy","Professor" : "Tom Johnson","major" : "Medical","semester" : ["fall"],"student_count" : 30,"unit" : 5,"rating" : 3, "submit_date" : "2016-11-12", "school_location" : {"lat" : 28.22, "lon" : -81.87}}
+```  
+
+### Bulk Post 요청
+```javascript
+$  curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_bulk?pretty --data-binary @classes.json
+{
+    "took" : 68,
+    "errors" : false,
+    "items" : [
+    {
+        "index" : {
+            "_index" : "classes",
+            "_type" : "class",
+            "_id" : "1",
+            "_version" : 6,
+            "result" : "updated",
+            "_shards" : {
+                "total" : 2,
+                "successful" : 1,
+                "failed" : 0
+            },
+            "_seq_no" : 5,
+            "_primary_term" : 1,
+            "status" : 200
+        }
+    },
+    {
+        "index" : {
+            "_index" : "classes",
+            "_type" : "class",
+            "_id" : "2",
+            "_version" : 1,
+            "result" : "created",
+            "_shards" : {
+                "total" : 2,
+                "successful" : 1,
+                "failed" : 0
+            },
+            "_seq_no" : 6,
+            "_primary_term" : 1,
+            "status" : 201
+        }
+    },
+    
+... 생략
+
+    {
+        "index" : {
+            "_index" : "classes",
+            "_type" : "class",
+            "_id" : "24",
+            "_version" : 1,
+            "result" : "created",
+            "_shards" : {
+                "total" : 2,
+                "successful" : 1,
+                "failed" : 0
+            },
+            "_seq_no" : 27,
+            "_primary_term" : 1,
+            "status" : 201
+        }
+    },
+    {
+        "index" : {
+            "_index" : "classes",
+            "_type" : "class",
+            "_id" : "25",
+            "_version" : 1,
+            "result" : "created",
+            "_shards" : {
+                "total" : 2,
+                "successful" : 1,
+                "failed" : 0
+            },
+            "_seq_no" : 28,
+            "_primary_term" : 1,
+            "status" : 201
+        }
+    }
+]
+}
+```  
+
+### Bulk POST 정상확인
+Index classes, Type class, id 1 번부터 차례로 조회해 보면 정상적으로 등록된 데잍터 확인이 가능하다.  
+```javascript
+curl -XGET http://localhost:9200/classes/class/1?pretty
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "1",
+  "_version" : 6,
+  "_seq_no" : 5,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "title" : "Machine Learning",
+    "Professor" : "Minsuk Heo",
+    "major" : "Computer Science",
+    "semester" : [
+      "spring",
+      "fall"
+    ],
+    "student_count" : 100,
+    "unit" : 3,
+    "rating" : 5,
+    "submit_date" : "2016-01-02",
+    "school_location" : {
+      "lat" : 36.0,
+      "lon" : -120.0
+    }
+  }
+}
+$ curl -XGET http://localhost:9200/classes/class/2?pretty
+{
+  "_index" : "classes",
+  "_type" : "class",
+  "_id" : "2",
+  "_version" : 1,
+  "_seq_no" : 6,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "title" : "Network",
+    "Professor" : "Minsuk Heo",
+    "major" : "Computer Science",
+    "semester" : [
+      "fall"
+    ],
+    "student_count" : 50,
+    "unit" : 3,
+    "rating" : 4,
+    "submit_date" : "2016-02-02",
+    "school_location" : {
+      "lat" : 36.0,
+      "lon" : -120.0
+    }
+  }
+}
+```  
+
 
 ## 참고  
-[ELK 스택 (ElasticSearch, Logstash, Kibana) 으로 데이터 분석](https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/lecture/5498?tab=curriculum)     
+[ELK 스택 (ElasticSearch, Logstash, Kibana) 으로 데이터 분석](https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/lecture/5498?tab=curriculum)
+[BigData Git Repository](https://github.com/minsuk-heo/BigData)
 
