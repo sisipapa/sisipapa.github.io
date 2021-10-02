@@ -17,22 +17,22 @@ redirect_from:
 
 ## 엘라스틱서치 매핑(Mapping)
 매핑없이 엘라스틱서치에 데이터 저장은 가능하지만 숫자나 날짜를 매핑없이 저장을 하면 문자열로 저장이 될 수있고 이를 시각화해주는 키바나에서 숫자나 날짜데이터를 사용할 떄 문제가 될 수도 있다.  
-매핑의 형태는 아래와 같다.  
+ElasticSearch 6.x 이상의 버전을 사용하는 경우 string type을 text로 변경해야 한다. 매핑의 형태는 아래와 같다.    
 ```json
 {
   "class" : {
     "properties" : {
       "title" : {
-        "type" : "string"
+        "type" : "text"
       },
       "professor" : {
-        "type" : "string"
+        "type" : "text"
       },
       "major" : {
-        "type" : "string"
+        "type" : "text"
       },
       "semester" : {
-        "type" : "string"
+        "type" : "text"
       },
       "student_count" : {
         "type" : "integer"
@@ -399,11 +399,11 @@ $ curl -XPUT -H 'Content-Type: application/json' http://localhost:9200/basketbal
         "record" : {
                 "properties" : {
                         "team" : {
-                                "type" : "string",
+                                "type" : "text",
                                 "fielddata" : true
                         },
                         "name" : {
-                                "type" : "string",
+                                "type" : "text",
                                 "fielddata" : true
                         },
                         "points" : {
