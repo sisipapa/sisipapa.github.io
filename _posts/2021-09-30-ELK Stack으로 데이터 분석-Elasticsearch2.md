@@ -385,7 +385,7 @@ $ curl -XGET -H 'Content-Type: application/json' localhost:9200/_search?pretty -
 ```  
 
 ## 엘라스틱서치 버켓 어그리게이션(Bucket Aggregation)  
-Relation 데이터베이스의 group by와 같은 기능이라고 생각하면 될 것 같다.
+Relation 데이터베이스의 group by와 같은 기능이라고 생각하면 될 것 같다. 여기서는 curl comman를 사용해서 Bucket Aggregation은 아래 실행 샘플처럼 사용할 수 있다라는 정도만 보고 넘어갈 예정이다.  
 
 ### basketball Index 생성
 ```javascript
@@ -427,10 +427,39 @@ $ curl -XPUT -H 'Content-Type: application/json' http://localhost:9200/basketbal
 }
 ```  
 
-```javascript
-$ 
-```
+### Bulk로 데이터 삽입
+```json
+{ "index" : { "_index" : "basketball", "_type" : "record", "_id" : "1" } }
+{"team" : "Chicago","name" : "Michael Jordan", "points" : 30,"rebounds" : 3,"assists" : 4, "blocks" : 3, "submit_date" : "1996-10-11"}
+{ "index" : { "_index" : "basketball", "_type" : "record", "_id" : "2" } }
+{"team" : "Chicago","name" : "Michael Jordan","points" : 20,"rebounds" : 5,"assists" : 8, "blocks" : 4, "submit_date" : "1996-10-13"}
+{ "index" : { "_index" : "basketball", "_type" : "record", "_id" : "3" } }
+{"team" : "LA","name" : "Kobe Bryant","points" : 30,"rebounds" : 2,"assists" : 8, "blocks" : 5, "submit_date" : "2014-10-13"}
+{ "index" : { "_index" : "basketball", "_type" : "record", "_id" : "4" } }
+{"team" : "LA","name" : "Kobe Bryant","points" : 40,"rebounds" : 4,"assists" : 8, "blocks" : 6, "submit_date" : "2014-11-13"}
 
+```  
+```javascript
+$ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_bulk?pretty --data-binary @twoteam_basketball.json
+```  
+
+### aggregation json 실행
+terms_aggs.json
+```json
+{
+	"size" : 0,
+	"aggs" : {
+		"players" : {
+			"terms" : {
+				"field" : "team"
+			}
+		}
+	}
+}
+```
+```javascript
+$ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_search?pretty --data-binary @terms_aggs.json
+```
 
 ## 참고  
 [ELK 스택 (ElasticSearch, Logstash, Kibana) 으로 데이터 분석](https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/lecture/5498?tab=curriculum)
