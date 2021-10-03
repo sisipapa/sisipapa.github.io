@@ -9,10 +9,6 @@ redirect_from:
 
 ---
 
-
-
-## 
-
 오늘은 [ELK 스택 (ElasticSearch, Logstash, Kibana) 으로 데이터 분석](https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/) 강의 중 Mapping, Search, Metric Aggregation, Bucket Aggregation 강의를 보면서 정리를 해보려고 한다.  
 
 ## 엘라스틱서치 매핑(Mapping)
@@ -89,7 +85,7 @@ search를 확인하기 위해 아래 bulk_basketball.json 파일을 bulk 삽입�
 ```  
 
 ### bulk 삽입
-```javascript
+```shell
 $ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_bulk?pretty --data-binary @simple_basketball.json
 {
     "took" : 282,
@@ -134,7 +130,7 @@ $ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_bulk?pr
 ```  
 
 ### search 전체조회
-```javascript
+```shell
 curl -XGET http://localhost:9200/basketball/record/_search?pretty
 {
   "took" : 1,
@@ -186,7 +182,7 @@ curl -XGET http://localhost:9200/basketball/record/_search?pretty
 ```  
 
 ### search GET방식 파라미터 조회
-```javascript
+```shell
 $ curl -XGET 'http://localhost:9200/basketball/record/_search?pretty&q=rebounds:5'
 {
     "took" : 0,
@@ -224,7 +220,7 @@ $ curl -XGET 'http://localhost:9200/basketball/record/_search?pretty&q=rebounds:
 ```  
 
 ### search -d(Request BODY) 옵션 조회
-```javascript
+```shell
 $ curl -XGET 'localhost:9200/basketball/record/_search -d'
 {
     "query" : {
@@ -238,7 +234,7 @@ $ curl -XGET 'localhost:9200/basketball/record/_search -d'
 
 ### 평균값 조회 json
 아래는 산술 aggregation에 사용할 json 파일이다.
-```javascript
+```shell
 $ cat avg_points_aggs.json
 {
     "size" : 0,
@@ -253,7 +249,7 @@ $ cat avg_points_aggs.json
 ```  
 
 ### 평균값/최대값/최소값/합계 조회
-```javascript
+```shell
 $ curl -XGET -H 'Content-Type: application/json' localhost:9200/_search?pretty --data-binary @avg_points_aggs.json
 {
     "took" : 2,
@@ -388,7 +384,7 @@ $ curl -XGET -H 'Content-Type: application/json' localhost:9200/_search?pretty -
 Relation 데이터베이스의 group by와 같은 기능이라고 생각하면 될 것 같다. 여기서는 curl comman를 사용해서 Bucket Aggregation은 아래 실행 샘플처럼 사용할 수 있다라는 정도만 보고 넘어갈 예정이다.  
 
 ### basketball Index 생성
-```javascript
+```shell
 $ curl -XPUT -H 'Content-Type: application/json' http://localhost:9200/basketball
 {"acknowledged":true,"shards_acknowledged":true,"index":"basketball"}
 ```  
@@ -439,7 +435,7 @@ $ curl -XPUT -H 'Content-Type: application/json' http://localhost:9200/basketbal
 {"team" : "LA","name" : "Kobe Bryant","points" : 40,"rebounds" : 4,"assists" : 8, "blocks" : 6, "submit_date" : "2014-11-13"}
 
 ```  
-```javascript
+```shell
 $ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_bulk?pretty --data-binary @twoteam_basketball.json
 ```  
 
@@ -457,7 +453,7 @@ terms_aggs.json
 	}
 }
 ```
-```javascript
+```shell
 $ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_search?pretty --data-binary @terms_aggs.json
 ```
 
