@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ELK Stack으로 데이터 분석-Elasticsearch2 
+title: ELK Stack으로 데이터 분석-kibana
 category: [elk]
 tags: [elasticsearch, logstash, kibana]
 redirect_from:
