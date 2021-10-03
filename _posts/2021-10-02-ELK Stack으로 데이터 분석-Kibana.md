@@ -10,12 +10,11 @@ redirect_from:
 ---
 
 오늘은 [ELK 스택 (ElasticSearch, Logstash, Kibana) 으로 데이터 분석](https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/) 강의 중 아래 4개를 실습해 보면서 정리를 해보려고 한다.
-1. 키바나 매니지먼트(Kibana management)   
-2. 키바나 디스커버(Kibana discover)   
-3. 키바나 비주얼라이즈(Kibana Visualize) - 막대그래프, 파이차트   
-4. 키바나 비주얼라이즈(Kibana Visualize) - 타일맵, 지도에 표시, 키바나 대시보드(Dashboard)   
+1. 키바나 디스커버(Kibana discover)   
+2. 키바나 비주얼라이즈(Kibana Visualize) - 막대그래프, 파이차트   
+3. 키바나 비주얼라이즈(Kibana Visualize) - 타일맵, 지도에 표시, 키바나 대시보드(Dashboard)   
 
-## 1. 키바나 매니지먼트(Kibana management)
+## 1. 키바나 디스커버(Kibana discover)
 강의와 동일한 환경 구성을 위해 basketball index를 삭제하고 재생성한다. 그리고 basketball의 mapping도 설정한다. mapping 설정 후 bulk로 데이터를 저장한다.
 ### 1-1. basketball index 삭제
 ```shell
@@ -66,8 +65,11 @@ $ curl -XPOST -H 'Content-Type: application/json' http://localhost:9200/_bulk?pr
 }
 ```  
 
-### 1-5. kibana Discover
-<img src="https://sisipapa.github.io/assets/images/posts/kibana-discover.png" >   
+### 1-5. kibana Discover  
+원하는 날짜, 필드조건 필터를 적용해서 데이터를 조회할 수 있다.
+<img src="https://sisipapa.github.io/assets/images/posts/kibana-discover.png" >  
+
+현재 보고있는 강의의 kibana 버전과 내가 테스트 진행중인 kibana 버전이 상이해서 강의를 보고 그대로 따라서 진행하기가 어렵다. 따로 공부를 해서 키바나 비주얼라이즈에 대한 정리를 해야 할 것 같다....
 
 
 ## 참고  
