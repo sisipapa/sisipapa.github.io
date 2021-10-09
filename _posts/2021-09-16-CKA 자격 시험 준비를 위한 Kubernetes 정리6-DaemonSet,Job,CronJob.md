@@ -10,8 +10,12 @@ redirect_from:
 ---
 
 오늘은 인프런 강의 대세는 쿠버네티스 강의 중 DaemonSet,Job,CronJob 관련 내용을 실습해 보면서 정리 할 예정이다.  
-DaemonSet,Job,CronJob - <https://kubetm.github.io/k8s/04-beginner-controller/daemonset/>   
+DaemonSet,Job,CronJob - <https://kubetm.github.io/k8s/04-beginner-controller/daemonset/>  
+
+
 ## DaemonSet, Job, CronJob
+
+
 
 ## 참고  
 [KUBETM BLOG](https://kubetm.github.io/k8s/04-beginner-controller/daemonset/)     
