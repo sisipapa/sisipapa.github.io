@@ -14,7 +14,7 @@ redirect_from:
 [ELK Stack Docker-Compose 설치](https://sisipapa.github.io/blog/2021/08/19/ELK-Stack-Docker-Compose-%EC%84%A4%EC%B9%98/)  
 [Springboot MSA 구성5 - Logging(ELK 연동)](https://sisipapa.github.io/blog/2021/08/27/Springboot-MSA-%EA%B5%AC%EC%84%B15-Logging(ELK-%EC%97%B0%EB%8F%99)/)  
 
-Docker에 설치된 ElasticSearch에 접속해서 직접 API를 호출해 보려고 한다.  
+Docker에 설치된 ElasticSearch에 접속해서 직접 API를 호출해 보면서 ElasticSearch가 어떻게 동작이 되는지 확인을 해보려고 한다.
 
 ## Docker-Compose ElasticSearch 접속
 나의 경우는 Docker-Compose를 이용해서 ELK를 설치했기 때문에 ElasticSearch가 설치된 Continer 내부로 접속한다.
