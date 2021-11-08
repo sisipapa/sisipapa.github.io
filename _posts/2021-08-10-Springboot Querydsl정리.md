@@ -1,8 +1,8 @@
 ---
 layout: post 
 title: Springboot Querydsl정리
-category: [querydsl]
-tags: [querydsl, springboot]
+category: [QueryDsl]
+tags: [QueryDsl, springboot]
 redirect_from:
 
 - /2021/08/10/
