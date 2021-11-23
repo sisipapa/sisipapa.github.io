@@ -107,7 +107,7 @@ logging.level:
 ```  
 
 ## API 기본 - MemberApiController  
-강의 내용중 작성한 등록,조회 소스이다. v1 API는 Entity를 파라미터로 받아서 처리하는 경우이고 v2 API는 Entity가 아닌 별도의 DTO를 생성해서 처리한 경우이다.  
+아래는 강의를 들으면서 정리한 소스이다. v1 API는 Entity를 파라미터로 받아서 처리하는 경우이고 v2 API는 Entity가 아닌 별도의 DTO를 생성해서 처리한 경우이다.  
 
 ### 등록(POST)  
 ```java
@@ -171,10 +171,7 @@ public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id,
 }
 ```
 
-
-
-
-
+다음 정리는 xToOne 관계의 성능최적화에 대해서 정리를 할 예정이다.  
 
 ## 참고  
 [실전! 스프링 부트와 JPA 활용2 - API 개발과 성능 최적화](https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-JPA-API%EA%B0%9C%EB%B0%9C-%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94/)  
