@@ -42,7 +42,8 @@ order 조회 1번(order 조회 결과 수가 N이 된다.)
 order -> member 지연 로딩 조회 N 번  
 order -> delivery 지연 로딩 조회 N 번  
 ### OrderSimpleApiController    
-```java
+```java  
+
 /**
  * V2. 엔티티를 조회해서 DTO로 변환(fetch join 사용X)
  * 단점: 지연로딩으로 쿼리 N번 호출
