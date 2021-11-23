@@ -124,6 +124,7 @@ public List<OrderSimpleQueryDto> ordersV4() {
 ```  
 
 ### OrderRepository  
+아래와 같은 화면에 종속된 확장성이 낮은 쿼리는 별도의 Repository로 분리해서 관리해 주면 유지보수 운영상 편리하다.    
 ```java
 public List<OrderSimpleQueryDto> findOrderDtos() {
     return em.createQuery
