@@ -43,6 +43,25 @@ order -> member 지연 로딩 조회 N 번
 order -> delivery 지연 로딩 조회 N 번   
 
 ### OrderSimpleApiController    
+```java
+/**
+ * V2. 엔티티를 조회해서 DTO로 변환(fetch join 사용X)
+ * - 단점: 지연로딩으로 쿼리 N번 호출
+ */
+@GetMapping("/api/v2/simple-orders")
+public List<SimpleOrderDto> ordersV2(){
+
+    // 1개의 쿼리가 수행되서 ORDER 2개의 ROW 리턴
+    // N + 1 -> 1 + 회원N + 배송 N
+    List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+    List<SimpleOrderDto> dtoOrders = orders.stream()
+            .map(SimpleOrderDto::new)
+//                .map(order -> new SimpleOrderDto(order))
+            .collect(Collectors.toList());
+
+    return dtoOrders;
+}
+```  
 
 
 ## V3: 엔티티를 DTO로 변환 - 페치 조인 최적화  
