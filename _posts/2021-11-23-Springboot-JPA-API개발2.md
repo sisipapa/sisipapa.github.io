@@ -16,7 +16,8 @@ redirect_from:
 - Entity를 조회해서 API의 응답결과로 Entity를 직접 반환해주는 API이다.   
 - order -> member 와 order -> address fetchType이 LAZY로 실제 엔티티가 존재하지 않고 프록시가 존재하기 때문에 API 호출 시 오류가 발생한다.  
 - Hibernate5Module 을 스프링 빈으로 등록하면 해결은 가능하지만 많이 사용할 일은 없어 보여 따로 정리를 하지는 않았다.  
-### OrderSimpleApiController
+
+### OrderSimpleApiController  
 ```java
 /**
  * V1. 엔티티 직접 노출
@@ -40,7 +41,7 @@ public List<Order> ordersV1() {
 order 조회 1번(order 조회 결과 수가 N이 된다.)  
 order -> member 지연 로딩 조회 N 번  
 order -> delivery 지연 로딩 조회 N 번  
-### OrderSimpleApiController
+### OrderSimpleApiController  
 ```java
 /**
  * V2. 엔티티를 조회해서 DTO로 변환(fetch join 사용X)
