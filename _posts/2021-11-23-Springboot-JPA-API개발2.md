@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Springboot-JPA-API 개발1
+title: Springboot-JPA-API 개발2
 category: [jpa]
 tags: [jap, Springboot, api]
 redirect_from:
