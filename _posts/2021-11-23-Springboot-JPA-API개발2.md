@@ -61,6 +61,22 @@ public List<SimpleOrderDto> ordersV2(){
 
     return dtoOrders;
 }
+
+@Data
+static class SimpleOrderDto {
+    private Long orderId;
+    private String name;
+    private LocalDateTime orderDate; //주문시간
+    private OrderStatus orderStatus;
+    private Address address;
+    public SimpleOrderDto(Order order) {
+        orderId = order.getId();
+        name = order.getMember().getName();
+        orderDate = order.getOrderDate();
+        orderStatus = order.getStatus();
+        address = order.getDelivery().getAddress();
+    }
+}
 ```  
 
 
