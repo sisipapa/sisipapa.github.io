@@ -40,39 +40,9 @@ public List<Order> ordersV1() {
 - 쿼리가 총 1 + N + N번 실행된다.  
 order 조회 1번(order 조회 결과 수가 N이 된다.)  
 order -> member 지연 로딩 조회 N 번  
-order -> delivery 지연 로딩 조회 N 번  
+order -> delivery 지연 로딩 조회 N 번   
 ### OrderSimpleApiController    
-```java  
 
-/**
- * V2. 엔티티를 조회해서 DTO로 변환(fetch join 사용X)
- * 단점: 지연로딩으로 쿼리 N번 호출
- */
-@GetMapping("/api/v2/simple-orders")
-public List<SimpleOrderDto> ordersV2() {
-    List<Order> orders = orderRepository.findAll();
-    List<SimpleOrderDto> result = orders.stream()
-    .map(o -> new SimpleOrderDto(o))
-    .collect(toList());
-    return result;
-}
-
-@Data
-static class SimpleOrderDto {
-    private Long orderId;
-    private String name;
-    private LocalDateTime orderDate; //주문시간
-    private OrderStatus orderStatus;
-    private Address address;
-    public SimpleOrderDto(Order order) {
-        orderId = order.getId();
-        name = order.getMember().getName();
-        orderDate = order.getOrderDate();
-        orderStatus = order.getStatus();
-        address = order.getDelivery().getAddress();
-    }
-}
-```  
 
 ## V3: 엔티티를 DTO로 변환 - 페치 조인 최적화  
 - 엔티티를 fetch join을 사용해서 쿼리 1번에 조회  
