@@ -5,7 +5,7 @@ category: [jpa]
 tags: [jap, p6spy]
 redirect_from:
 
-- /2021/11/24/
+- /2021/11/25/
 
 ---
 
@@ -37,7 +37,7 @@ logging:
       sql:
        trace
 ```  
-sql문에 어떤 값이 들어가는지 확인을 할 떄는 위와 같은 설정을 추가해 주면 된다.  
+sql문에 어떤 값이 들어가는지 확인을 할 때는 위와 같은 설정을 추가해 주면 된다.  
 
 ## 2. p6spy 설정  
 build.gradle p6spy 라이브러리 설정을 추가한다.
@@ -103,7 +103,7 @@ public class PrettySqlMultiLineFormat {
 }
 ```  
 
-P6spySqlFormatConfiguration, PrettySqlMultiLineFormat 두개의 클래스를 만들어주고 실행시켜보니 값이 들어가는 pretty한 쿼리가 나오는 것을 확인 할 수 있었다!! 와우~ 
+P6spySqlFormatConfiguration, PrettySqlMultiLineFormat 두개의 클래스를 만들어주고 실행시켜보니 값이 들어가는 pretty한 쿼리가 나오는 것을 확인 할 수 있었다!!  
 
 ## 참고  
 [[Querydsl] p6spy를 이용한 Log 남기기 - p6spy/ log/ querydsl/ Spring boot/ JPA/ p6spy pretty](https://winteri-i.tistory.com/25)  
