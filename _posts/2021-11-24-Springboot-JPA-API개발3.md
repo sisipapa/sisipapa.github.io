@@ -181,6 +181,73 @@ default_batch_fetch_size 의 크기는 적당한 사이즈를 골라야 하는�
 1000으로 설정하는 것이 성능상 가장 좋지만, 결국 DB든 애플리케이션이든 순간 부하를 어디까지 견딜 수 있는지로 결정하면 된다.  
 ```  
 
+## V4: JPA에서 DTO 직접 조회  
+- Query: Root Entity 1회, Collection Entity N번 수행
+- ToOne(OneToOne, ManyToOne) 관계들을 먼저 조회하고, ToMany(1:N) 관계는 각각 별도로 처리
+- Row수 증가가 없는 ToOne관계는 fetch join으로 최적화 하고 ToMany 관계는 별도의 최적화가 힘들기 때문에 LAZY로 조회하는 로직을 구현한다.
+
+### OrderApiController  
+```java
+@GetMapping("/api/v4/orders")
+public List<OrderQueryDto> orderV4(){
+    return orderQueryRepository.findOrderQueryDtos();
+}
+```  
+
+### OrderQueryRepository
+```java
+@Repository
+@RequiredArgsConstructor
+public class OrderQueryRepository {
+
+    private final EntityManager em;
+
+    /**
+     * 컬렉션은 별도로 조회
+     * Query: 루트 1번, 컬렉션 N 번
+     * 단건 조회에서 많이 사용하는 방식
+     */
+    public List<OrderQueryDto> findOrderQueryDtos(){
+        List<OrderQueryDto> result = findOrders();
+
+        result.forEach(o -> {
+            List<OrderItemQueryDto> orderItems = findOrderItems(o.getOrderId());
+            o.setOrderItems(orderItems);
+        });
+
+        return result;
+    }
+
+    /**
+     * 1:N 관계인 orderItems 조회
+     */
+    private List<OrderItemQueryDto> findOrderItems(Long orderId) {
+        return em.createQuery("select " +
+                        "new com.example.inflearnjparestapi.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count) " +
+                        "from OrderItem oi " +
+                        "join oi.item i " +
+                        "where oi.order.id = :orderId", OrderItemQueryDto.class)
+                .setParameter("orderId", orderId)
+                .getResultList();
+    }
+
+    /**
+     * 1:N 관계(컬렉션)를 제외한 나머지를 한번에 조회
+     */
+    private List<OrderQueryDto> findOrders() {
+        return em.createQuery("select " +
+                        "new com.example.inflearnjparestapi.repository.order.query.OrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address) " +
+                        "from Order o " +
+                        "join o.member m " +
+                        "join o.delivery d ", OrderQueryDto.class)
+                .getResultList();
+    }
+}
+```  
+
+
+
+
 
 ## 참고  
 [실전! 스프링 부트와 JPA 활용2 - API 개발과 성능 최적화](https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-JPA-API%EA%B0%9C%EB%B0%9C-%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94/)  
