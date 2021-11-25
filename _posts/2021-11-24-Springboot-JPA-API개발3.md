@@ -123,6 +123,64 @@ public List<Order> findAllWithItem() {
 }
 ```  
 
+## V3.1: 엔티티를 DTO로 변환 - 페이징과 한계 돌파  
+Collection fetch join을 하게 되면 페이징이 불가능하다. toMany Collection Join이 있는 Entity의 조회를 위해서는 다음과 같은 순서로 진행한다.  
+1. ToOne(OneToOnne, ManyToOnne) 관계를 모두 fetch join한다. ToOne관계의 fetch join의 경우 ROW수 증가가 없으므로 페이징에 영향을 주지 않는다.
+2. Collection은 LAZY 로딩으로 조회한다.
+3. 지연로딩 성능 최적화를 위해 default_batch_fetch_size, @BatchSize 설정을 추가한다.
+- default_batch_fetch_size : 전역설정
+- @BatchSize : 개별 최적화설정
+- 위 옵션을 적용하면 Collection 또는 Proxy 객체를 한꺼번에 설정한 size 만큼 IN 쿼리로 조회한다.
+
+### OrderApiController  
+```java
+@GetMapping("/api/v3.1/orders")
+public List<OrderDto> orderV3_page(@RequestParam(value = "offset", defaultValue = "0") int offset,
+                                   @RequestParam(value = "limit", defaultValue = "100") int limit){
+    
+    // 1. toOne관계는 fetch join을 하고 페이징처리
+    // 2. application.yml default_batch_fetch_size 설정
+    // 3. toMany관계는 LAZY 조회! => default_batch_fetch_size 설정으로 Entity마다 1회씩 쿼리가 더 수행
+    List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+
+    List<OrderDto> result = orders.stream()
+            .map(OrderDto::new)
+            .collect(Collectors.toList());
+
+    return result;
+}
+```  
+
+### OrderReposiroty
+```java
+// Order 기준 ToOne 관계인 Member,Delivery는 fetch join으로 한번에 조회
+public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+    return em.createQuery(
+            "select o from Order o" +
+                    " join fetch o.member m" +
+                    " join fetch o.delivery d", Order.class)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
+}
+```  
+
+### application.yml
+```yaml
+spring:
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000 
+```  
+```text
+default_batch_fetch_size 의 크기는 적당한 사이즈를 골라야 하는데, 100~1000 사이를 선택하는 것을 권장한다.  
+이 전략을 SQL IN 절을 사용하는데, 데이터베이스에 따라 IN 절 파라미터를 1000으로 제한하기도 한다.  
+1000으로 잡으면 한번에 1000개를 DB에서 애플리케이션에 불러오므로 DB에 순간 부하가 증가할 수 있다.  
+하지만 애플리케이션은 100이든 1000이든 결국 전체 데이터를 로딩해야 하므로 메모리 사용량이 같다.  
+1000으로 설정하는 것이 성능상 가장 좋지만, 결국 DB든 애플리케이션이든 순간 부하를 어디까지 견딜 수 있는지로 결정하면 된다.  
+```  
+
 
 ## 참고  
 [실전! 스프링 부트와 JPA 활용2 - API 개발과 성능 최적화](https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-JPA-API%EA%B0%9C%EB%B0%9C-%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94/)  
