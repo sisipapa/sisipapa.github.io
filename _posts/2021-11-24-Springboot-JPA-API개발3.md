@@ -245,6 +245,64 @@ public class OrderQueryRepository {
 }
 ```  
 
+## V5: JPA에서 DTO 직접 조회 - 컬렉션 조회 최적화    
+- Query: 루트 1번, 컬렉션 1번  
+- ToOne 관계들을 먼저 조회하고, 식별자 orderId를 List로 만들어 In 쿼리로 ToMany 관계인 OrderItem 을 한꺼번에 조회  
+
+### OrderApiController
+```java
+@GetMapping("/api/v5/orders")
+public List<OrderQueryDto> orderV5(){
+    return orderQueryRepository.findAllByDto_optimization();
+}
+```  
+
+### OrderQueryRepository
+```java
+/**
+ * Query : 루트1번, 컬렉션 1번
+ *
+ * @return
+ */
+public List<OrderQueryDto> findAllByDto_optimization() {
+    
+    // toOne 1번 쿼리로 조회 
+    List<OrderQueryDto> result = findOrders();
+    
+    // toMany N+1 쿼리가 아닌 in 한번 쿼리로 처리를 위한 id 목록조회
+    List<Long> orderIds = findOrderIds(result);
+    
+    // toMany 컬렉션 IN쿼리로 한번에 조회
+    List<OrderItemQueryDto> orderItmes = findOrderItems(orderIds);
+    
+    // Collectors.groupingBy를 통한 Grouping
+    Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItmes.stream()
+            .collect(Collectors.groupingBy(orderItemQueryDto -> orderItemQueryDto.getOrderId()));
+
+    result.forEach(o -> o.setOrderItems(orderItemMap.get(o.getOrderId())));
+
+    return result;
+}
+
+private List<OrderItemQueryDto> findOrderItems(List<Long> orderIds) {
+    return em.createQuery("select " +
+                    "new com.example.inflearnjparestapi.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count) " +
+                    "from OrderItem oi " +
+                    "join oi.item i " +
+                    "where oi.order.id in :orderIds", OrderItemQueryDto.class)
+            .setParameter("orderIds", orderIds)
+            .getResultList();
+}
+
+private List<Long> findOrderIds(List<OrderQueryDto> result) {
+    return result.stream()
+            .map(o -> o.getOrderId())
+            .collect(Collectors.toList());
+}
+```  
+
+
+
 
 
 ## 참고  
