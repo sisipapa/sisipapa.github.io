@@ -12,7 +12,7 @@ redirect_from:
 오늘은 API 개발 고급 - 컬렉션 조회 최적화 강의를 보면서 내용을 정리해 보려고 한다.   
 주문내역에서 추가로 주문한 상품 정보를 Order 기준으로 컬렉션인 OrderItem 와 Item 이 필요하다. 이전 정리에서는 xToOne(OneToOne, ManyToOne) 관계만 있었다. 이번에는 컬렉션인 일대다 관계(OneToMany)를 조회하고, 최적화하는 방법을 단계별로 정리해 볼 예정이다.  
 
-## V1: 엔티티 직접 노출
+## 1. V1: 엔티티 직접 노출
 ### OrderApiController  
 Entity를 직접 노출하는 방법은 좋지 않다. 절대 쓰지 말것!!!  
 ```java
@@ -34,7 +34,7 @@ public List<Order> ordersV1() {
 }
 ```  
 
-## V2: 엔티티를 DTO로 변환  
+## 2. V2: 엔티티를 DTO로 변환  
 DTO로만 변환을 하고 fetch join을 사용하지 않은 경우이다.  
 지연 로딩으로 많은 SQL 수행되어 성능이 좋지 않다.  
 Order뿐만 아니라 OrderItem도 DTO 클래스를 만들어 준다.  
@@ -82,7 +82,7 @@ static class OrderItemDto {
 }
 ```  
 
-## V3: 엔티티를 DTO로 변환 - 페치 조인 최적화  
+## 3-0. V3: 엔티티를 DTO로 변환 - 페치 조인 최적화  
 fetch join으로 SQL이 한번만 실행된다.  
 distinct 를 사용한 이유는 1대다 조인이 있으므로 데이터베이스 row가 증가하고 order Entity 조회 수도 증가한다.  
 JPA의 distinct는 SQL에 distinct를 추가하고, 더해서 같은 Entity가 조회되면, 애플리케이션에서 중복을 걸러준다.  
@@ -123,7 +123,7 @@ public List<Order> findAllWithItem() {
 }
 ```  
 
-## V3.1: 엔티티를 DTO로 변환 - 페이징과 한계 돌파  
+## 3-1. V3.1: 엔티티를 DTO로 변환 - 페이징과 한계 돌파  
 Collection fetch join을 하게 되면 페이징이 불가능하다. toMany Collection Join이 있는 Entity의 조회를 위해서는 다음과 같은 순서로 진행한다.  
 1. ToOne(OneToOnne, ManyToOnne) 관계를 모두 fetch join한다. ToOne관계의 fetch join의 경우 ROW수 증가가 없으므로 페이징에 영향을 주지 않는다.
 2. Collection은 LAZY 로딩으로 조회한다.
@@ -181,7 +181,7 @@ default_batch_fetch_size 의 크기는 적당한 사이즈를 골라야 하는�
 1000으로 설정하는 것이 성능상 가장 좋지만, 결국 DB든 애플리케이션이든 순간 부하를 어디까지 견딜 수 있는지로 결정하면 된다.  
 ```  
 
-## V4: JPA에서 DTO 직접 조회  
+## 4. V4: JPA에서 DTO 직접 조회  
 - Query: Root Entity 1회, Collection Entity N번 수행
 - ToOne(OneToOne, ManyToOne) 관계들을 먼저 조회하고, ToMany(1:N) 관계는 각각 별도로 처리
 - Row수 증가가 없는 ToOne관계는 fetch join으로 최적화 하고 ToMany 관계는 별도의 최적화가 힘들기 때문에 LAZY로 조회하는 로직을 구현한다.
@@ -245,7 +245,7 @@ public class OrderQueryRepository {
 }
 ```  
 
-## V5: JPA에서 DTO 직접 조회 - 컬렉션 조회 최적화    
+## 5. V5: JPA에서 DTO 직접 조회 - 컬렉션 조회 최적화    
 - Query: 루트 1번, 컬렉션 1번  
 - ToOne 관계들을 먼저 조회하고, 식별자 orderId를 List로 만들어 In 쿼리로 ToMany 관계인 OrderItem 을 한꺼번에 조회  
 
@@ -301,7 +301,7 @@ private List<Long> findOrderIds(List<OrderQueryDto> result) {
 }
 ```  
 
-## V6: JPA에서 DTO로 직접 조회, 플랫 데이터 최적화  
+## 6. V6: JPA에서 DTO로 직접 조회, 플랫 데이터 최적화  
 - 쿼리가 한번만 수행된다.    
 - 쿼리가 한번이지만 조인으로 인해 DB에서 어플리케이션으로 전달하는 데이터가 중복이 있어서 V5 보다 느릴 수 있다.  
 - DB에서 flat하게 데이터를 조회해서 어플리케이션에서 grouping을 해주기 때문에 어플리케이션에서 추가 작업이 발생한다.  
