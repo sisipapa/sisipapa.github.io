@@ -301,9 +301,76 @@ private List<Long> findOrderIds(List<OrderQueryDto> result) {
 }
 ```  
 
+## V6: JPA에서 DTO로 직접 조회, 플랫 데이터 최적화  
+- 쿼리가 한번만 수행된다.    
+- 쿼리가 한번이지만 조인으로 인해 DB에서 어플리케이션으로 전달하는 데이터가 중복이 있어서 V5 보다 느릴 수 있다.  
+- DB에서 flat하게 데이터를 조회해서 어플리케이션에서 grouping을 해주기 때문에 어플리케이션에서 추가 작업이 발생한다.  
+- 페이징이 불가능하다.  
 
+### OrderApiController  
+```java
+@GetMapping("/api/v6/orders")
+public List<OrderQueryDto> orderV6(){
+    List<OrderFlatDto> flats = orderQueryRepository.findAllBy_flat();
 
+    return flats.stream()
+            .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(), o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                    mapping(o -> new OrderItemQueryDto(o.getOrderId(), o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+            )).entrySet().stream()
+            .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
+                                    e.getKey().getName(),
+                                    e.getKey().getOrderDate(),
+                                    e.getKey().getOrderStatus(),
+                                    e.getKey().getAddress(),
+                                    e.getValue()))
+            .collect(toList());
+}
+```  
 
+### OrderQueryRepository  
+```java
+public List<OrderFlatDto> findAllBy_flat() {
+    return em.createQuery(
+            "select " +
+                    "new com.example.inflearnjparestapi.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count) " +
+                    "from Order o " +
+                    "join o.member m " +
+                    "join o.delivery d " +
+                    "join o.orderItems oi " +
+                    "join oi.item i", OrderFlatDto.class
+    ).getResultList();
+}
+```  
+
+### OrderQueryDto 생성자 추가  
+```java
+public OrderQueryDto(Long orderId, String name, LocalDateTime orderDate, OrderStatus orderStatus, Address address, List<OrderItemQueryDto> orderItems){
+    this.orderId = orderId;
+    this.name = name;
+    this.orderDate = orderDate;
+    this.orderStatus = orderStatus;
+    this.address = address;
+    this.orderItems = orderItems;
+}
+```  
+
+### OrderFlatDto
+```java
+@Data
+@AllArgsConstructor
+public class OrderFlatDto {
+
+    private Long orderId;
+    private String name;
+    private LocalDateTime orderDate;
+    private OrderStatus orderStatus;
+    private Address address;
+
+    private String itemName;
+    private int orderPrice;
+    private int count;
+}
+```  
 
 ## 참고  
 [실전! 스프링 부트와 JPA 활용2 - API 개발과 성능 최적화](https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-JPA-API%EA%B0%9C%EB%B0%9C-%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94/)  
