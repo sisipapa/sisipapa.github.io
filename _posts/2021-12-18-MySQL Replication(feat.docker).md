@@ -365,13 +365,50 @@ Master_SSL_Verify_Server_Cert: No
                  Channel_Name:
            Master_TLS_Version:
 1 row in set (0.00 sec)
-```
+```  
 
+### 오류 확인
+ERROR 3021 (HY000): This operation cannot be performed with a running slave io thread; run STOP SLAVE IO_THREAD FOR CHANNEL ” first.  
+```mysql
+mysql> STOP SLAVE IO_THREAD;
+Query OK, 0 rows affected (0.00 sec)
+mysql> change master to master_host='192.168.0.99',master_port=3307,master_user='copy',master_password='copy',master_log_file='mysql-bin.000001',master_log_pos=154;
+Query OK, 0 rows affected, 2 warnings (0.00 sec)
+mysql> START SLAVE IO_THREAD;
+Query OK, 0 rows affected (0.00 sec)
+```  
 
+### Master Slave Replication 테스트
+테스트는 master DB에 접속해서 데이터베이스를 생성 후 slave접속해서 master에서 생성한 database가 보이는지 확인한다.
+```shell
+# master에 접속해서 test_db 데이터베이스 생성
+$ mysql -u root -p
+Enter password:
+mysql> create database test_db;  
+
+# slave에 접속해서 test_db 데이터베이스 조회
+$ mysql -u root -p
+Enter password:
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| db                 |
+| mysql              |
+| performance_schema |
+| sys                |
+| test_db            |
++--------------------+
+6 rows in set (0.00 sec)
+```  
+
+여기까지 mysql master slave 연동설정은 마치고 다음에는 jpa multi connection을 진행할 예정이다.
 
 ## 참고  
 [MySql - Master Slave Replication 구조 만들어보기](https://huisam.tistory.com/entry/mysql-replication)  
 [Mysql replication "Last_IO_Errno: 1236 Last_IO_Error" 에러 해결](http://115.68.22.172/index.php?mid=board_KaGH35&document_srl=292)
+[DebugAH - ERROR 3021 (HY000)](https://debugah.com/error-3021-hy000-this-operation-cannot-be-performed-with-a-running-slave-io-thread-run-stop-slave-io_thread-for-channel-first-23784/)
 
 
 
