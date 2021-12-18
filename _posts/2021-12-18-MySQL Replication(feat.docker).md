@@ -204,7 +204,7 @@ $ docker inspect 8512717ba3fb
 
 ### slave에서 master 연결정보 설정  
 위 docker inspect 명령어로 확인한 master의 host정보를 MASTER_HOST 속성에 설정하고 아래 명령어 실행을 했을 때 아래와 같은 오류가 나왔다.  
-```mysql
+```shell
 mysql> CHANGE MASTER TO MASTER_HOST='172.18.0.2', MASTER_USER='root', MASTER_PASSWORD='password', MASTER_LOG_FILE='mysql-bin.000013', MASTER_LOG_POS=0;
 
 mysql> start slave;
@@ -275,7 +275,7 @@ No query specified
 ```  
 
 ### master에 접속해서 status 정보 확인  
-```mysql
+```shell
 mysql> SHOW MASTER STATUS;
 +------------------+----------+--------------+------------------+-------------------+
 | File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
@@ -292,7 +292,7 @@ Slave_IO_Running: Yes
 Slave_SQL_Running: Yes  
 
 
-```mysql
+```shell
 mysql> STOP SLAVE;
 Query OK, 0 rows affected (0.00 sec)
 
@@ -369,7 +369,7 @@ Master_SSL_Verify_Server_Cert: No
 
 ### 오류 확인
 ERROR 3021 (HY000): This operation cannot be performed with a running slave io thread; run STOP SLAVE IO_THREAD FOR CHANNEL ” first.  
-```mysql
+```shell
 mysql> STOP SLAVE IO_THREAD;
 Query OK, 0 rows affected (0.00 sec)
 mysql> change master to master_host='192.168.0.99',master_port=3307,master_user='copy',master_password='copy',master_log_file='mysql-bin.000001',master_log_pos=154;
