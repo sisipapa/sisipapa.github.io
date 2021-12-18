@@ -372,6 +372,17 @@ public class OrderFlatDto {
 }
 ```  
 
+## 권장순서
+1. fetch join으로 쿼리수 최적화
+   1. 페치조인으로 쿼리 수를 최적화
+   2. 컬렉션 최적화
+       1. 페이징 있는 경우 -  hibernate.default_batch_fetch_size, @BatchSize 로 최적화
+       2. 페이징 없는 경우 - fetch join 사용
+2. Entity 조회 방식으로 해결이 안되면 DTO 조회 방식 사용한다.
+3. DTO 조회방식으로 해결이 안되면 NativeSQL or 스프링 JdbcTemplate  
+
+
+
 ## 참고  
 [실전! 스프링 부트와 JPA 활용2 - API 개발과 성능 최적화](https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-JPA-API%EA%B0%9C%EB%B0%9C-%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94/)  
 
