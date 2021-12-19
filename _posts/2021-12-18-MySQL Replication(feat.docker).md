@@ -409,6 +409,7 @@ mysql> show databases;
 [MySql - Master Slave Replication 구조 만들어보기](https://huisam.tistory.com/entry/mysql-replication)  
 [Mysql replication "Last_IO_Errno: 1236 Last_IO_Error" 에러 해결](http://115.68.22.172/index.php?mid=board_KaGH35&document_srl=292)
 [DebugAH - ERROR 3021 (HY000)](https://debugah.com/error-3021-hy000-this-operation-cannot-be-performed-with-a-running-slave-io-thread-run-stop-slave-io_thread-for-channel-first-23784/)
+[shadowcat - Docker 를 통한 mysql master-slave replication 구성](https://blog.daum.net/khere/36)
 
 
 
