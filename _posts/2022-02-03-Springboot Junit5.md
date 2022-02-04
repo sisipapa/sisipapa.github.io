@@ -557,14 +557,36 @@ public class ItemProductControllerTest {
                 .andDo(print());
     }
 }
-```
+```  
 
+### @WebMvcTest
+컨트롤러를 테스트 하기 위한 어노테이션으로 Security,Filter까지 자동으로 테스트하고 수동으로 추가/삭제가 가능하다. @SpringBootTest 어노테이션보다 가볍게 테스트 할 수 있다.  
+@WebMvcTest 어노테이션이 스캔하는 대상은 [Spring 공식 Document 문서](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration)에서 확인이 가능하다.  
+
+### MockMvc  
+MockMvc는 웹 어플리케이션을 애플리케이션 서버에 배포하지 않고 테스트용 MVC환경을 만들어 요청 및 전송, 응답기능을 제공해주는 유틸리티 클래스다.
+
+### perform()
+MockMvc 클래스의 perform() 메소드를 사용하면 브라우저에서 서버에 URL 요청을 하듯 컨트롤러를 실행시킬 수 있다. perform() 메소드는 RequestBuilder 객체를 인자로 받고, 이는 MockMvcRequestBuilders의 정적 메소드를 이용해서 생성한다.  
+
+### MockMvcRequestBuilders
+MvckMvcRequestBuilders의 메소드들은 GET, POST, PUT, DELETE 요청 방식과 매핑되는 get(), post(), put(), delete() 메소드를 제공한다. 이 메소드들은 MockHttpServletRequestBuilder 객체를 리턴하고, HTTP 요청 관련 정보(파라미터, 헤더, 쿠키 등)를 설정할 수 있다. MockHttpServletRequestBuilder의 메소드는 MockHttpServletRequestBuilder 객체를 다시 리턴하여 메시지 체인을 구성하여 복잡한 요청을 설정할 수도 있다.
+
+### andExpect()
+perform() 메소드를 이용하여 요청을 전송하면, 그 결과로 ResultActions 객체를 리턴하는데 이 객체는 응답 결과를 검증할 수 있는 andExpect() 메소드를 제공한다. andExpect()가 요구하는 ResultMatcher는 MockMvcResultMatchers에 정의된 정적 메소드를 통해 생성할 수 있다.
+
+### andDo()
+인수에 실행 결과를 처리할 수 있는 ResultHandler 지정한다. 스프링 테스트는 MockMvc ResultHandler의 팩토리 클래스를 통해 다양한 ResultHandler 제공한다.  
+
+### print()  
+실행결과를 임의의 출력대상에 출력한다. 출력대상을 지정하지 않으면 기본으로 System.out 출력한다.
 
 ## 참고  
-[Spring boot test, junit5, mockito 사용에 대한 정리](https://wan-blog.tistory.com/71)
-[Junit5(Juptier) Service 테스트코드 작성법(Mock, MockBean 차이점 확인)](https://frozenpond.tistory.com/83)
-[Mockito와 BDDMockito는 뭐가 다를까?](https://velog.io/@lxxjn0/Mockito%EC%99%80-BDDMockito%EB%8A%94-%EB%AD%90%EA%B0%80-%EB%8B%A4%EB%A5%BC%EA%B9%8C)
-[[JUnit & Mockito] Verify Method Calls](https://velog.io/@dnjscksdn98/JUnit-Mockito-Verify-Method-Calls)
+[Spring boot test, junit5, mockito 사용에 대한 정리](https://wan-blog.tistory.com/71)  
+[Junit5(Juptier) Service 테스트코드 작성법(Mock, MockBean 차이점 확인)](https://frozenpond.tistory.com/83)  
+[Mockito와 BDDMockito는 뭐가 다를까?](https://velog.io/@lxxjn0/Mockito%EC%99%80-BDDMockito%EB%8A%94-%EB%AD%90%EA%B0%80-%EB%8B%A4%EB%A5%BC%EA%B9%8C)  
+[[JUnit & Mockito] Verify Method Calls](https://velog.io/@dnjscksdn98/JUnit-Mockito-Verify-Method-Calls)  
+[[Junit] MockMvc 객체란?](https://scshim.tistory.com/321)
 
 ## Github
 <https://github.com/sisipapa/junit5.git>  
