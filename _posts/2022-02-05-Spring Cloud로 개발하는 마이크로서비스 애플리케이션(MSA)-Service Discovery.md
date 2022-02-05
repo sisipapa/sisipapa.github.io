@@ -2,7 +2,7 @@
 layout: post
 title: Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)-Service Discovery
 category: [msa]
-tags: [springboot, msa]
+tags: [springboot, msa, Service Discovery]
 redirect_from:
 
 - /2022/02/05/
@@ -75,10 +75,6 @@ eureka:
 프로젝트 생성시 Spring Cloud Discovery > Eureka Discovery Client 만 선택 후 프로젝트를 생성한다.  
 spring-boot-starter-web, spring-boot-devtools, lombok은 나중 작업을 위해 미리 추가해 주었다.
 ```xml
-<properties>
-    <java.version>11</java.version>
-    <spring-cloud.version>2021.0.0</spring-cloud.version>
-</properties>
 <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
