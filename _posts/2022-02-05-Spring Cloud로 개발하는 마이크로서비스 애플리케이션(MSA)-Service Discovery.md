@@ -16,7 +16,7 @@ Springboot version - 2.6.3
 JDK Version - 11  
 Spring cloud version - 2021.0.0  
 
-### pom.xml
+### pom.xml(Eureka Server)
 프로젝트 생성시 Spring Cloud Discovery > Eureka Server 만 선택 후 프로젝트를 생성한다.
 ```xml
 <dependencies>
@@ -52,7 +52,7 @@ public class DiscoveryserviceApplication {
 }
 ```  
 
-### application.yml
+### application.yml(Eureka Server)
 ```yaml
 server:
   port: 8761
@@ -71,7 +71,7 @@ eureka:
 
 ## Eureka Client 서비스 생성  
 
-### pom.xml  
+### pom.xml(Eureka Client)  
 프로젝트 생성시 Spring Cloud Discovery > Eureka Discovery Client 만 선택 후 프로젝트를 생성한다.  
 spring-boot-starter-web, spring-boot-devtools, lombok은 나중 작업을 위해 미리 추가해 주었다.
 ```xml
@@ -128,7 +128,7 @@ public class UserServiceApplication {
 - Intellij Terminal에서 mvn spring-boot:run -Dspring-boot.run.jvmArgumennts='-Dserver.port=9003'  
 - java -jar -Dserver.port=9004 ./target/user-service-0.0.1-SNAPSHOT.jar  
 
-### USER-SERVICE application.yml
+### application.yml(USER-SERVICE)
 port의 값을 0으로 설정해서 RANDOM PORT를 사용하다록 설정  
 register-with-eureka: true, fetch-registry: true 로 설정해서 Eureka 서버에서 Service의 정보를 등록하도록 설정
 ```yaml
