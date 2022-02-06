@@ -177,6 +177,109 @@ spring:
 ```  
 
 ### Spring Cloud Gateway-Global Filter 적용  
+- Global Filter 클래스를 만든다.  
+Global Filter를 만드는 방법은 Custom Filter와 동일하다.  
+AbstractGatewayFilterFactory 상속받고 apply 메소드를 재정의 한다.  
+Config inner class 를 만든다.  
+기본생성자를 만든다.  
+```java
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+@Component
+@Slf4j
+public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+
+    public GlobalFilter() {
+        super(Config.class);
+    }
+
+    @Override
+    public GatewayFilter apply(Config config) {
+        return (exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+            ServerHttpResponse response = exchange.getResponse();
+
+            log.info("Global filter baseMessage : {}", config.getBaseMessage());
+
+            if(config.isPreLogger()){
+                log.info("Global filter Start : request id -> {}", request.getId());
+            }
+
+            // Custom Post Filter
+            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+                if(config.isPostLogger()){
+                    log.info("Global filter End : response code -> {}", response.getStatusCode());
+                }
+            }));
+        };
+    }
+
+    @Data
+    public static class Config {
+        // Put the configuration properties
+        private String baseMessage;
+        private boolean preLogger;
+        private boolean postLogger;
+    }
+}
+```  
+
+- application.yml 파일에 GlobalFilter 등록
+spring.cloud.gateway.default-filters에 Global Filter를 등록한다.  
+```yaml
+server:
+  port: 8000
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            PreLogger: true
+            PostLogger: true
+      routes:
+        - id: first-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/first-service/**
+          filters:
+#            - AddRequestHeader=first-request, first-request-header2
+#            - AddResponseHeader=first-response, first-response-header2
+            - CustomFilter
+        - id: second-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/second-service/**
+          filters:
+#            - AddRequestHeader=second-request, second-request-header2
+#            - AddResponseHeader=second-response, second-response-header2
+            - CustomFilter
+```  
+실행결과   
+Global Filter와 Custom Filter 등록 후 실행 로그는 아래와 같다.  
+```shell
+2022-02-06 12:11:00.769  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter baseMessage : Spring Cloud Gateway Global Filter
+2022-02-06 12:11:00.769  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter Start : request id -> 126b2f64-2
+2022-02-06 12:11:00.769  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom PRE filter : request id -> 126b2f64-2
+2022-02-06 12:11:00.855  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom POST filter : response code -> 200 OK
+2022-02-06 12:11:00.855  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter End : response code -> 200 OK
+```
+
+
 ### Spring Cloud Gateway-Logging Filter 적용  
 ### Spring Cloud Gateway-Load Balancer  
 
