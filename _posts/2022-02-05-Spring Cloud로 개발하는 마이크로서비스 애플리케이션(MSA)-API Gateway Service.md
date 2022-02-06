@@ -375,7 +375,7 @@ spring:
 ```  
 
 #### Ordered.HIGHEST_PRECEDENCE 실행결과 
-LoggingFilter의 우선순위가 가장 높다.  
+OrderedGatewayFilter 생성시 우선순위 Ordered.HIGHEST_PRECEDENCE 로 설정
 ```shell
 2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging filter baseMessage : Hi, there
 2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging PRE filter : request id -> 37903ef2-3
@@ -388,7 +388,7 @@ LoggingFilter의 우선순위가 가장 높다.
 ```  
 
 #### Ordered.LOWEST_PRECEDENCE 실행결과  
-LoggingFilter의 우선순위가 가장 낮다.  
+OrderedGatewayFilter 생성시 우선순위 Ordered.LOWEST_PRECEDENCE 로 설정
 ```shell
 2022-02-06 14:15:44.650  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter baseMessage : Spring Cloud Gateway Global Filter
 2022-02-06 14:15:44.650  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter Start : request id -> 7abe4ddd-1
@@ -400,7 +400,67 @@ LoggingFilter의 우선순위가 가장 낮다.
 2022-02-06 14:15:46.626  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter End : response code -> 200 OK
 ```  
 
-### Spring Cloud Gateway-Load Balancer  
+### Spring Cloud Gateway- Eureka 연동 
+#### apigateway-service, first-service, second-service pom.xml 확인  
+Eureka Client 라이브러리 확인
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+```  
+#### apigateway-service, first-service, second-service application.yml 확인  
+Eureka 서버에 등록을 하기 위한 Eureka Client 설정 확인  
+```yaml
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+```  
+
+#### apigateway-service application.yml uri변경  
+ip:port로 작성된 uri를 lb://{서비스명}으로 변경한다.  
+```yaml
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            PreLogger: true
+            PostLogger: true
+      routes:
+        - id: first-service
+          uri: lb://MY-FIRST-SERVICE
+          predicates:
+            - Path=/first-service/**
+          filters:
+#            - AddRequestHeader=first-request, first-request-header2
+#            - AddResponseHeader=first-response, first-response-header2
+            - CustomFilter
+        - id: second-service
+          uri: lb://MY-SECOND-SERVICE
+          predicates:
+            - Path=/second-service/**
+          filters:
+#            - AddRequestHeader=second-request, second-request-header2
+#            - AddResponseHeader=second-response, second-response-header2
+            - name: CustomFilter
+            - name: LoggingFilter
+              args:
+                baseMessage: Hi, there
+                PreLogger: true
+                PostLogger: true
+```  
+
+#### Eureka Dashboard 화면  
+APIGATEWAY-SERVICE, MY-FIRST-SERVICE, MY-SECOND-SERVICE 가 등록된 것을 확인할 수 있다.  
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-dashboard3.png" >  
 
 
 ## Github
