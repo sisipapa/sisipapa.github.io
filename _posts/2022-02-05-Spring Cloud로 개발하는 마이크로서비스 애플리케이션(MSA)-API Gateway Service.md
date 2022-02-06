@@ -40,7 +40,7 @@ spring-cloud-starter-netflix-eureka-client, lombok 은 나중 작업을 위해 �
 ```  
 ### Spring Cloud Gateway-Filter 적용   
 아래 두개의 예시의 결과는 동일하다.   
-1. @Configuration Bean을 등록해서 적용 - Java 레벨에서 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
+- @Configuration Bean을 등록해서 적용 - Java 레벨에서 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
 ```java
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -67,7 +67,7 @@ public class FilterConfig {
 }
 ```  
 
-2. yaml 파일로 적용 - Yaml 설정파일로 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
+- yaml 파일로 적용 - Yaml 설정파일로 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
 ```yaml
 server:
   port: 8000
