@@ -23,7 +23,7 @@ Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA) 강�
 
 ## 강의에서 진행 할 애플리케이션 API 목록
 |마이크로서비스|Restful API|HTTP Method|
-|---|------|--|
+|---|------|---|
 |Catalog Service|/catalog-service/catalogs : 상품 목록 제공|GET|
 |User Service|/user-service/users : 사용자 정보 등록|POST|
 |User Service|/user-service/users : 전체 사용자 조회|GET|
