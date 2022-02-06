@@ -13,7 +13,7 @@ Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA) 강�
 
 ## 강의에서 진행 할 애플리케이션 구성요소  
 |구성요소|설명|
-|---|-------|
+|---|---|
 |Git Repository|마이크로서비스 소스 관리 및 프로파일 관리|
 |Config Server|Git 저장소에 등록된 프로파일 정보 및 서비스 라우팅|
 |Eureka Server|마이크로서비스 등록 및 검색|
@@ -23,7 +23,7 @@ Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA) 강�
 
 ## 강의에서 진행 할 애플리케이션 API 목록
 |마이크로서비스|Restful API|HTTP Method|
-|---|------|---|
+|---|---|---|
 |Catalog Service|/catalog-service/catalogs : 상품 목록 제공|GET|
 |User Service|/user-service/users : 사용자 정보 등록|POST|
 |User Service|/user-service/users : 전체 사용자 조회|GET|
