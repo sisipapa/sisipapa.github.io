@@ -41,6 +41,7 @@ spring-cloud-starter-netflix-eureka-client, lombok 은 나중 작업을 위해 �
 ### Spring Cloud Gateway-Filter 적용   
 아래 두개의 예시의 결과는 동일하다.   
 - @Configuration Bean을 등록해서 적용 - Java 레벨에서 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
+
 ```java
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -278,7 +279,6 @@ Global Filter와 Custom Filter 등록 후 실행 로그는 아래와 같다.
 2022-02-06 12:11:00.855  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom POST filter : response code -> 200 OK
 2022-02-06 12:11:00.855  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter End : response code -> 200 OK
 ```
-
 
 ### Spring Cloud Gateway-Logging Filter 적용  
 ### Spring Cloud Gateway-Load Balancer  
