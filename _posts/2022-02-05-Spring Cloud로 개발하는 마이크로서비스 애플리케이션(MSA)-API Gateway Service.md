@@ -37,10 +37,10 @@ spring-cloud-starter-netflix-eureka-client, lombok 은 나중 작업을 위해 �
             <scope>test</scope>
         </dependency>
     </dependencies>
-```
-### Spring Cloud Gateway-Filter 적용  
-아래 두개의 예시의 결과는 동일하다.  
-1. @Configuration Bean을 등록해서 적용 - Java 레벨에서 RequestHeader, ResponseHeader에 값을 설정한 예시이다.
+```  
+### Spring Cloud Gateway-Filter 적용   
+아래 두개의 예시의 결과는 동일하다.   
+1. @Configuration Bean을 등록해서 적용 - Java 레벨에서 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
 ```java
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -67,7 +67,7 @@ public class FilterConfig {
 }
 ```  
 
-2. yaml 파일로 적용 - Yaml 설정파일로 RequestHeader, ResponseHeader에 값을 설정한 예시이다.
+2. yaml 파일로 적용 - Yaml 설정파일로 RequestHeader, ResponseHeader에 값을 설정한 예시이다.  
 ```yaml
 server:
   port: 8000
@@ -95,7 +95,7 @@ spring:
           filters:
             - AddRequestHeader=second-request, second-request-header
             - AddResponseHeader=second-response, second-response-header
-```
+```  
 
 ### Spring Cloud Gateway-Custom Filter 적용  
 1. Custom Filter 클래스를 만든다.  
@@ -142,7 +142,7 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
 ```  
 
 2. application.yml 파일에 CustomFilter 등록  
-- AddRequestHeader, AddResponseHeader를 주석하고 CustomFilter를 등록한다.
+- AddRequestHeader, AddResponseHeader를 주석하고 CustomFilter를 등록한다.  
 ```java
 server:
   port: 8000
@@ -159,7 +159,7 @@ spring:
         - id: first-service
           uri: http://localhost:8081
           predicates:
-            - Path=/first-service/**
+            - Path=/first-service/
           filters:
 #            - AddRequestHeader=first-request, first-request-header2
 #            - AddResponseHeader=first-response, first-response-header2
@@ -167,7 +167,7 @@ spring:
         - id: second-service
           uri: http://localhost:8082
           predicates:
-            - Path=/second-service/**
+            - Path=/second-service/
           filters:
 #            - AddRequestHeader=second-request, second-request-header2
 #            - AddResponseHeader=second-response, second-response-header2
