@@ -104,27 +104,40 @@ Config inner class 를 만든다.
 기본생성자를 만든다.  
 
 ```java
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
-@Configuration
-public class FilterConfig {
+@Component
+@Slf4j
+public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Config> {
 
-    @Bean
-    public RouteLocator gatewayRoutes(RouteLocatorBuilder builder){
-        return builder.routes()
-                .route(r -> r.path("/first-service/**")
-                        .filters(f -> f.addRequestHeader("first-request", "first-request-header")
-                                .addResponseHeader("first-response", "first-response-header"))
-                        .uri("http://localhost:8081"))
-                .route(r -> r.path("/second-service/**")
-                        .filters(f -> f.addRequestHeader("second-request", "second-request-header")
-                                .addResponseHeader("second-response", "second-response-header"))
-                        .uri("http://localhost:8082"))
-                .build();
+    public CustomFilter() {
+        super(Config.class);
+    }
 
+    @Override
+    public GatewayFilter apply(Config config) {
+        // Custom Pre Filter
+        return (exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+            ServerHttpResponse response = exchange.getResponse();
+
+            log.info("Custom PRE filter : request id -> {}", request.getId());
+
+            // Custom Post Filter
+            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+                log.info("Custom POST filter : response code -> {}", response.getStatusCode());
+            }));
+        };
+    }
+
+    public static class Config {
+        // Put the configuration properties
     }
 }
 ```
