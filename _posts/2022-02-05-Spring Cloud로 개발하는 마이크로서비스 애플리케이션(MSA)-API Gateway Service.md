@@ -420,7 +420,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 ```  
 
-#### apigateway-service application.yml uri변경  
+#### apigateway-service application.yml spring.cloud.routes.uri 변경  
 ip:port로 작성된 uri를 lb://{서비스명}으로 변경한다.  
 ```yaml
 spring:
@@ -458,10 +458,31 @@ spring:
                 PostLogger: true
 ```  
 
-#### Eureka Dashboard 화면  
-APIGATEWAY-SERVICE, MY-FIRST-SERVICE, MY-SECOND-SERVICE 가 등록된 것을 확인할 수 있다.  
-<img src="https://sisipapa.github.io/assets/images/posts/eureka-dashboard3.png" >  
+#### first-service application.yml 로드밸런싱을 위한 설정
+server.port: 0으로 변경  
+eureka.instance.instance-id 추가  
+```yaml
+server:
+  port: 0
 
+spring:
+  application:
+    name: my-first-service
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+```  
+
+#### Eureka Dashboard 화면  
+APIGATEWAY-SERVICE 1개, MY-FIRST-SERVICE 2개, MY-SECOND-SERVICE 2개가 등록된 것을 확인할 수 있다.  
+MY-FIRST-SERVICE는 두 개의 Random PORT 로 설정된 것을 확인 할 수 있다.
+<img src="https://sisipapa.github.io/assets/images/posts/eureka-dashboard4.png" >  
 
 ## Github
 <https://github.com/sisipapa/spring-cloud-inflearn.git>  
