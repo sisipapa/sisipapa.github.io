@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)-API Gateway Service
+title: Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)-2.API Gateway Service
 category: [msa]
 tags: [springboot, msa, Spring Cloud Gateway]
 redirect_from:

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)-Service Discovery
+title: Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)-1.Service Discovery
 category: [msa]
 tags: [springboot, msa, Service Discovery]
 redirect_from:
