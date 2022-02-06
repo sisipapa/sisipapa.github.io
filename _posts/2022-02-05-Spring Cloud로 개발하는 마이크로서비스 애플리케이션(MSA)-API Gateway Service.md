@@ -99,7 +99,7 @@ spring:
 ```  
 
 ### Spring Cloud Gateway-Custom Filter 적용  
-- Custom Filter 클래스를 만든다.  
+#### Custom Filter 클래스 생성 
 AbstractGatewayFilterFactory 상속받고 apply 메소드를 재정의 한다.  
 Config inner class 를 만든다.  
 기본생성자를 만든다.  
@@ -143,7 +143,7 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
 }
 ```
 
-- application.yml 파일에 CustomFilter 등록  
+#### application.yml 파일에 CustomFilter 등록  
 AddRequestHeader, AddResponseHeader를 주석하고 CustomFilter를 등록한다.  
 
 ```yaml
@@ -178,11 +178,12 @@ spring:
 ```  
 
 ### Spring Cloud Gateway-Global Filter 적용  
-- Global Filter 클래스를 만든다.  
-Global Filter를 만드는 방법은 Custom Filter와 동일하다.  
-AbstractGatewayFilterFactory 상속받고 apply 메소드를 재정의 한다.  
-Config inner class 를 만든다.  
-기본생성자를 만든다.  
+#### Global Filter 클래스 생성
+Global Filter를 만드는 방법은 Custom Filter와 동일하다.    
+AbstractGatewayFilterFactory 상속받고 apply 메소드를 재정의 한다.    
+Config inner class 를 만든다.    
+기본생성자를 만든다.    
+
 ```java
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -232,8 +233,9 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 }
 ```  
 
-- application.yml 파일에 GlobalFilter 등록
+#### application.yml 파일에 GlobalFilter 등록  
 spring.cloud.gateway.default-filters에 Global Filter를 등록한다.  
+
 ```yaml
 server:
   port: 8000
@@ -270,17 +272,134 @@ spring:
 #            - AddResponseHeader=second-response, second-response-header2
             - CustomFilter
 ```  
-실행결과   
-Global Filter와 Custom Filter 등록 후 실행 로그는 아래와 같다.  
-```shell
-2022-02-06 12:11:00.769  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter baseMessage : Spring Cloud Gateway Global Filter
-2022-02-06 12:11:00.769  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter Start : request id -> 126b2f64-2
-2022-02-06 12:11:00.769  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom PRE filter : request id -> 126b2f64-2
-2022-02-06 12:11:00.855  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom POST filter : response code -> 200 OK
-2022-02-06 12:11:00.855  INFO 17736 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter End : response code -> 200 OK
-```
+
 
 ### Spring Cloud Gateway-Logging Filter 적용  
+#### Logging Filter 클래스 생성
+기존 작업한 Global Filter와 거의 동일하기 때문에 GlobalFilter.java 파일을 복사해서 작업한다.  
+OrderedGatewayFilter 를 구현한다.  
+```java
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.OrderedGatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.Ordered;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+
+@Component
+@Slf4j
+public class LoggingFilter extends AbstractGatewayFilterFactory<LoggingFilter.Config> {
+
+    public LoggingFilter() {
+        super(Config.class);
+    }
+
+    // Ordered.HIGHEST_PRECEDENCE
+    // Ordered.LOWEST_PRECEDENCE
+    @Override
+    public GatewayFilter apply(Config config) {
+        GatewayFilter filter = new OrderedGatewayFilter((exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+            ServerHttpResponse response = exchange.getResponse();
+
+            log.info("Logging filter baseMessage : {}", config.getBaseMessage());
+
+            if(config.isPreLogger()){
+                log.info("Logging PRE filter : request id -> {}", request.getId());
+            }
+
+            // Custom Post Filter
+            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+                if(config.isPostLogger()){
+                    log.info("Logging POST filter : response code -> {}", response.getStatusCode());
+                }
+            }));
+        }, Ordered.LOWEST_PRECEDENCE);
+
+        return filter;
+    }
+
+    @Data
+    public static class Config {
+        // Put the configuration properties
+        private String baseMessage;
+        private boolean preLogger;
+        private boolean postLogger;
+    }
+}
+```  
+#### application.yml 파일에 LoggingFilter 등록  
+second 서비스에만 Logging Filter 를 적용.
+```yaml
+server:
+  port: 8000
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            PreLogger: true
+            PostLogger: true
+      routes:
+        - id: first-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/first-service/**
+          filters:
+#            - AddRequestHeader=first-request, first-request-header2
+#            - AddResponseHeader=first-response, first-response-header2
+            - CustomFilter
+        - id: second-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/second-service/**
+          filters:
+            - name: CustomFilter
+            - name: LoggingFilter
+              args:
+                baseMessage: Hi, there
+                PreLogger: true
+                PostLogger: true
+```  
+
+#### Ordered.HIGHEST_PRECEDENCE 실행결과 
+LoggingFilter의 우선순위가 가장 높다.  
+```shell
+2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging filter baseMessage : Hi, there
+2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging PRE filter : request id -> 37903ef2-3
+2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter baseMessage : Spring Cloud Gateway Global Filter
+2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter Start : request id -> 37903ef2-3
+2022-02-06 14:11:02.101  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom PRE filter : request id -> 37903ef2-3
+2022-02-06 14:11:02.115  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom POST filter : response code -> 200 OK
+2022-02-06 14:11:02.115  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter End : response code -> 200 OK
+2022-02-06 14:11:02.116  INFO 21280 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging POST filter : response code -> 200 OK
+```  
+
+#### Ordered.LOWEST_PRECEDENCE 실행결과  
+LoggingFilter의 우선순위가 가장 낮다.  
+```shell
+2022-02-06 14:15:44.650  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter baseMessage : Spring Cloud Gateway Global Filter
+2022-02-06 14:15:44.650  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter Start : request id -> 7abe4ddd-1
+2022-02-06 14:15:44.651  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom PRE filter : request id -> 7abe4ddd-1
+2022-02-06 14:15:46.625  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging filter baseMessage : Hi, there
+2022-02-06 14:15:46.626  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging PRE filter : request id -> 7abe4ddd-1
+2022-02-06 14:15:46.626  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.LoggingFilter               : Logging POST filter : response code -> 200 OK
+2022-02-06 14:15:46.626  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.CustomFilter                : Custom POST filter : response code -> 200 OK
+2022-02-06 14:15:46.626  INFO 18540 --- [ctor-http-nio-2] c.s.a.filter.GlobalFilter                : Global filter End : response code -> 200 OK
+```  
+
 ### Spring Cloud Gateway-Load Balancer  
 
 
