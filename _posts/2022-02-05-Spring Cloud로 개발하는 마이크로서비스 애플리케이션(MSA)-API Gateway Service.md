@@ -143,7 +143,7 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
 
 2. application.yml 파일에 CustomFilter 등록  
 - AddRequestHeader, AddResponseHeader를 주석하고 CustomFilter를 등록한다.  
-```java
+```yaml
 server:
   port: 8000
 eureka:
@@ -159,7 +159,7 @@ spring:
         - id: first-service
           uri: http://localhost:8081
           predicates:
-            - Path=/first-service/
+            - Path=/first-service/**
           filters:
 #            - AddRequestHeader=first-request, first-request-header2
 #            - AddResponseHeader=first-response, first-response-header2
@@ -167,7 +167,7 @@ spring:
         - id: second-service
           uri: http://localhost:8082
           predicates:
-            - Path=/second-service/
+            - Path=/second-service/**
           filters:
 #            - AddRequestHeader=second-request, second-request-header2
 #            - AddResponseHeader=second-response, second-response-header2
