@@ -73,7 +73,7 @@ services:
 ## 2. docker-compose.yml 실행  
 윈도우 CMD창에서 아래 명령을 실행하면 컨테이너가 생성된다.
 ```shell
-docker-compose -f docker-compose.yml up -d 
+# docker-compose -f docker-compose.yml up -d 
 ```  
 
 ### 실행 후 컨테이너 확인  
@@ -85,7 +85,43 @@ d6759801dd79   wurstmeister/kafka       "start-kafka.sh"         14 hours ago   
 850204814ae6   mysql:latest             "docker-entrypoint.s…"   14 hours ago   Up 14 hours   33060/tcp, 0.0.0.0:3307->3306/tcp                    mysql-sink
 28690f7d4fca   wurstmeister/zookeeper   "/bin/sh -c '/usr/sb…"   14 hours ago   Up 14 hours   22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp   zookeeper
 9eed78105b3b   mysql:latest             "docker-entrypoint.s…"   14 hours ago   Up 14 hours   0.0.0.0:3306->3306/tcp, 33060/tcp                    mysql-source
+```   
+
+## 3. Source-mysql 설정  
+### source-mysql 컨테이저 접속  
+```shell
+# docker exec -ti 9eed78105b3b bash  
 ```  
+  
+### Database, Table 생성
+```shell
+# mysql -u root -p
+```  
+```mysql
+create database testdb;
+
+use testdb;
+
+CREATE TABLE accounts (
+   account_id VARCHAR(255),
+   role_id VARCHAR(255),
+   user_name VARCHAR(255),
+   user_description VARCHAR(255),
+   update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (account_id)
+);
+```  
+
+### 사용자 권한 확인  
+컨테이너 생성시 docker-compose.yml 파일에서 생성한 mysqluser 파일에 권한을 부여한다.  
+```mysql
+use mysql;
+
+GRANT ALL PRIVILEGES ON *.* TO 'mysqluser'@'%';
+
+FLUSH PRIVILEGES;
+```  
+
 
 ## 참고  
 [MySQL 에서 Kafka 로 Source Connector 구축하기](https://wecandev.tistory.com/m/109)  
