@@ -87,18 +87,13 @@ d6759801dd79   wurstmeister/kafka       "start-kafka.sh"         14 hours ago   
 9eed78105b3b   mysql:latest             "docker-entrypoint.s…"   14 hours ago   Up 14 hours   0.0.0.0:3306->3306/tcp, 33060/tcp                    mysql-source
 ```  
 
-
-
-
-
-## 참고
+## 참고  
 [MySQL 에서 Kafka 로 Source Connector 구축하기](https://wecandev.tistory.com/m/109)  
 [Kafka 에서 Mysql 로 Sink Connector 구축하기](https://wecandev.tistory.com/110)  
-[JDBC connector 생성 시 No suitable driver found 에러 발생](https://wecandev.tistory.com/111)
+[JDBC connector 생성 시 No suitable driver found 에러 발생](https://wecandev.tistory.com/111)  
 
-
-## Github
-<https://github.com/sisipapa/kafka-cdc>  
+## Github  
+<https://github.com/sisipapa/kafka-cdc>   
 
 
 
