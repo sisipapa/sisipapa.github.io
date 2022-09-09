@@ -67,7 +67,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock  
 ```  
 
-<img src="https://sisipapa.github.io/assets/images/posts/2022-09-09-kafka-connect.PNG" >  
+<img src="https://sisipapa.github.io/assets/images/posts/2022-09-09-kafka-connect.png" >  
 [이미지출처](https://www.confluent.io/blog/no-more-silos-how-to-integrate-your-databases-with-apache-kafka-and-cdc/)  
 
 ## 2. docker-compose.yml 실행  
