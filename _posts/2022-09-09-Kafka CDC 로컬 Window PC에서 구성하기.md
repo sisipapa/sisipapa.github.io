@@ -322,7 +322,7 @@ Sink Connector : Kafka --> kafka Connect(JDBC Sink Connector) --> MySQL
   
   
 ## 8. Sink-MySQL 설정
-위 1번 docker-compose.yml 파일에서 Sink MySQL 관련 컨테이너는 생성을 해서 Sink용 데이터베이스 생성 및 테이블을 생성한다. Source와 달라지는 건 데이터베이스 이름이 testdb에서 sinkdb로 변경된 것을 제외하고 모두 동일하다.    
+위 1번 docker-compose.yml 파일에서 Sink MySQL 관련 컨테이너는 이미 생성이 되어있다. Sink용 데이터베이스 생성 및 테이블을 생성한다. Sink용 DB가 Source와 달라진 점은 데이터베이스 이름이 testdb에서 sinkdb로 변경된 것을 제외하고 모두 동일하다.    
 ### Database, Table 생성  
 ```shell
 # mysql -u root -p
@@ -418,7 +418,7 @@ curl --location --request POST 'http://localhost:8083/connectors' \
 ```shell
 Caused by: org.apache.kafka.connect.errors.ConnectException: java.sql.SQLException: No suitable driver found for jdbc:mysql://localhost:3307/testdb
 ```  
-Connect/J JDBC driver for MySQL(https://mvnrepository.com/artifact/mysql/mysql-connector-java/8.0.27) 파일을 다운로드 받아 JDBC Connector 플러그인 하위의 lib 폴더에 넣어준다.  
+[Connect/J JDBC driver for MySQL](https://mvnrepository.com/artifact/mysql/mysql-connector-java/8.0.27) 파일을 다운로드 받아 JDBC Connector 플러그인 하위의 lib 폴더에 넣어준다.  
 ```shell
 # docker cp mysql-connector-java-8.0.27.jar kafka:/opt/kafka_2.13-2.8.1/connectors/confluentinc-kafka-connect-jdbc-10.5.2/lib/
 ```  
@@ -455,7 +455,7 @@ account_id|role_id|user_name|user_description|update_date        |
 6         |role6  |name6    |desc6           |2022-09-12 09:30:00|
 ```  
 
-Source에서 입력한 테스트 데이터를 Kafka Consumer와 Sink 테이블에서 조회하는 테스트를 해보았다.    
+Source에서 입력한 테스트 데이터를 Kafka Consumer와 Sink 테이블에서 조회되는 것을 확인했고 로컬 환경에서 Kafka CDC 환경구성을 마무리 하려고한다.    
 
 
 ## 참고  
