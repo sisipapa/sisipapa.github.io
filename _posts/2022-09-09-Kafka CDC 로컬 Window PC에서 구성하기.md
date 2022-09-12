@@ -122,11 +122,214 @@ GRANT ALL PRIVILEGES ON *.* TO 'mysqluser'@'%';
 FLUSH PRIVILEGES;
 ```  
 
+## 4. MySQL 플러그인 설치 - Debezium Connector
+### 플러그인 다운로드    
+[플러그인 다운로드 - debezium-connector-mysql-1.5.4.Final-plugin.tar.gz](https://debezium.io/releases/1.5/)  
+
+### 카프카 컨테이너의 /opt/kafka_2.13-2.8.1/ 하위에 connectors 디렉토리를 생성
+```shell
+# docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED        STATUS        PORTS                                                NAMES
+d6759801dd79   wurstmeister/kafka       "start-kafka.sh"         14 hours ago   Up 14 hours   0.0.0.0:9092->9092/tcp                               kafka
+850204814ae6   mysql:latest             "docker-entrypoint.s…"   14 hours ago   Up 14 hours   33060/tcp, 0.0.0.0:3307->3306/tcp                    mysql-sink
+28690f7d4fca   wurstmeister/zookeeper   "/bin/sh -c '/usr/sb…"   14 hours ago   Up 14 hours   22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp   zookeeper
+9eed78105b3b   mysql:latest             "docker-entrypoint.s…"   14 hours ago   Up 14 hours   0.0.0.0:3306->3306/tcp, 33060/tcp                    mysql-source
+
+# docker exec -ti d6759801dd79 bash
+root@d6759801dd79:/# mkdir /opt/kafka_2.13-2.8.1/connectors
+```  
+
+### 로컬 PC에 다운로드 후 카프카 컨테이너 안으로 복사
+```shell
+# docker cp debezium-connector-mysql-1.5.4.Final-plugin.tar.gz kafka:/opt/kafka_2.13-2.8.1/connectors/debezium-connector-mysql-1.5.4.Final-plugin.tar.gz  
+```  
+
+### 카프카 컨테이너  커넥터 플러그인 압축 해제
+```shell
+# # docker exec -ti d6759801dd79 bash
+root@d6759801dd79:/# cd /opt/kafka_2.13-2.8.1/connectors
+root@d6759801dd79:/# tar -zxvf debezium-connector-mysql-1.5.4.Final-plugin.tar.gz  
+
+debezium-connector-mysql/CHANGELOG.md
+debezium-connector-mysql/CONTRIBUTE.md
+debezium-connector-mysql/COPYRIGHT.txt
+debezium-connector-mysql/LICENSE-3rd-PARTIES.txt
+debezium-connector-mysql/LICENSE.txt
+debezium-connector-mysql/README.md
+debezium-connector-mysql/README_ZH.md
+debezium-connector-mysql/debezium-core-1.5.4.Final.jar
+debezium-connector-mysql/debezium-api-1.5.4.Final.jar
+debezium-connector-mysql/guava-30.0-jre.jar
+debezium-connector-mysql/failureaccess-1.0.1.jar
+debezium-connector-mysql/debezium-ddl-parser-1.5.4.Final.jar
+debezium-connector-mysql/antlr4-runtime-4.7.2.jar
+debezium-connector-mysql/mysql-binlog-connector-java-0.25.1.jar
+debezium-connector-mysql/mysql-connector-java-8.0.21.jar
+debezium-connector-mysql/debezium-connector-mysql-1.5.4.Final.jar
+```  
+
+### 카프카 컨테이너 플러그인 경로 수정
+도커 컨테이너는 기본적으로 VI 에디터 설치가 안되어 있다. 플러그인 변경을 위해 VI 에디터를 설치한다.  
+```shell
+# apt-get update
+# apt-get install vim
+```  
+  
+/opt/kafka/config/connect-distributed.properties 파일을 수정하고 카프카 컨테이너를 재시작하면 변경한 플러그인 경로가 반영된다.  
+```shell
+// 변경전 
+#plugin.path=
+
+// 변경후
+plugin.path=/opt/kafka_2.13-2.8.1/connectors
+```  
+
+## 5. 카프카 Connect 실행  
+카프카 컨테이너 안에서 실행한다.
+```shell
+# connect-distributed.sh /opt/kafka/config/connect-distributed.properties
+```  
+
+## 6. Source Connector 생성  
+
+### 카프카 Connect 클러스터 정보 조회  
+```shell
+# curl http://localhost:8083/
+{"version":"2.8.1","commit":"839b886f9b732b15","kafka_cluster_id":"BZSpEGKFSfOHrUgI-Tl-6Q"}
+```   
+
+### MySQL 플러그인 확인  
+지금은 Source 커넥터, Sink 커넥터 모두 확인이 가능하다. 
+```shell
+[
+  {
+    "class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "type": "sink",
+    "version": "10.5.2"
+  },
+  {
+    "class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "type": "source",
+    "version": "10.5.2"
+  },
+  {
+    "class": "io.debezium.connector.mysql.MySqlConnector",
+    "type": "source",
+    "version": "1.5.4.Final"
+  },
+  {
+    "class": "org.apache.kafka.connect.file.FileStreamSinkConnector",
+    "type": "sink",
+    "version": "2.8.1"
+  },
+  {
+    "class": "org.apache.kafka.connect.file.FileStreamSourceConnector",
+    "type": "source",
+    "version": "2.8.1"
+  },
+  {
+    "class": "org.apache.kafka.connect.mirror.MirrorCheckpointConnector",
+    "type": "source",
+    "version": "1"
+  },
+  {
+    "class": "org.apache.kafka.connect.mirror.MirrorHeartbeatConnector",
+    "type": "source",
+    "version": "1"
+  },
+  {
+    "class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
+    "type": "source",
+    "version": "1"
+  }
+]
+```  
+
+### API Connector 생성  
+```shell
+# curl --location --request POST 'http://localhost:8083/connectors' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "name": "source-test-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "mysqluser",
+    "database.password": "mysqlpw",
+    "database.server.id": "184054",
+    "database.server.name": "dbserver1",
+    "database.allowPublicKeyRetrieval": "true",
+    "database.include.list": "testdb",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "dbhistory.testdb",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "true",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "true",
+    "transforms": "unwrap,addTopicPrefix",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.addTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.addTopicPrefix.regex":"(.*)",
+    "transforms.addTopicPrefix.replacement":"$1"
+  }
+}'
+```  
+
+[설정 옵션 설명](https://aws.amazon.com/ko/blogs/korea/introducing-amazon-msk-connect-stream-data-to-and-from-your-apache-kafka-clusters-using-managed-connectors/)  
+
+### API Connector 목록  
+```shell
+curl --location --request GET 'http://localhost:8083/connectors'
+```  
+
+### API Connector 상세
+```shell
+curl --location --request GET 'http://localhost:8083/connectors/source-test-connector/config ' --header 'Content-Type: application/json'
+```  
+
+### API Connector 삭제  
+```shell
+curl --location --request DELETE 'http://localhost:8083/connectors/source-test-connector'
+```
+
+## 7. 테스트  
+Source 데이터베이스의 테이블에 데이터 Insert 후 카프카 컨슈머에서 데이터 확인
+
+### 테스트 데이터 Insert  
+```mysql
+INSERT INTO accounts VALUES ("1", "role1", "name1", "desc1", now());
+INSERT INTO accounts VALUES ("2", "role2", "name2", "desc2", now());
+INSERT INTO accounts VALUES ("3", "role3", "name3", "desc3", now());
+```  
+
+### 콘솔 카프카 컨슈머 확인  
+```shell
+# kafka-console-consumer.sh --topic dbserver1.testdb.accounts --bootstrap-server localhost:9092 --from-beginning
+
+{"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"1","role_id":"role1","user_name":"name1","user_description":"desc1","update_date":1662970838000}}
+{"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"2","role_id":"role2","user_name":"name2","user_description":"desc2","update_date":1662970839000}}
+{"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"3","role_id":"role3","user_name":"name3","user_description":"desc3","update_date":1662970841000}}
+```  
+
+
+
+
+
+
+
+
+
+
+
 
 ## 참고  
 [MySQL 에서 Kafka 로 Source Connector 구축하기](https://wecandev.tistory.com/m/109)  
 [Kafka 에서 Mysql 로 Sink Connector 구축하기](https://wecandev.tistory.com/110)  
-[JDBC connector 생성 시 No suitable driver found 에러 발생](https://wecandev.tistory.com/111)  
+[JDBC connector 생성 시 No suitable driver found 에러 발생](https://wecandev.tistory.com/111)   
+[Connector API 명령 참고1](https://docs.confluent.io/platform/current/connect/references/restapi.html)  
+[Connector API 명령 참고2](https://developer.confluent.io/learn-kafka/kafka-connect/rest-api/)   
 
 ## Github  
 <https://github.com/sisipapa/kafka-cdc>   
