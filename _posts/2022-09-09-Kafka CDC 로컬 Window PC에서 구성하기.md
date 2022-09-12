@@ -12,7 +12,7 @@ redirect_from:
 최근 Kafka CDC 라는걸 알게 되었고 어떻게 구성을 하고 동작을 하는지 알아보기 위해 개인 로컬 PC에 환경구성을 하면서 정리한 내용입니다. 아래 참고 블로그의 내용을 그대로 실행하면서 정리한 내용입니다.   
 
 ## 1. docker-compose.yml 준비
-아래 yml 파일을 실행하면 아래 첨부한 이미지와 동일한 2개의 Source, Sink용 Mysql DB와 Zookeeper, Kafka 컨테이너가 생성된다.  
+아래 yml 파일을 실행하면 아래 첨부한 이미지와 동일한 2개의 Source, Sink용 MySQL DB와 Zookeeper, Kafka 컨테이너가 생성된다.  
 ```yaml
 version: '3'
 services:
@@ -122,7 +122,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'mysqluser'@'%';
 FLUSH PRIVILEGES;
 ```  
 
-## 4. MySQL 플러그인 설치 - Debezium Connector
+## 4. Source Connector 설치  - Debezium Connector
 ### 플러그인 다운로드    
 [플러그인 다운로드 - debezium-connector-mysql-1.5.4.Final-plugin.tar.gz](https://debezium.io/releases/1.5/)  
 
@@ -139,7 +139,7 @@ d6759801dd79   wurstmeister/kafka       "start-kafka.sh"         14 hours ago   
 root@d6759801dd79:/# mkdir /opt/kafka_2.13-2.8.1/connectors
 ```  
 
-### 로컬 PC에 다운로드 후 카프카 컨테이너 안으로 복사
+### 카프카 컨테이너 안으로 복사
 ```shell
 # docker cp debezium-connector-mysql-1.5.4.Final-plugin.tar.gz kafka:/opt/kafka_2.13-2.8.1/connectors/debezium-connector-mysql-1.5.4.Final-plugin.tar.gz  
 ```  
@@ -247,14 +247,12 @@ plugin.path=/opt/kafka_2.13-2.8.1/connectors
 
 ### API Connector 생성  
 ```shell
-# curl --location --request POST 'http://localhost:8083/connectors' \
---header 'Content-Type: application/json' \
---data-raw '{
+# curl --location --request POST 'http://localhost:8083/connectors' --header 'Content-Type: application/json' --data-raw '{
   "name": "source-test-connector",
   "config": {
     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
     "tasks.max": "1",
-    "database.hostname": "mysql",
+    "database.hostname": "mysql-source",
     "database.port": "3306",
     "database.user": "mysqluser",
     "database.password": "mysqlpw",
@@ -294,10 +292,10 @@ curl --location --request GET 'http://localhost:8083/connectors/source-test-conn
 curl --location --request DELETE 'http://localhost:8083/connectors/source-test-connector'
 ```
 
-## 7. 테스트  
+## 7. Source Connect 테스트  
 Source 데이터베이스의 테이블에 데이터 Insert 후 카프카 컨슈머에서 데이터 확인
 
-### 테스트 데이터 Insert  
+### Source 테스트 데이터 Insert  
 ```mysql
 INSERT INTO accounts VALUES ("1", "role1", "name1", "desc1", now());
 INSERT INTO accounts VALUES ("2", "role2", "name2", "desc2", now());
@@ -312,28 +310,163 @@ INSERT INTO accounts VALUES ("3", "role3", "name3", "desc3", now());
 {"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"2","role_id":"role2","user_name":"name2","user_description":"desc2","update_date":1662970839000}}
 {"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"3","role_id":"role3","user_name":"name3","user_description":"desc3","update_date":1662970841000}}
 ```  
+여기까지 Source Connector 환경 구성을 해보았다.  
+```text
+Source Connector: MySQL --> kafka Connect(Debezium Source Connector) --> Kafka  
+```
+8번 부터는 Sink Connector 관련 구성을 진행할 예정이다.  
+```text
+Sink Connector : Kafka --> kafka Connect(JDBC Sink Connector) --> MySQL
+```  
+  
+  
+  
+## 8. Sink-MySQL 설정
+위 1번 docker-compose.yml 파일에서 Sink MySQL 관련 컨테이너는 생성을 해서 Sink용 데이터베이스 생성 및 테이블을 생성한다. Source와 달라지는 건 데이터베이스 이름이 testdb에서 sinkdb로 변경된 것을 제외하고 모두 동일하다.    
+### Database, Table 생성  
+```shell
+# mysql -u root -p
+```  
+```mysql
+create database sinkdb;
 
+use sinkdb;
 
+CREATE TABLE accounts (
+   account_id VARCHAR(255),
+   role_id VARCHAR(255),
+   user_name VARCHAR(255),
+   user_description VARCHAR(255),
+   update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (account_id)
+);
+```  
 
+### 사용자 권한 확인  
+컨테이너 생성시 docker-compose.yml 파일에서 생성한 mysqluser 파일에 권한을 부여한다.
+```mysql
+use mysql;
 
+GRANT ALL PRIVILEGES ON *.* TO 'mysqluser'@'%';
 
+FLUSH PRIVILEGES;
+```  
 
+## 9. Sink Connector 설치 - Kafka JDBC Connector  
 
+### JDBC Connector 다운로드
+[JDBC Connector 다운로드](https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc) 경로에서 confluentinc-kafka-connect-jdbc-10.5.2.zip 파일을 다운로드 받는다.  
 
+### 카프카 컨테이너 안으로 복사  
+```shell
+# docker cp confluentinc-kafka-connect-jdbc-10.5.2.zip kafka:/opt/kafka_2.13-2.8.1/connectors/
+```  
 
+### JDBC Connector 압축해제  
+```shell
+# cd /opt/kafka_2.13-2.8.1/connectors
+# unzip confluentinc-kafka-connect-jdbc-10.5.2.zip
+```  
 
+### 카프카 Connect 재실행  
+카프카 플러그인 경로 설정은 Source Connector 설정 시 했기때문에 신규로 추가된 Sink Connector 플러그인이 반영되도록 재시작
+```shell
+# connect-distributed.sh /opt/kafka/config/connect-distributed.properties
+```  
+
+## 10. Sink Connector 생성하기
+### API Connetor 생성  
+```shell
+curl --location --request POST 'http://localhost:8083/connectors' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "name": "sink-test-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "tasks.max": "1",
+    "connection.url": "jdbc:mysql://mysql-sink:3306/sinkdb?user=mysqluser&password=mysqlpw",
+    "auto.create": "false",
+    "auto.evolve": "false",
+    "delete.enabled": "true",
+    "insert.mode": "upsert",
+    "pk.mode": "record_key",
+    "table.name.format":"${topic}",
+    "tombstones.on.delete": "true",
+    "connection.user": "mysqluser",
+    "connection.password": "mysqlpw",
+    "topics.regex": "dbserver1.testdb.(.*)",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "true",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "true",
+    "transforms": "unwrap, route, TimestampConverter",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.drop.tombstones": "true",
+    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.route.regex": "([^.]+)\\.([^.]+)\\.([^.]+)",
+    "transforms.route.replacement": "$3",
+    "transforms.TimestampConverter.type": "org.apache.kafka.connect.transforms.TimestampConverter$Value",
+    "transforms.TimestampConverter.format": "yyyy-MM-dd HH:mm:ss",
+    "transforms.TimestampConverter.target.type": "Timestamp",
+    "transforms.TimestampConverter.field": "update_date"
+  }
+}'
+```   
+옵션들에 대한 자세한 설명은 아래 참고 블로그에서 확인하도록 한다.  
+
+### JDBC connector 생성 시 No suitable driver found 에러  
+```shell
+Caused by: org.apache.kafka.connect.errors.ConnectException: java.sql.SQLException: No suitable driver found for jdbc:mysql://localhost:3307/testdb
+```  
+Connect/J JDBC driver for MySQL(https://mvnrepository.com/artifact/mysql/mysql-connector-java/8.0.27) 파일을 다운로드 받아 JDBC Connector 플러그인 하위의 lib 폴더에 넣어준다.  
+```shell
+# docker cp mysql-connector-java-8.0.27.jar kafka:/opt/kafka_2.13-2.8.1/connectors/confluentinc-kafka-connect-jdbc-10.5.2/lib/
+```  
+
+## 11. Sink Connect 테스트  
+
+### Source 테스트 데이터 Insert  
+```mysql
+INSERT INTO accounts VALUES ("4", "role4", "name4", "desc4", now());
+INSERT INTO accounts VALUES ("5", "role5", "name5", "desc5", now());
+INSERT INTO accounts VALUES ("6", "role6", "name6", "desc6", now());
+```  
+
+### 콘솔 카프카 컨슈머 확인  
+```shell
+# kafka-console-consumer.sh --topic dbserver1.testdb.accounts --bootstrap-server localhost:9092 --from-beginning
+
+{"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"4","role_id":"role4","user_name":"name4","user_description":"desc4","update_date":1662974998000}}
+{"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"5","role_id":"role5","user_name":"name5","user_description":"desc5","update_date":1662974999000}}
+{"schema":{"type":"struct","fields":[{"type":"string","optional":false,"field":"account_id"},{"type":"string","optional":true,"field":"role_id"},{"type":"string","optional":true,"field":"user_name"},{"type":"string","optional":true,"field":"user_description"},{"type":"int64","optional":true,"name":"io.debezium.time.Timestamp","version":1,"default":0,"field":"update_date"}],"optional":false,"name":"dbserver1.testdb.accounts.Value"},"payload":{"account_id":"6","role_id":"role6","user_name":"name6","user_description":"desc6","update_date":1662975000000}}
+```  
+
+### Sink 테이블 데이터 확인
+```mysql
+# select * from accouts   
+
+account_id|role_id|user_name|user_description|update_date        |
+----------+-------+---------+----------------+-------------------+
+1         |role1  |name1    |desc1           |2022-09-12 08:20:38|
+2         |role2  |name2    |desc2           |2022-09-12 08:20:39|
+3         |role3  |name3    |desc3           |2022-09-12 08:20:41|
+4         |role4  |name4    |desc4           |2022-09-12 09:29:58|
+5         |role5  |name5    |desc5           |2022-09-12 09:29:59|
+6         |role6  |name6    |desc6           |2022-09-12 09:30:00|
+```  
+
+Source에서 입력한 테스트 데이터를 Kafka Consumer와 Sink 테이블에서 조회하는 테스트를 해보았다.    
 
 
 ## 참고  
 [MySQL 에서 Kafka 로 Source Connector 구축하기](https://wecandev.tistory.com/m/109)  
 [Kafka 에서 Mysql 로 Sink Connector 구축하기](https://wecandev.tistory.com/110)  
 [JDBC connector 생성 시 No suitable driver found 에러 발생](https://wecandev.tistory.com/111)   
-[Connector API 명령 참고1](https://docs.confluent.io/platform/current/connect/references/restapi.html)  
-[Connector API 명령 참고2](https://developer.confluent.io/learn-kafka/kafka-connect/rest-api/)   
+[Source Connector API 명령 참고1](https://docs.confluent.io/platform/current/connect/references/restapi.html)  
+[Source Connector API 명령 참고2](https://developer.confluent.io/learn-kafka/kafka-connect/rest-api/)   
+[Sink Connector API 명령 참고1](https://docs.confluent.io/kafka-connect-jdbc/current/sink-connector/sink_config_options.html)   
+[Sink Connector API 토픽이름 RegrexRouter1](https://docs.confluent.io/platform/current/connect/transforms/regexrouter.html)   
+[Sink Connector API 토픽이름 RegrexRouter2](https://debezium.io/blog/2017/09/25/streaming-to-another-database/)   
 
 ## Github  
 <https://github.com/sisipapa/kafka-cdc>   
-
-
-
-
