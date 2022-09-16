@@ -187,7 +187,7 @@ plugin.path=/opt/kafka_2.13-2.8.1/connectors
 ## 5. 카프카 Connect 실행  
 카프카 컨테이너 안에서 실행한다.
 ```shell
-# connect-distributed.sh /opt/kafka/config/connect-distributed.properties
+# /opt/kafka/bin/connect-distributed.sh /opt/kafka/config/connect-distributed.properties
 ```  
 
 ## 6. Source Connector 생성  
