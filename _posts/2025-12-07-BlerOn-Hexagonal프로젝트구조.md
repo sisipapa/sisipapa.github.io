@@ -1,6 +1,6 @@
 ---
 layout: post
-title: [BlerOn] Backend 프로젝트 구조 (Hexagonal + DDD + Event Driven)
+title: "[BlerOn] Backend 프로젝트 구조 (Hexagonal + DDD + Event Driven)"
 date: 2025-12-07
 sitemap: true
 hide_last_modified: true

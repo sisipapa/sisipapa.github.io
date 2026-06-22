@@ -1,6 +1,6 @@
 ---
 layout: post
-title: [BlerOn] Backend Jenkins 배포 프로세스
+title: "[BlerOn] Backend Jenkins 배포 프로세스"
 date: 2025-12-08
 sitemap: true
 hide_last_modified: true

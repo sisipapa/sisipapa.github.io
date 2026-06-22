@@ -1,6 +1,6 @@
 ---
 layout: post
-title: [BlerOn] Logging 설정
+title: "[BlerOn] Logging 설정"
 date: 2026-01-05
 sitemap: true
 hide_last_modified: true
