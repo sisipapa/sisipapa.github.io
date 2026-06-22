@@ -1,11 +1,12 @@
 ---
 layout: post
-title: BlerOn 서비스 Backend 프로젝트 구조 (Hexagonal + DDD + Event Driven)
+title: [BlerOn] Backend 프로젝트 구조 (Hexagonal + DDD + Event Driven)
 date: 2025-12-07
 sitemap: true
 hide_last_modified: true
 categories:
 - dev
+- BlerOn
 tags:
 - architecture
 - hexagonal
@@ -18,7 +19,7 @@ tags:
 * toc
 {:toc .large-only}
 
-# BlerOn 서비스 Backend 프로젝트 구조
+# BlerOn Backend 프로젝트 구조
 
 이 글은 내가 BlerOn 서비스의 Admin Backend를 만들면서 어떤 고민을 했고, 왜 지금과 같은 프로젝트 구조를 선택하게 되었는지를 정리한 회고에 가깝다.
 "정답"을 말하려는 글은 아니다. 운영 인력이 넉넉하지 않은 환경에서, 나름대로 현실과 이상 사이에서 타협하며 만든 구조에 대한 기록이다.
