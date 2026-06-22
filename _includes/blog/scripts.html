@@ -112,3 +112,34 @@ $(document).ready(function () {
         $(".post-image > img").unveil(450);
     });
 </script>
+
+<!-- Mermaid 다이어그램 렌더링: ```mermaid 코드 블록을 도형으로 변환 -->
+<script>
+(function () {
+    // mermaid 코드 블록이 있는 글에서만 라이브러리를 불러온다 (불필요한 로딩 방지)
+    if (!document.querySelector('.language-mermaid')) {
+        return;
+    }
+
+    import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+        .then(function (module) {
+            var mermaid = module.default;
+
+            // kramdown이 만든 .language-mermaid 코드 블록을
+            // mermaid가 인식하는 <div class="mermaid">로 교체한다.
+            document.querySelectorAll('.language-mermaid').forEach(function (block) {
+                var codeElement = block.querySelector('code') || block;
+                var container = document.createElement('div');
+                container.className = 'mermaid';
+                container.textContent = codeElement.textContent;
+                block.replaceWith(container);
+            });
+
+            mermaid.initialize({ startOnLoad: false });
+            mermaid.run();
+        })
+        .catch(function (error) {
+            console.error('mermaid 로딩 실패:', error);
+        });
+})();
+</script>
