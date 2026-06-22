@@ -15,7 +15,7 @@ tags:
 - aop
 ---
 
-# Spring Boot 로깅 설정 정리
+# BlerOn Logging 설정 
 
 BlerOn Admin Backend(Spring Boot 3.3.4 / Java 21) 프로젝트의 로깅 설정을 정리한 글입니다.
 운영 환경에서 로그는 "장애 분석의 1차 자료"이기 때문에, 아래 3가지 관점으로 나누어 설계했습니다.
