@@ -1,32 +1,67 @@
-# Spring Boot JUnit 5 — 회원가입 API 3계층 테스트 전략
+---
+layout: post
+title: "[BlerOn] JUnit5 단위테스트"
+date: 2026-06-22
+sitemap: true
+hide_last_modified: true
+categories:
+- dev
+- BlerOn
+tags:
+- junit5
+- mockito
+- spring-boot-test
+- unit-test
+- testing
+- mariadb
+---
 
-> **작성일:** 2026-06-22  
-> **프로젝트:** BLER Admin Backend  
-> **기준 기능:** 회원가입 (`MemberAppCommandService.registerMember`)  
-> **기술 스택:** JUnit 5 · Mockito · Spring Boot Test · `@DataJpaTest` · MariaDB  
-> **아키텍처:** DDD + Hexagonal + CQRS
+* toc
+{:toc .large-only}
+
+# BlerOn JUnit 5 단위테스트
+
+BlerOn 백엔드(Spring Boot / DDD + Hexagonal + CQRS)에서 사용하는 JUnit 5 단위·슬라이스 테스트 전략을 정리한 문서다.
+
+이 전략의 핵심은 **`@SpringBootTest` 하나로 전체를 검증하지 않고, 계층별로 테스트를 분리**하는 데 있다. 회원가입 API(`MemberAppCommandService.registerMember`)를 기준으로 Application Service · JPA Repository · Repository Impl **3계층에 각각 테스트를 두면** 실행 속도와 실패 원인 추적이 모두 나아진다.
+
+각 계층은 아래 세 가지를 항상 구분할 수 있어야 테스트가 유지보수 가능하다.
+
+| 구분 | 계층 | 의미 |
+|------|------|------|
+| 비즈니스 | Application Service | Mock으로 의존성을 끊고 흐름·예외·이벤트만 검증 |
+| 영속성 | JPA Repository | 쿼리 메서드와 Entity Lifecycle을 DB와 함께 검증 |
+| 어댑터 | Repository Impl | 도메인 포트 구현체가 JPA를 올바르게 연결하는지 검증 |
+
+그 구분을 테스트 클래스로 강제하는 것이 이 전략의 목적이다. H2에서 MariaDB로 전환하면서 겪은 시행착오와, `@DataJpaTest` 슬라이스 테스트를 안정적으로 구성하는 방법까지 함께 다룬다.
 
 ---
 
-## 들어가며
+## 한눈에 보기
 
-Spring Boot 백엔드에서 테스트를 작성할 때 `@SpringBootTest` 하나로 전체를 검증하는 방식은 간편하지만, 실행이 느리고 실패 원인을 찾기 어렵다.
+| 항목 | 내용 |
+|------|------|
+| **기준 기능** | 회원가입 (`MemberAppCommandService.registerMember`) |
+| **기술 스택** | JUnit 5 · Mockito · Spring Boot Test · `@DataJpaTest` · MariaDB |
+| **Service 테스트** | Mockito 단위 테스트 — Spring 컨텍스트·DB 없음 |
+| **JPA / Impl 테스트** | `@JpaIntegrationTest` 슬라이스 — MariaDB 사용 |
+| **네이밍** | `should_{결과}_When_{조건}_Then_{기대}` |
+| **구조** | given → when → then · AssertJ · Mockito BDD |
+| **민감 정보** | DB 접속 정보는 환경 변수로 주입, 문서·Git에 기록하지 않음 |
 
-이 글에서는 **회원가입 API**를 기준으로, Application Service · JPA Repository · Repository Impl **3계층에 각각 테스트를 분리**한 경험을 정리한다. H2에서 MariaDB로 전환하면서 겪은 시행착오와, `@DataJpaTest` 슬라이스 테스트를 안정적으로 구성하는 방법까지 다룬다.
+**3계층 테스트 흐름**
 
----
+```
+Application Service (Mockito) → JPA Repository (슬라이스) → Repository Impl (슬라이스 + @Import)
+```
 
-## 목차
+**계층별 테스트 클래스**
 
-1. [테스트 전략 개요](#1-테스트-전략-개요)
-2. [계층별 표준](#2-계층별-표준)
-3. [공통 설정](#3-공통-설정)
-4. [TestClass 별 용도](#4-testclass-별-용도)
-5. [시행착오 — 오류와 해결](#5-시행착오--오류와-해결)
-6. [Service / JPA 레벨 테스트를 하는 이유](#6-service--jpa-레벨-테스트를-하는-이유)
-7. [실행 방법](#7-실행-방법)
-8. [신규 기능 테스트 추가 가이드](#8-신규-기능-테스트-추가-가이드)
-9. [파일 구조](#9-파일-구조)
+| 계층 | 테스트 클래스 | DB |
+|------|--------------|-----|
+| Application Service | `MemberAppCommandServiceImplTest` | ❌ |
+| JPA Repository | `MemberJpaRepositoryTest` | ✅ MariaDB |
+| Repository Impl | `MemberRepositoryImplTest` | ✅ MariaDB |
 
 ---
 
