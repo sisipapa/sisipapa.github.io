@@ -622,4 +622,3 @@ src/test/
 
 ---
 
-**태그:** `#SpringBoot` `#JUnit5` `#Mockito` `#DataJpaTest` `#HexagonalArchitecture` `#DDD` `#테스트전략`
